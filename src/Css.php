@@ -30,7 +30,7 @@ use \Com\Tecnick\Color\Exception as ColorException;
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnick.com/tc-lib-color
  */
-class Css
+abstract class Css
 {
     /**
      * Get the color object from acrobat Javascript syntax
