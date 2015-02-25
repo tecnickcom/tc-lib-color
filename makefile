@@ -149,12 +149,12 @@ clean:
 	rm -rf ./vendor/
 
 # clean and download the composer dependencies
-build: clean
-	($(COMPOSER) -n install --no-dev --no-interaction)
+build:
+	rm -rf ./vendor/ && ($(COMPOSER) -n install --no-dev --no-interaction)
 
 # clean and download the composer dependencies including dev ones
-build_dev: clean
-	($(COMPOSER) -n install --no-interaction)
+build_dev:
+	rm -rf ./vendor/ && ($(COMPOSER) -n install --no-interaction)
 
 # update composer dependencies
 update:
@@ -183,5 +183,5 @@ rpm: build
 	rm -rf $(PATHPACKAGING)
 	rpmbuild --define "_topdir $(PATHPACKAGING)" --define "_version $(VERSION)" --define "_release $(RELEASE)" --define "_current_directory $(CURRENTDIR)" --define "_libpath $(LIBPATH)" --define "_configpath $(CONFIGPATH)" -bb resources/rpm/rpm.spec
 
-# Execute all tests (test, phpcs, phpmd) and build the RPM package
-dist: build_dev qa docs rpm
+# Execute all tests, generate documentation, generate reports and build the RPM package
+dist: build_dev qa_all report docs rpm
