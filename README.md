@@ -84,8 +84,14 @@ Create a composer.json in your projects root-directory:
 ```json
 {
     "require": {
-        "tecnick.com/tc-lib-color": "master"
-    }
+        "tecnick.com/tc-lib-color": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:tecnickcom/tc-lib-color.git"
+        }
+    ]
 }
 ```
 
