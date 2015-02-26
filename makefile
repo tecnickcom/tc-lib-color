@@ -20,17 +20,23 @@ VERSION=`cat VERSION`
 # Project release number (packaging build number)
 RELEASE=`cat RELEASE`
 
-# Default service path
+# Default installation path for code
 LIBPATH=/usr/share/php/Com/Tecnick/Color/
 
-# Installation path
-PATHINSTALL=$(DESTDIR)$(LIBPATH)
+# Default installation path for documentation
+DOCPATH=/usr/share/doc/php-tc-lib-color/
+
+# Installation path for the code
+PATHINSTBIN=$(DESTDIR)$(LIBPATH)
+
+# Installation path for documentation
+PATHINSTDOC=$(DESTDIR)$(DOCPATH)
 
 # Current directory
 CURRENTDIR=`pwd`
 
 # Packaging path (where RPMs will be stored)
-PATHPACKAGING=$(CURRENTDIR)/target/RPM
+PATHRPMPKG=$(CURRENTDIR)/target/RPM
 
 # Default port number for the example server
 PORT?=8000
@@ -166,23 +172,29 @@ server:
 
 # Install this application
 install: uninstall
-	mkdir -p $(PATHINSTALL)
-	cp -rf ./src/* $(PATHINSTALL)
-	cp -rf ./vendor $(PATHINSTALL)
-	find $(PATHINSTALL) -path $(PATHINSTALL)vendor -prune -o -type d -exec chmod 755 {} \;
-	find $(PATHINSTALL) -path $(PATHINSTALL)vendor -prune -o -type f -exec chmod 644 {} \;
-	find $(PATHINSTALL) -path $(PATHINSTALL)vendor -prune -o -type f -name '*.php' -exec chmod 755 {} \;
+	mkdir -p $(PATHINSTBIN)
+	cp -rf ./src/* $(PATHINSTBIN)
+	cp -rf ./vendor $(PATHINSTBIN)
+	find $(PATHINSTBIN) -path $(PATHINSTBIN)vendor -prune -o -type d -exec chmod 755 {} \;
+	find $(PATHINSTBIN) -path $(PATHINSTBIN)vendor -prune -o -type f -exec chmod 644 {} \;
+	find $(PATHINSTBIN) -path $(PATHINSTBIN)vendor -prune -o -type f -name '*.php' -exec chmod 755 {} \;
+	mkdir -p $(PATHINSTDOC)
+	cp -f ./LICENSE.TXT $(PATHINSTDOC)
+	cp -f ./README.md $(PATHINSTDOC)
+	cp -f ./VERSION $(PATHINSTDOC)
+	chmod -R 644 $(PATHINSTDOC)*
 
 # Remove all installed files
 uninstall:
-	rm -rf $(PATHINSTALL)
+	rm -rf $(PATHINSTBIN)
+	rm -rf $(PATHINSTDOC)
 
 # --- PACKAGING ---
 
 # Build the RPM package for RedHat-like Linux distributions
 rpm: build
-	rm -rf $(PATHPACKAGING)
-	rpmbuild --define "_topdir $(PATHPACKAGING)" --define "_version $(VERSION)" --define "_release $(RELEASE)" --define "_current_directory $(CURRENTDIR)" --define "_libpath $(LIBPATH)" --define "_configpath $(CONFIGPATH)" -bb resources/rpm/rpm.spec
+	rm -rf $(PATHRPMPKG)
+	rpmbuild --define "_topdir $(PATHRPMPKG)" --define "_version $(VERSION)" --define "_release $(RELEASE)" --define "_current_directory $(CURRENTDIR)" --define "_libpath $(LIBPATH)" --define "_docpath $(DOCPATH)" --define "_configpath $(CONFIGPATH)" -bb resources/rpm/rpm.spec
 
 # Execute all tests, generate documentation, generate reports and build the RPM package
 dist: build_dev qa_all report docs rpm

@@ -28,6 +28,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %attr(755,root,root) %{_libpath}
+%attr(644,root,root) %{_docpath}
 
 %changelog
 
