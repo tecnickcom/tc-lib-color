@@ -224,7 +224,5 @@ deb: build
 	sed -ri "s/~#INSTSIZE#~/`du -s --apparent-size --block-size=1024 ./target/DEB/SRC/ | grep -oh '^[0-9]*'`/" $(PATHDEBPKG)/SRC/DEBIAN/control
 	fakeroot dpkg-deb --build $(PATHDEBPKG)/SRC $(PATHDEBPKG)
 
-#	sed -ri "s/~#INSTSIZE#~/`du -sb ./target/DEB/SRC/ | grep -oh '^[0-9]*'`/" $(PATHDEBPKG)/SRC/DEBIAN/control
-
 # Execute all tests, generate documentation, generate reports and build the package
 dist: build_dev qa_all report docs $(OSPKG)
