@@ -168,6 +168,7 @@ server:
 install: uninstall
 	mkdir -p $(PATHINSTALL)
 	cp -rf ./src/* $(PATHINSTALL)
+	cp -rf ./vendor $(PATHINSTALL)
 	find $(PATHINSTALL) -path $(PATHINSTALL)vendor -prune -o -type d -exec chmod 755 {} \;
 	find $(PATHINSTALL) -path $(PATHINSTALL)vendor -prune -o -type f -exec chmod 644 {} \;
 	find $(PATHINSTALL) -path $(PATHINSTALL)vendor -prune -o -type f -name '*.php' -exec chmod 755 {} \;
