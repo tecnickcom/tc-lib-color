@@ -183,7 +183,6 @@ install: uninstall
 	cp -rf ./vendor $(PATHINSTBIN)
 	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type d -exec chmod 755 {} \;
 	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type f -exec chmod 644 {} \;
-	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type f -name '*.php' -exec chmod 755 {} \;
 	mkdir -p $(PATHINSTDOC)
 	cp -f ./LICENSE.TXT $(PATHINSTDOC)
 	cp -f ./README.md $(PATHINSTDOC)
