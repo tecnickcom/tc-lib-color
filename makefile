@@ -218,10 +218,13 @@ deb: build
 	cp -f ./VERSION $(PATHDEBPKG)/SRC/$(DOCPATH)
 	cp -f ./resources/deb/copyright $(PATHDEBPKG)/SRC/$(DOCPATH)
 	chmod -R 644 $(PATHDEBPKG)/SRC/$(DOCPATH)*
+	cp -f ./resources/deb/copyright $(PATHDEBPKG)/SRC/DEBIAN/
 	cp -f ./resources/deb/control $(PATHDEBPKG)/SRC/DEBIAN/
 	sed -ri "s/~#VERSION#~/$(VERSION)/" $(PATHDEBPKG)/SRC/DEBIAN/control
-	sed -ri "s/~#INSTSIZE#~/`du -sb ./target/DEB/SRC/ | grep -oh '^[0-9]*'`/" $(PATHDEBPKG)/SRC/DEBIAN/control
+	sed -ri "s/~#INSTSIZE#~/`du -s --apparent-size --block-size=1024 ./target/DEB/SRC/ | grep -oh '^[0-9]*'`/" $(PATHDEBPKG)/SRC/DEBIAN/control
 	fakeroot dpkg-deb --build $(PATHDEBPKG)/SRC $(PATHDEBPKG)
+
+#	sed -ri "s/~#INSTSIZE#~/`du -sb ./target/DEB/SRC/ | grep -oh '^[0-9]*'`/" $(PATHDEBPKG)/SRC/DEBIAN/control
 
 # Execute all tests, generate documentation, generate reports and build the package
 dist: build_dev qa_all report docs $(OSPKG)
