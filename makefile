@@ -12,7 +12,10 @@
 # ----------------------------------------------------------------------------------------------------------------------
 
 # List special make targets that are not associated with files
-.PHONY: help all test docs phpcs phpcs_test phpcbf phpcbf_test phpmd phpmd_test phpcpd phploc phpdep report qa qa_test qa_all clean build build_dev update server install uninstall rpm dist
+.PHONY: help all test docs phpcs phpcs_test phpcbf phpcbf_test phpmd phpmd_test phpcpd phploc phpdep report qa qa_test qa_all clean build build_dev update server install uninstall rpm deb dist
+
+# Detect the type of package to build based on the current operating system
+OSPKG=$(shell if [ -f "/etc/redhat-release" ]; then echo "rpm"; else echo "deb"; fi )
 
 # Project version
 VERSION=`cat VERSION`
@@ -35,8 +38,11 @@ PATHINSTDOC=$(DESTDIR)$(DOCPATH)
 # Current directory
 CURRENTDIR=`pwd`
 
-# Packaging path (where RPMs will be stored)
+# RPM Packaging path (where RPMs will be stored)
 PATHRPMPKG=$(CURRENTDIR)/target/RPM
+
+# DEB Packaging path (where DEBs will be stored)
+PATHDEBPKG=$(CURRENTDIR)/target/DEB
 
 # Default port number for the example server
 PORT?=8000
@@ -175,9 +181,9 @@ install: uninstall
 	mkdir -p $(PATHINSTBIN)
 	cp -rf ./src/* $(PATHINSTBIN)
 	cp -rf ./vendor $(PATHINSTBIN)
-	find $(PATHINSTBIN) -path $(PATHINSTBIN)vendor -prune -o -type d -exec chmod 755 {} \;
-	find $(PATHINSTBIN) -path $(PATHINSTBIN)vendor -prune -o -type f -exec chmod 644 {} \;
-	find $(PATHINSTBIN) -path $(PATHINSTBIN)vendor -prune -o -type f -name '*.php' -exec chmod 755 {} \;
+	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type d -exec chmod 755 {} \;
+	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type f -exec chmod 644 {} \;
+	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type f -name '*.php' -exec chmod 755 {} \;
 	mkdir -p $(PATHINSTDOC)
 	cp -f ./LICENSE.TXT $(PATHINSTDOC)
 	cp -f ./README.md $(PATHINSTDOC)
@@ -196,5 +202,26 @@ rpm: build
 	rm -rf $(PATHRPMPKG)
 	rpmbuild --define "_topdir $(PATHRPMPKG)" --define "_version $(VERSION)" --define "_release $(RELEASE)" --define "_current_directory $(CURRENTDIR)" --define "_libpath $(LIBPATH)" --define "_docpath $(DOCPATH)" --define "_configpath $(CONFIGPATH)" -bb resources/rpm/rpm.spec
 
-# Execute all tests, generate documentation, generate reports and build the RPM package
-dist: build_dev qa_all report docs rpm
+# Build the DEB package for Debian-like Linux distributions
+deb: build
+	rm -rf $(PATHDEBPKG)/SRC
+	mkdir -p $(PATHDEBPKG)/SRC/DEBIAN
+	mkdir -p $(PATHDEBPKG)/SRC$(LIBPATH)
+	cp -rf ./src/* $(PATHDEBPKG)/SRC$(LIBPATH)
+	cp -rf ./vendor $(PATHDEBPKG)/SRC$(LIBPATH)
+	find $(PATHDEBPKG)/SRC -path $(PATHDEBPKG)/SRC -prune -o -type d -exec chmod 755 {} \;
+	find $(PATHDEBPKG)/SRC -path $(PATHDEBPKG)/SRC -prune -o -type f -exec chmod 644 {} \;
+	find $(PATHDEBPKG)/SRC -path $(PATHDEBPKG)/SRC -prune -o -type f -name '*.php' -exec chmod 755 {} \;
+	mkdir -p $(PATHDEBPKG)/SRC/$(DOCPATH)
+	cp -f ./LICENSE.TXT $(PATHDEBPKG)/SRC/$(DOCPATH)
+	cp -f ./README.md $(PATHDEBPKG)/SRC/$(DOCPATH)
+	cp -f ./VERSION $(PATHDEBPKG)/SRC/$(DOCPATH)
+	cp -f ./resources/deb/copyright $(PATHDEBPKG)/SRC/$(DOCPATH)
+	chmod -R 644 $(PATHDEBPKG)/SRC/$(DOCPATH)*
+	cp -f ./resources/deb/control $(PATHDEBPKG)/SRC/DEBIAN/
+	sed -ri "s/~#VERSION#~/$(VERSION)/" $(PATHDEBPKG)/SRC/DEBIAN/control
+	sed -ri "s/~#INSTSIZE#~/`du -sb ./target/DEB/SRC/ | grep -oh '^[0-9]*'`/" $(PATHDEBPKG)/SRC/DEBIAN/control
+	fakeroot dpkg-deb --build $(PATHDEBPKG)/SRC $(PATHDEBPKG)
+
+# Execute all tests, generate documentation, generate reports and build the package
+dist: build_dev qa_all report docs $(OSPKG)
