@@ -12,7 +12,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 
 # List special make targets that are not associated with files
-.PHONY: help all test docs phpcs phpcs_test phpcbf phpcbf_test phpmd phpmd_test phpcpd phploc phpdep report qa qa_test qa_all clean build build_dev update server install uninstall rpm deb dist
+.PHONY: help all test docs phpcs phpcs_test phpcbf phpcbf_test phpmd phpmd_test phpcpd phploc phpdep report qa qa_test qa_all clean build build_dev update server install uninstall rpm deb
 
 # Detect the type of package to build based on the current operating system
 OSPKG=$(shell if [ -f "/etc/redhat-release" ]; then echo "rpm"; else echo "deb"; fi )
@@ -91,7 +91,7 @@ help:
 	@echo "    make uninstall  : Remove all installed files"
 	@echo ""
 	@echo "    make rpm        : Build an RPM package"
-	@echo "    make dist       : Execute tests and build the RPM package"
+	@echo "    make deb        : Build a DEB package (must be executed as root)"
 	@echo ""
 
 # alias for help target
@@ -202,27 +202,23 @@ rpm: build
 	rm -rf $(PATHRPMPKG)
 	rpmbuild --define "_topdir $(PATHRPMPKG)" --define "_version $(VERSION)" --define "_release $(RELEASE)" --define "_current_directory $(CURRENTDIR)" --define "_libpath $(LIBPATH)" --define "_docpath $(DOCPATH)" --define "_configpath $(CONFIGPATH)" -bb resources/rpm/rpm.spec
 
-# Build the DEB package for Debian-like Linux distributions
+# Build the DEB package for Debian-like Linux distributions (@TODO: find a way to run this as normal user)
 deb: build
 	rm -rf $(PATHDEBPKG)/SRC
 	mkdir -p $(PATHDEBPKG)/SRC/DEBIAN
 	mkdir -p $(PATHDEBPKG)/SRC$(LIBPATH)
 	cp -rf ./src/* $(PATHDEBPKG)/SRC$(LIBPATH)
 	cp -rf ./vendor $(PATHDEBPKG)/SRC$(LIBPATH)
-	find $(PATHDEBPKG)/SRC -path $(PATHDEBPKG)/SRC -prune -o -type d -exec chmod 755 {} \;
-	find $(PATHDEBPKG)/SRC -path $(PATHDEBPKG)/SRC -prune -o -type f -exec chmod 644 {} \;
-	find $(PATHDEBPKG)/SRC -path $(PATHDEBPKG)/SRC -prune -o -type f -name '*.php' -exec chmod 755 {} \;
 	mkdir -p $(PATHDEBPKG)/SRC/$(DOCPATH)
-	cp -f ./LICENSE.TXT $(PATHDEBPKG)/SRC/$(DOCPATH)
 	cp -f ./README.md $(PATHDEBPKG)/SRC/$(DOCPATH)
 	cp -f ./VERSION $(PATHDEBPKG)/SRC/$(DOCPATH)
 	cp -f ./resources/deb/copyright $(PATHDEBPKG)/SRC/$(DOCPATH)
-	chmod -R 644 $(PATHDEBPKG)/SRC/$(DOCPATH)*
-	cp -f ./resources/deb/copyright $(PATHDEBPKG)/SRC/DEBIAN/
 	cp -f ./resources/deb/control $(PATHDEBPKG)/SRC/DEBIAN/
+	gzip -9 -c ./resources/deb/changelog > $(PATHDEBPKG)/SRC/$(DOCPATH)changelog.gz
 	sed -ri "s/~#VERSION#~/$(VERSION)/" $(PATHDEBPKG)/SRC/DEBIAN/control
 	sed -ri "s/~#INSTSIZE#~/`du -s --apparent-size --block-size=1024 ./target/DEB/SRC/ | grep -oh '^[0-9]*'`/" $(PATHDEBPKG)/SRC/DEBIAN/control
-	fakeroot dpkg-deb --build $(PATHDEBPKG)/SRC $(PATHDEBPKG)
-
-# Execute all tests, generate documentation, generate reports and build the package
-dist: build_dev qa_all report docs $(OSPKG)
+	find $(PATHDEBPKG) -path $(PATHDEBPKG) -prune -o -type d -exec chmod 755 {} \;
+	find $(PATHDEBPKG) -path $(PATHDEBPKG) -prune -o -type f -exec chmod 644 {} \;
+	chown -R root:root $(PATHDEBPKG)/SRC
+	dpkg-deb --build $(PATHDEBPKG)/SRC $(PATHDEBPKG)
+	rm -rf ./vendor

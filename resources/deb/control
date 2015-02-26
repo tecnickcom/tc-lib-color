@@ -9,4 +9,6 @@ Recommends: php5
 Section: php
 Priority: optional
 Homepage: https://github.com/tecnickcom/tc-lib-color
-Description: PHP library to manipulate various color representations (GRAY, RGB, HSL, CMYK) and parse Web colors.
+Description: PHP Color library
+ This library includes PHP classes to parse and manipulate
+ various colors representations GRAY, RGB, HSL, CMYK.
