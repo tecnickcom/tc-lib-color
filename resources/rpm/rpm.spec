@@ -1,4 +1,4 @@
-Name:      tc-lib-color
+Name:      php-tc-lib-color
 Version:   %{_version}
 Release:   %{_release}%{?dist}
 Summary:   Provides tc-lib-color: PHP library to manipulate various color representations
@@ -28,6 +28,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %attr(755,root,root) %{_libpath}
+%attr(644,root,root) %{_docpath}
 
 %changelog
 

@@ -12,7 +12,10 @@
 # ----------------------------------------------------------------------------------------------------------------------
 
 # List special make targets that are not associated with files
-.PHONY: help all test docs phpcs phpcs_test phpcbf phpcbf_test phpmd phpmd_test phpcpd phploc phpdep report qa qa_test qa_all clean build build_dev update server install uninstall rpm dist
+.PHONY: help all test docs phpcs phpcs_test phpcbf phpcbf_test phpmd phpmd_test phpcpd phploc phpdep report qa qa_test qa_all clean build build_dev update server install uninstall rpm deb
+
+# Detect the type of package to build based on the current operating system
+OSPKG=$(shell if [ -f "/etc/redhat-release" ]; then echo "rpm"; else echo "deb"; fi )
 
 # Project version
 VERSION=`cat VERSION`
@@ -20,17 +23,26 @@ VERSION=`cat VERSION`
 # Project release number (packaging build number)
 RELEASE=`cat RELEASE`
 
-# Default service path
+# Default installation path for code
 LIBPATH=/usr/share/php/Com/Tecnick/Color/
 
-# Installation path
-PATHINSTALL=$(DESTDIR)$(LIBPATH)
+# Default installation path for documentation
+DOCPATH=/usr/share/doc/php-tc-lib-color/
+
+# Installation path for the code
+PATHINSTBIN=$(DESTDIR)$(LIBPATH)
+
+# Installation path for documentation
+PATHINSTDOC=$(DESTDIR)$(DOCPATH)
 
 # Current directory
 CURRENTDIR=`pwd`
 
-# Packaging path (where RPMs will be stored)
-PATHPACKAGING=$(CURRENTDIR)/target/RPM
+# RPM Packaging path (where RPMs will be stored)
+PATHRPMPKG=$(CURRENTDIR)/target/RPM
+
+# DEB Packaging path (where DEBs will be stored)
+PATHDEBPKG=$(CURRENTDIR)/target/DEB
 
 # Default port number for the example server
 PORT?=8000
@@ -79,7 +91,7 @@ help:
 	@echo "    make uninstall  : Remove all installed files"
 	@echo ""
 	@echo "    make rpm        : Build an RPM package"
-	@echo "    make dist       : Execute tests and build the RPM package"
+	@echo "    make deb        : Build a DEB package (must be executed as root)"
 	@echo ""
 
 # alias for help target
@@ -166,23 +178,47 @@ server:
 
 # Install this application
 install: uninstall
-	mkdir -p $(PATHINSTALL)
-	cp -rf ./src/* $(PATHINSTALL)
-	cp -rf ./vendor $(PATHINSTALL)
-	find $(PATHINSTALL) -path $(PATHINSTALL)vendor -prune -o -type d -exec chmod 755 {} \;
-	find $(PATHINSTALL) -path $(PATHINSTALL)vendor -prune -o -type f -exec chmod 644 {} \;
-	find $(PATHINSTALL) -path $(PATHINSTALL)vendor -prune -o -type f -name '*.php' -exec chmod 755 {} \;
+	mkdir -p $(PATHINSTBIN)
+	cp -rf ./src/* $(PATHINSTBIN)
+	cp -rf ./vendor $(PATHINSTBIN)
+	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type d -exec chmod 755 {} \;
+	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type f -exec chmod 644 {} \;
+	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type f -name '*.php' -exec chmod 755 {} \;
+	mkdir -p $(PATHINSTDOC)
+	cp -f ./LICENSE.TXT $(PATHINSTDOC)
+	cp -f ./README.md $(PATHINSTDOC)
+	cp -f ./VERSION $(PATHINSTDOC)
+	chmod -R 644 $(PATHINSTDOC)*
 
 # Remove all installed files
 uninstall:
-	rm -rf $(PATHINSTALL)
+	rm -rf $(PATHINSTBIN)
+	rm -rf $(PATHINSTDOC)
 
 # --- PACKAGING ---
 
 # Build the RPM package for RedHat-like Linux distributions
 rpm: build
-	rm -rf $(PATHPACKAGING)
-	rpmbuild --define "_topdir $(PATHPACKAGING)" --define "_version $(VERSION)" --define "_release $(RELEASE)" --define "_current_directory $(CURRENTDIR)" --define "_libpath $(LIBPATH)" --define "_configpath $(CONFIGPATH)" -bb resources/rpm/rpm.spec
+	rm -rf $(PATHRPMPKG)
+	rpmbuild --define "_topdir $(PATHRPMPKG)" --define "_version $(VERSION)" --define "_release $(RELEASE)" --define "_current_directory $(CURRENTDIR)" --define "_libpath $(LIBPATH)" --define "_docpath $(DOCPATH)" --define "_configpath $(CONFIGPATH)" -bb resources/rpm/rpm.spec
 
-# Execute all tests, generate documentation, generate reports and build the RPM package
-dist: build_dev qa_all report docs rpm
+# Build the DEB package for Debian-like Linux distributions (@TODO: find a way to run this as normal user)
+deb: build
+	rm -rf $(PATHDEBPKG)/SRC
+	mkdir -p $(PATHDEBPKG)/SRC/DEBIAN
+	mkdir -p $(PATHDEBPKG)/SRC$(LIBPATH)
+	cp -rf ./src/* $(PATHDEBPKG)/SRC$(LIBPATH)
+	cp -rf ./vendor $(PATHDEBPKG)/SRC$(LIBPATH)
+	mkdir -p $(PATHDEBPKG)/SRC/$(DOCPATH)
+	cp -f ./README.md $(PATHDEBPKG)/SRC/$(DOCPATH)
+	cp -f ./VERSION $(PATHDEBPKG)/SRC/$(DOCPATH)
+	cp -f ./resources/deb/copyright $(PATHDEBPKG)/SRC/$(DOCPATH)
+	cp -f ./resources/deb/control $(PATHDEBPKG)/SRC/DEBIAN/
+	gzip -9 -c ./resources/deb/changelog > $(PATHDEBPKG)/SRC/$(DOCPATH)changelog.gz
+	sed -ri "s/~#VERSION#~/$(VERSION)/" $(PATHDEBPKG)/SRC/DEBIAN/control
+	sed -ri "s/~#INSTSIZE#~/`du -s --apparent-size --block-size=1024 ./target/DEB/SRC/ | grep -oh '^[0-9]*'`/" $(PATHDEBPKG)/SRC/DEBIAN/control
+	find $(PATHDEBPKG) -path $(PATHDEBPKG) -prune -o -type d -exec chmod 755 {} \;
+	find $(PATHDEBPKG) -path $(PATHDEBPKG) -prune -o -type f -exec chmod 644 {} \;
+	chown -R root:root $(PATHDEBPKG)/SRC
+	dpkg-deb --build $(PATHDEBPKG)/SRC $(PATHDEBPKG)
+	rm -rf ./vendor
