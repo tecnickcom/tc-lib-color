@@ -23,17 +23,20 @@ VERSION=`cat VERSION`
 # Project release number (packaging build number)
 RELEASE=`cat RELEASE`
 
+# name of RPM or DEB package
+PKGNAME=php-tc-lib-color
+
 # Default installation path for code
-LIBPATH=/usr/share/php/Com/Tecnick/Color/
+LIBPATH=usr/share/php/Com/Tecnick/Color/
 
 # Default installation path for documentation
-DOCPATH=/usr/share/doc/php-tc-lib-color/
+DOCPATH=usr/share/doc/$(PKGNAME)/
 
 # Installation path for the code
-PATHINSTBIN=$(DESTDIR)$(LIBPATH)
+PATHINSTBIN=$(DESTDIR)/$(LIBPATH)
 
 # Installation path for documentation
-PATHINSTDOC=$(DESTDIR)$(DOCPATH)
+PATHINSTDOC=$(DESTDIR)/$(DOCPATH)
 
 # Current directory
 CURRENTDIR=`pwd`
@@ -91,7 +94,7 @@ help:
 	@echo "    make uninstall  : Remove all installed files"
 	@echo ""
 	@echo "    make rpm        : Build an RPM package"
-	@echo "    make deb        : Build a DEB package (must be executed as root)"
+	@echo "    make deb        : Build a DEB package"
 	@echo ""
 
 # alias for help target
@@ -180,7 +183,6 @@ server:
 install: uninstall
 	mkdir -p $(PATHINSTBIN)
 	cp -rf ./src/* $(PATHINSTBIN)
-	cp -rf ./vendor $(PATHINSTBIN)
 	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type d -exec chmod 755 {} \;
 	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type f -exec chmod 644 {} \;
 	mkdir -p $(PATHINSTDOC)
@@ -199,25 +201,21 @@ uninstall:
 # Build the RPM package for RedHat-like Linux distributions
 rpm: build
 	rm -rf $(PATHRPMPKG)
-	rpmbuild --define "_topdir $(PATHRPMPKG)" --define "_version $(VERSION)" --define "_release $(RELEASE)" --define "_current_directory $(CURRENTDIR)" --define "_libpath $(LIBPATH)" --define "_docpath $(DOCPATH)" --define "_configpath $(CONFIGPATH)" -bb resources/rpm/rpm.spec
+	rpmbuild --define "_topdir $(PATHRPMPKG)" --define "_package $(PKGNAME)" --define "_version $(VERSION)" --define "_release $(RELEASE)" --define "_current_directory $(CURRENTDIR)" --define "_libpath /$(LIBPATH)" --define "_docpath /$(DOCPATH)" --define "_configpath $(CONFIGPATH)" -bb resources/rpm/rpm.spec
 
-# Build the DEB package for Debian-like Linux distributions (@TODO: find a way to run this as normal user)
+# Build the DEB package for Debian-like Linux distributions
 deb: build
-	rm -rf $(PATHDEBPKG)/SRC
-	mkdir -p $(PATHDEBPKG)/SRC/DEBIAN
-	mkdir -p $(PATHDEBPKG)/SRC$(LIBPATH)
-	cp -rf ./src/* $(PATHDEBPKG)/SRC$(LIBPATH)
-	cp -rf ./vendor $(PATHDEBPKG)/SRC$(LIBPATH)
-	mkdir -p $(PATHDEBPKG)/SRC/$(DOCPATH)
-	cp -f ./README.md $(PATHDEBPKG)/SRC/$(DOCPATH)
-	cp -f ./VERSION $(PATHDEBPKG)/SRC/$(DOCPATH)
-	cp -f ./resources/deb/copyright $(PATHDEBPKG)/SRC/$(DOCPATH)
-	cp -f ./resources/deb/control $(PATHDEBPKG)/SRC/DEBIAN/
-	gzip -9 -c ./resources/deb/changelog > $(PATHDEBPKG)/SRC/$(DOCPATH)changelog.gz
-	sed -ri "s/~#VERSION#~/$(VERSION)/" $(PATHDEBPKG)/SRC/DEBIAN/control
-	sed -ri "s/~#INSTSIZE#~/`du -s --apparent-size --block-size=1024 ./target/DEB/SRC/ | grep -oh '^[0-9]*'`/" $(PATHDEBPKG)/SRC/DEBIAN/control
-	find $(PATHDEBPKG) -path $(PATHDEBPKG) -prune -o -type d -exec chmod 755 {} \;
-	find $(PATHDEBPKG) -path $(PATHDEBPKG) -prune -o -type f -exec chmod 644 {} \;
-	chown -R root:root $(PATHDEBPKG)/SRC
-	dpkg-deb --build $(PATHDEBPKG)/SRC $(PATHDEBPKG)
-	rm -rf ./vendor
+	rm -rf $(PATHDEBPKG)
+	mkdir -p $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
+	cp -rf $(CURRENTDIR)/src $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
+	cp -f ./README.md $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
+	cp -f ./VERSION $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
+	tar -zcvf $(PATHDEBPKG)/$(PKGNAME)_$(VERSION).orig.tar.gz -C $(PATHDEBPKG)/ $(PKGNAME)-$(VERSION)
+	cp -rf ./resources/debian $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian
+	sed -ri "s/~#VERSION#~/$(VERSION)/" $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/changelog
+	sed -ri "s/~#DATE#~/`date -R`/" $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/changelog
+	echo $(LIBPATH) > $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs
+	echo "src/* $(LIBPATH)" > $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install
+	echo "README.md $(DOCPATH)" >> $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install
+	echo "VERSION $(DOCPATH)" >> $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install
+	cd $(PATHDEBPKG)/$(PKGNAME)-$(VERSION) && debuild -us -uc 
