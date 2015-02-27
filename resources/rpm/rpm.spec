@@ -1,4 +1,4 @@
-Name:      php-tc-lib-color
+Name:      %{_package}
 Version:   %{_version}
 Release:   %{_release}%{?dist}
 Summary:   Provides tc-lib-color: PHP library to manipulate various color representations
