@@ -68,7 +68,7 @@ Please check all the available options using `make help`.
 
 Examples are located in the `example` directory.
 
-Start a development server using the command:
+Start a development server (requires PHP 5.5) using the command:
 
 ```
 make server
@@ -93,6 +93,19 @@ Create a composer.json in your projects root-directory:
         }
     ]
 }
+```
+
+
+## Packaging
+
+This library is mainly intended to be used and included in other PHP projects using Composer.
+However, since some production environments dictates the installation of any application as RPM or DEB packages,
+this library includes make targets for building these packages (`make rpm` and `make deb`).
+The packages are generated under the `target` directory.
+
+When this library is installed using an RPM or DEB package, you can use it your code by including the autoloader:
+```
+require_once ('/usr/share/php/Com/Tecnick/Color/vendor/autoload.php');
 ```
 
 
