@@ -183,6 +183,8 @@ server:
 install: uninstall
 	mkdir -p $(PATHINSTBIN)
 	cp -rf ./src/* $(PATHINSTBIN)
+	cp -rf ./vendor $(PATHINSTBIN)
+	sed -i "s/baseDir . '\/src'/baseDir/" $(PATHINSTBIN)/vendor/composer/autoload_psr4.php
 	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type d -exec chmod 755 {} \;
 	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type f -exec chmod 644 {} \;
 	mkdir -p $(PATHINSTDOC)
@@ -208,12 +210,14 @@ deb: build
 	rm -rf $(PATHDEBPKG)
 	mkdir -p $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
 	cp -rf $(CURRENTDIR)/src $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
+	cp -rf ./vendor $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/src
+	sed -i "s/baseDir . '\/src'/baseDir/" $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/src/vendor/composer/autoload_psr4.php
 	cp -f ./README.md $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
 	cp -f ./VERSION $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
 	tar -zcvf $(PATHDEBPKG)/$(PKGNAME)_$(VERSION).orig.tar.gz -C $(PATHDEBPKG)/ $(PKGNAME)-$(VERSION)
 	cp -rf ./resources/debian $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian
-	sed -ri "s/~#VERSION#~/$(VERSION)/" $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/changelog
-	sed -ri "s/~#DATE#~/`date -R`/" $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/changelog
+	sed -i "s/~#VERSION#~/$(VERSION)/" $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/changelog
+	sed -i "s/~#DATE#~/`date -R`/" $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/changelog
 	echo $(LIBPATH) > $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs
 	echo "src/* $(LIBPATH)" > $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install
 	echo "README.md $(DOCPATH)" >> $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install
