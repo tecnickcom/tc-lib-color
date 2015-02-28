@@ -27,8 +27,9 @@ rm -rf $RPM_BUILD_ROOT
 (cd %{_current_directory} && make clean)
 
 %files
-%attr(755,root,root) %{_libpath}
-%attr(644,root,root) %{_docpath}
+%attr(-,root,root) %{_libpath}
+%attr(-,root,root) %{_docpath}
+%docdir %{_docpath}
 
 %changelog
 
