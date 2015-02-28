@@ -185,8 +185,8 @@ install: uninstall
 	cp -rf ./src/* $(PATHINSTBIN)
 	cp -rf ./vendor $(PATHINSTBIN)
 	sed -i "s/baseDir . '\/src'/baseDir/" $(PATHINSTBIN)/vendor/composer/autoload_psr4.php
-	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type d -exec chmod 755 {} \;
-	find $(PATHINSTBIN) -path $(PATHINSTBIN) -prune -o -type f -exec chmod 644 {} \;
+	find $(PATHINSTBIN) -type d -exec chmod 755 {} \;
+	find $(PATHINSTBIN) -type f -exec chmod 644 {} \;
 	mkdir -p $(PATHINSTDOC)
 	cp -f ./LICENSE.TXT $(PATHINSTDOC)
 	cp -f ./README.md $(PATHINSTDOC)
