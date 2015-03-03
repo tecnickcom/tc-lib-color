@@ -288,7 +288,7 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @param string $name Color name
      *
-     * @return array with keys ('red', 'green', 'blue', 'alpha')
+     * @return \Com\Tecnick\Color\Model\Rgb object
      *
      * @throws ColorException if the color is not found
      */
@@ -360,5 +360,41 @@ class Web extends \Com\Tecnick\Color\Css
             return $this->getColorObjFromCss($col[1], $color);
         }
         return $this->getRgbObjFromName($color);
+    }
+
+    /**
+     * Get the square of the distance between 2 RGB points
+     *
+     * @param array $cola First color as RGB array
+     * @param array $colb Second color as RGB array
+     *
+     * @return float
+     */
+    public function getRgbSquareDistance($cola, $colb)
+    {
+        return (pow(($cola['red'] - $colb['red']), 2)
+            + pow(($cola['green'] - $colb['green']), 2)
+            + pow(($cola['blue'] - $colb['blue']), 2));
+    }
+
+    /**
+     * Get the name of the closest web color
+     *
+     * @param array $col Color as RGB array (keys: 'red', 'green', 'blue')
+     *
+     * @return string
+     */
+    public function getClosestWebColor($col)
+    {
+        $color = '';
+        $mindist = 3; // = 1^2 + 1^2 + 1^2
+        foreach (self::$webhex as $name => $hex) {
+            $dist = $this->getRgbSquareDistance($col, $this->getHexArray($hex));
+            if ($dist <= $mindist) {
+                $mindist = $dist;
+                $color = $name;
+            }
+        }
+        return $color;
     }
 }

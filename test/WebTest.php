@@ -169,4 +169,41 @@ class WebTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('\Com\Tecnick\Color\Exception');
         $res = $this->obj->getColorObj('cmyk(-)');
     }
+
+    public function testGetRgbSquareDistance()
+    {
+        $cola = array('red' => 0, 'green' => 0, 'blue' => 0);
+        $colb = array('red' => 1, 'green' => 1, 'blue' => 1);
+        $dist = $this->obj->getRgbSquareDistance($cola, $colb);
+        $this->assertEquals(3, $dist);
+
+        $cola = array('red' => 0.5, 'green' => 0.5, 'blue' => 0.5);
+        $colb = array('red' => 0.5, 'green' => 0.5, 'blue' => 0.5);
+        $dist = $this->obj->getRgbSquareDistance($cola, $colb);
+        $this->assertEquals(0, $dist);
+
+        $cola = array('red' => 0.25, 'green' => 0.50, 'blue' => 0.75);
+        $colb = array('red' => 0.50, 'green' => 0.75, 'blue' => 1.00);
+        $dist = $this->obj->getRgbSquareDistance($cola, $colb);
+        $this->assertEquals(0.1875, $dist);
+    }
+
+    public function testGetClosestWebColor()
+    {
+        $col = array('red' => 1, 'green' => 0, 'blue' => 0);
+        $color = $this->obj->getClosestWebColor($col);
+        $this->assertEquals('red', $color);
+
+        $col = array('red' => 0, 'green' => 1, 'blue' => 0);
+        $color = $this->obj->getClosestWebColor($col);
+        $this->assertEquals('lime', $color);
+
+        $col = array('red' => 0, 'green' => 0, 'blue' => 1);
+        $color = $this->obj->getClosestWebColor($col);
+        $this->assertEquals('blue', $color);
+
+        $col = array('red' => 0.33, 'green' => 0.4, 'blue' => 0.18);
+        $color = $this->obj->getClosestWebColor($col);
+        $this->assertEquals('darkolivegreen', $color);
+    }
 }
