@@ -183,8 +183,7 @@ server:
 install: uninstall
 	mkdir -p $(PATHINSTBIN)
 	cp -rf ./src/* $(PATHINSTBIN)
-	cp -rf ./vendor $(PATHINSTBIN)
-	sed -i "s/baseDir . '\/src'/baseDir/" $(PATHINSTBIN)/vendor/composer/autoload_psr4.php
+	cp -f ./resources/autoload.php $(PATHINSTBIN)
 	find $(PATHINSTBIN) -type d -exec chmod 755 {} \;
 	find $(PATHINSTBIN) -type f -exec chmod 644 {} \;
 	mkdir -p $(PATHINSTDOC)
@@ -210,8 +209,7 @@ deb: build
 	rm -rf $(PATHDEBPKG)
 	mkdir -p $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
 	cp -rf $(CURRENTDIR)/src $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
-	cp -rf ./vendor $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/src
-	sed -i "s/baseDir . '\/src'/baseDir/" $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/src/vendor/composer/autoload_psr4.php
+	cp -f ./resources/autoload.php $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/src
 	cp -f ./README.md $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
 	cp -f ./VERSION $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
 	tar -zcvf $(PATHDEBPKG)/$(PKGNAME)_$(VERSION).orig.tar.gz -C $(PATHDEBPKG)/ $(PKGNAME)-$(VERSION)

@@ -13,7 +13,11 @@
  * This file is part of tc-lib-color software library.
  */
 
-include ('../vendor/autoload.php');
+// autoloader when using Composer
+require ('../vendor/autoload.php');
+
+// autoloader when using RPM or DEB package installation
+//require ('/usr/share/php/Com/Tecnick/Color/autoload.php');
 
 $colobj = new \Com\Tecnick\Color\Web;
 
