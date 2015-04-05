@@ -122,7 +122,7 @@ phpcbf:
 
 # run PHPCBF on the test code and show any style violations
 phpcbf_test:
-	@./vendor/bin/phpcbf --standard=psr2 tests
+	@./vendor/bin/phpcbf --standard=psr2 test
 
 # Run PHP Mess Detector on the source code
 phpmd:
