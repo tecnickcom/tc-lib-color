@@ -228,7 +228,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
             $key = $yellow;
         }
         if ($key == 1) {
-// black
+            // black
             $cyan = 0;
             $magenta = 0;
             $yellow = 0;
