@@ -116,7 +116,11 @@ all: help
 
 # run the PHPUnit tests
 test:
-	./vendor/bin/phpunit test
+	@if php -r 'exit(version_compare(PHP_VERSION, "7", ">") ? 0 : 1);' && which phpdbg ; then \
+		phpdbg -qrr ./vendor/bin/phpunit test; \
+	else \
+		./vendor/bin/phpunit test; \
+	fi
 
 # generate docs using phpDocumentor
 docs:
