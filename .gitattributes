@@ -1,0 +1,11 @@
+# Directories and files to exclude when creating archive (i.e. when importing using Composer)
+
+/example            export-ignore
+/resources          export-ignore
+/test               export-ignore
+/.git               export-ignore
+/makefile           export-ignore
+/phpcompatinfo.json export-ignore
+/phpunit.xml.dist   export-ignore
+/.gitattributes     export-ignore
+/.gitignore         export-ignore
