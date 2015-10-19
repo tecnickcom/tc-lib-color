@@ -183,7 +183,7 @@ clean:
 
 # clean and download the composer dependencies
 build:
-	rm -rf ./vendor/ && ($(COMPOSER) -n install --no-dev --no-interaction --prefer-dist)
+	rm -rf ./vendor/ && ($(COMPOSER) -n install --no-dev --no-interaction)
 
 # clean and download the composer dependencies including dev ones
 build_dev:
