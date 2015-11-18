@@ -12,7 +12,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 
 # List special make targets that are not associated with files
-.PHONY: help all test docs phpcs phpcs_test phpcbf phpcbf_test phpmd phpmd_test phpcpd phploc phpdep phpcmpinfo report qa qa_test qa_all clean build build_dev update server install uninstall rpm deb archive
+.PHONY: help all test docs phpcs phpcs_test phpcbf phpcbf_test phpmd phpmd_test phpcpd phploc phpdep phpcmpinfo report qa qa_test qa_all clean build build_dev update server install uninstall rpm deb bz2
 
 # Project owner
 OWNER=tecnickcom
@@ -64,6 +64,9 @@ PATHRPMPKG=$(CURRENTDIR)/target/RPM
 
 # DEB Packaging path (where DEBs will be stored)
 PATHDEBPKG=$(CURRENTDIR)/target/DEB
+
+# BZ2 Packaging path (where BZ2s will be stored)
+PATHBZ2PKG=$(CURRENTDIR)/target/BZ2
 
 # Default port number for the example server
 PORT?=8000
@@ -257,7 +260,8 @@ ifneq ($(strip $(CONFIGPATH)),)
 endif
 	cd $(PATHDEBPKG)/$(PKGNAME)-$(VERSION) && debuild -us -uc
 
-# build a compressed archive
-archive: build
-	make install DESTDIR=./target/archive/
-	tar -jcvf ./target/$(PKGNAME)-$(VERSION)-$(RELEASE).tbz2 -C ./target/archive/ $(DATADIR)
+# build a compressed bz2 archive
+bz2: build
+	rm -rf $(PATHBZ2PKG)
+	make install DESTDIR=$(PATHBZ2PKG)
+	tar -jcvf $(PATHBZ2PKG)/$(PKGNAME)-$(VERSION)-$(RELEASE).tbz2 -C $(PATHBZ2PKG) $(DATADIR)
