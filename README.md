@@ -9,6 +9,13 @@
 * **license**     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
 * **link**        https://github.com/tecnickcom/tc-lib-color
 
+## Status
+* **MASTER**: [![Build Status](https://secure.travis-ci.org/tecnickcom/tc-lib-color.png?branch=master)](https://travis-ci.org/tecnickcom/tc-lib-color?branch=master)
+[![Coverage Status](https://coveralls.io/repos/tecnickcom/tc-lib-color/badge.svg?branch=master&service=github)](https://coveralls.io/github/tecnickcom/tc-lib-color?branch=master)
+* **DEVELOP**: [![Build Status](https://secure.travis-ci.org/tecnickcom/tc-lib-color.png?branch=develop)](https://travis-ci.org/tecnickcom/tc-lib-color?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/tecnickcom/tc-lib-color/badge.svg?branch=develop&service=github)](https://coveralls.io/github/tecnickcom/tc-lib-color?branch=develop)
+
+
 ## Description
 
 This library includes utility classes to get colors in various representation formats.
