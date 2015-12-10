@@ -127,7 +127,13 @@ class HslTest extends \PHPUnit_Framework_TestCase
     public function testGetPdfColor()
     {
         $res = $this->obj->getPdfColor();
-        $this->assertEquals('0.250000 0.501000 0.750000', $res);
+        $this->assertEquals('0.250000 0.501000 0.750000 rg'."\n", $res);
+        
+        $res = $this->obj->getPdfColor(false);
+        $this->assertEquals('0.250000 0.501000 0.750000 rg'."\n", $res);
+        
+        $res = $this->obj->getPdfColor(true);
+        $this->assertEquals('0.250000 0.501000 0.750000 RG'."\n", $res);
     }
 
     public function testToGrayArray()

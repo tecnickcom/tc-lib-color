@@ -147,9 +147,9 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $res = $this->obj->getColorObject('cmyka(67%,33%,0,25%,0.85)');
         $this->assertEquals('#3f80bfd9', $res->getRgbaHexColor());
         $res = $this->obj->getColorObject('none');
-        $this->assertEquals('0.000000 0.000000 0.000000 0.000000', $res->getPdfColor());
+        $this->assertEquals('0.000000 0.000000 0.000000 0.000000 k'."\n", $res->getPdfColor());
         $res = $this->obj->getColorObject('all');
-        $this->assertEquals('1.000000 1.000000 1.000000 1.000000', $res->getPdfColor());
+        $this->assertEquals('1.000000 1.000000 1.000000 1.000000 k'."\n", $res->getPdfColor());
         $res = $this->obj->getColorObject('["G"]');
         $this->assertNull($res);
         $res = $this->obj->getColorObject('["RGB"]');
@@ -164,7 +164,66 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($res);
         $res = $this->obj->getColorObject('cmyk(-)');
         $this->assertNull($res);
+    }
 
-        
+    public function testGetPdfColor()
+    {
+        $res = $this->obj->getPdfColor('magenta', false, 1);
+        $this->assertEquals('/CS1 cs 1.000000 scn'."\n", $res);
+        $res = $this->obj->getPdfColor('magenta', true, 1);
+        $this->assertEquals('/CS1 CS 1.000000 SCN'."\n", $res);
+        $res = $this->obj->getPdfColor('magenta', false, 0.5);
+        $this->assertEquals('/CS1 cs 0.500000 scn'."\n", $res);
+        $res = $this->obj->getPdfColor('magenta', true, 0.5);
+        $this->assertEquals('/CS1 CS 0.500000 SCN'."\n", $res);
+
+        $res = $this->obj->getPdfColor('t()', false, 1);
+        $this->assertEquals('', $res);
+        $res = $this->obj->getPdfColor('["T"]', false, 1);
+        $this->assertEquals('', $res);
+        $res = $this->obj->getPdfColor('transparent', false, 1);
+        $this->assertEquals('', $res);
+        $res = $this->obj->getPdfColor('color.transparent', false, 1);
+        $this->assertEquals('', $res);
+        $res = $this->obj->getPdfColor('magenta', false, 1);
+        $this->assertEquals('/CS1 cs 1.000000 scn'."\n", $res);
+        $res = $this->obj->getPdfColor('#1a2b3c4d', false, 1);
+        $this->assertEquals('0.101961 0.168627 0.235294 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('#1a2b3c', false, 1);
+        $this->assertEquals('0.101961 0.168627 0.235294 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('#1234', false, 1);
+        $this->assertEquals('0.066667 0.133333 0.200000 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('#123', false, 1);
+        $this->assertEquals('0.066667 0.133333 0.200000 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('["G",0.5]', false, 1);
+        $this->assertEquals('0.500000 g'."\n", $res);
+        $res = $this->obj->getPdfColor('["RGB",0.25,0.50,0.75]', false, 1);
+        $this->assertEquals('0.250000 0.500000 0.750000 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('["CMYK",0.666,0.333,0,0.25]', false, 1);
+        $this->assertEquals('0.666000 0.333000 0.000000 0.250000 k'."\n", $res);
+        $res = $this->obj->getPdfColor('g(50%)', false, 1);
+        $this->assertEquals('0.500000 g'."\n", $res);
+        $res = $this->obj->getPdfColor('g(128)', false, 1);
+        $this->assertEquals('0.501961 g'."\n", $res);
+        $res = $this->obj->getPdfColor('rgb(25%,50%,75%)', false, 1);
+        $this->assertEquals('0.250000 0.500000 0.750000 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('rgb(64,128,191)', false, 1);
+        $this->assertEquals('0.250980 0.501961 0.749020 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('rgba(25%,50%,75%,0.85)', false, 1);
+        $this->assertEquals('0.250000 0.500000 0.750000 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('rgba(64,128,191,0.85)', false, 1);
+        $this->assertEquals('0.250980 0.501961 0.749020 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('hsl(210,50%,50%)', false, 1);
+        $this->assertEquals('0.250000 0.500000 0.750000 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('hsla(210,50%,50%,0.85)', false, 1);
+        $this->assertEquals('0.250000 0.500000 0.750000 rg'."\n", $res);
+        $res = $this->obj->getPdfColor('cmyk(67%,33%,0,25%)', false, 1);
+        $this->assertEquals('0.670000 0.330000 0.000000 0.250000 k'."\n", $res);
+        $res = $this->obj->getPdfColor('cmyk(67,33,0,25)', false, 1);
+        $this->assertEquals('0.670000 0.330000 0.000000 0.250000 k'."\n", $res);
+        $res = $this->obj->getPdfColor('cmyka(67,33,0,25,0.85)', false, 1);
+        $this->assertEquals('0.670000 0.330000 0.000000 0.250000 k'."\n", $res);
+        $res = $this->obj->getPdfColor('cmyka(67%,33%,0,25%,0.85)', false, 1);
+        $this->assertEquals('0.670000 0.330000 0.000000 0.250000 k'."\n", $res);
     }
 }

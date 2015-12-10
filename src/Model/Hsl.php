@@ -125,15 +125,21 @@ class Hsl extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
     }
 
     /**
-     * Get the color components format used in PDF documents (CMYK)
+     * Get the color components format used in PDF documents (RGB)
      * NOTE: the alpha channel is omitted
+     *
+     * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
      *
      * @return string
      */
-    public function getPdfColor()
+    public function getPdfColor($stroke = false)
     {
+        $mode = 'rg';
+        if ($stroke) {
+            $mode = strtoupper($mode);
+        }
         $rgb = $this->toRgbArray();
-        return sprintf('%F %F %F', $rgb['red'], $rgb['green'], $rgb['blue']);
+        return sprintf('%F %F %F %s'."\n", $rgb['red'], $rgb['green'], $rgb['blue'], $mode);
     }
 
     /**

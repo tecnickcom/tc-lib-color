@@ -133,14 +133,27 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
     }
 
     /**
-     * Get the color components format used in PDF documents (RGB)
+     * Get the color components format used in PDF documents (CMYK)
      * NOTE: the alpha channel is omitted
+     *
+     * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
      *
      * @return string
      */
-    public function getPdfColor()
+    public function getPdfColor($stroke = false)
     {
-        return sprintf('%F %F %F %F', $this->cmp_cyan, $this->cmp_magenta, $this->cmp_yellow, $this->cmp_key);
+        $mode = 'k';
+        if ($stroke) {
+            $mode = strtoupper($mode);
+        }
+        return sprintf(
+            '%F %F %F %F %s'."\n",
+            $this->cmp_cyan,
+            $this->cmp_magenta,
+            $this->cmp_yellow,
+            $this->cmp_key,
+            $mode
+        );
     }
 
     /**

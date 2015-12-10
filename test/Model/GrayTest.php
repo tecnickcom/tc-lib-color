@@ -107,7 +107,13 @@ class GrayTest extends \PHPUnit_Framework_TestCase
     public function testGetPdfColor()
     {
         $res = $this->obj->getPdfColor();
-        $this->assertEquals('0.750000', $res);
+        $this->assertEquals('0.750000 g'."\n", $res);
+        
+        $res = $this->obj->getPdfColor(false);
+        $this->assertEquals('0.750000 g'."\n", $res);
+        
+        $res = $this->obj->getPdfColor(true);
+        $this->assertEquals('0.750000 G'."\n", $res);
     }
 
     public function testToGrayArray()

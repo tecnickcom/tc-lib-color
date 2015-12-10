@@ -51,21 +51,21 @@ class SpotTest extends \PHPUnit_Framework_TestCase
     public function testGetSpotColor()
     {
         $res = $this->obj->getSpotColor('none');
-        $this->assertEquals('0.000000 0.000000 0.000000 0.000000', $res['color']->getPdfColor());
+        $this->assertEquals('0.000000 0.000000 0.000000 0.000000 k'."\n", $res['color']->getPdfColor());
         $res = $this->obj->getSpotColor('all');
-        $this->assertEquals('1.000000 1.000000 1.000000 1.000000', $res['color']->getPdfColor());
+        $this->assertEquals('1.000000 1.000000 1.000000 1.000000 k'."\n", $res['color']->getPdfColor());
         $res = $this->obj->getSpotColor('red');
-        $this->assertEquals('0.000000 1.000000 1.000000 0.000000', $res['color']->getPdfColor());
+        $this->assertEquals('0.000000 1.000000 1.000000 0.000000 K'."\n", $res['color']->getPdfColor(true));
     }
 
     public function testGetSpotColorObj()
     {
         $res = $this->obj->getSpotColorObj('none');
-        $this->assertEquals('0.000000 0.000000 0.000000 0.000000', $res->getPdfColor());
+        $this->assertEquals('0.000000 0.000000 0.000000 0.000000 k'."\n", $res->getPdfColor());
         $res = $this->obj->getSpotColorObj('all');
-        $this->assertEquals('1.000000 1.000000 1.000000 1.000000', $res->getPdfColor());
+        $this->assertEquals('1.000000 1.000000 1.000000 1.000000 k'."\n", $res->getPdfColor());
         $res = $this->obj->getSpotColorObj('red');
-        $this->assertEquals('0.000000 1.000000 1.000000 0.000000', $res->getPdfColor());
+        $this->assertEquals('0.000000 1.000000 1.000000 0.000000 K'."\n", $res->getPdfColor(true));
     }
 
     public function testAddSpotColor()
@@ -84,7 +84,7 @@ class SpotTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('test', $res);
         $this->assertEquals(1, $res['test']['i']);
         $this->assertEquals('test', $res['test']['name']);
-        $this->assertEquals('0.666000 0.333000 0.000000 0.250000', $res['test']['color']->getPdfColor());
+        $this->assertEquals('0.666000 0.333000 0.000000 0.250000 k'."\n", $res['test']['color']->getPdfColor());
 
         // test overwrite
         $cmyk = new \Com\Tecnick\Color\Model\Cmyk(
@@ -101,6 +101,6 @@ class SpotTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('test', $res);
         $this->assertEquals(1, $res['test']['i']);
         $this->assertEquals('test', $res['test']['name']);
-        $this->assertEquals('0.250000 0.350000 0.450000 0.550000', $res['test']['color']->getPdfColor());
+        $this->assertEquals('0.250000 0.350000 0.450000 0.550000 k'."\n", $res['test']['color']->getPdfColor());
     }
 }

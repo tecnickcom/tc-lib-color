@@ -131,7 +131,13 @@ class CmykTest extends \PHPUnit_Framework_TestCase
     public function testGetPdfColor()
     {
         $res = $this->obj->getPdfColor();
-        $this->assertEquals('0.666000 0.333000 0.000000 0.250000', $res);
+        $this->assertEquals('0.666000 0.333000 0.000000 0.250000 k'."\n", $res);
+        
+        $res = $this->obj->getPdfColor(false);
+        $this->assertEquals('0.666000 0.333000 0.000000 0.250000 k'."\n", $res);
+        
+        $res = $this->obj->getPdfColor(true);
+        $this->assertEquals('0.666000 0.333000 0.000000 0.250000 K'."\n", $res);
     }
 
     public function testToGrayArray()

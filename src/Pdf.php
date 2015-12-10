@@ -88,13 +88,11 @@ class Pdf extends \Com\Tecnick\Color\Spot
     }
 
     /**
-     * Returns a color object from an HTML or CSS color representation, or spor color name
+     * Returns a color object from an HTML, CSS or Spot color representation.
      *
-     * In case of errors the default color is returned
+     * @param string $color HTML, CSS or Spot color to parse
      *
-     * @param string $color  HTML color to parse
-     *
-     * @return object or null in case of error or the color is not found
+     * @return object or null in case of error or if the color is not found
      */
     public function getColorObject($color)
     {
@@ -107,5 +105,36 @@ class Pdf extends \Com\Tecnick\Color\Spot
         } catch (ColorException $e) {
         }
         return null;
+    }
+
+    /**
+     * Get the color components format used in PDF documents
+     * NOTE: the alpha channel is omitted
+     *
+     * @param string $color  HTML, CSS or Spot color to parse
+     * @param bool   $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
+     * @param float  $tint   Intensity of the color (from 0 to 1; 1 = full intensity).
+     *
+     * @return string
+     */
+    public function getPdfColor($color, $stroke = false, $tint = 1)
+    {
+        try {
+            $col = $this->getSpotColor($color);
+            $tint = sprintf('cs %F scn', (max(0, min(1, (float) $tint))));
+            if ($stroke) {
+                $tint = strtoupper($tint);
+            }
+            return sprintf('/CS%d %s'."\n", $col['i'], $tint);
+        } catch (ColorException $e) {
+        }
+        try {
+            $col = $this->getColorObj($color);
+            if ($col !== null) {
+                return $col->getPdfColor($stroke);
+            }
+        } catch (ColorException $e) {
+        }
+        return '';
     }
 }

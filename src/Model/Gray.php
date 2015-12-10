@@ -108,11 +108,17 @@ class Gray extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      * Get the color components format used in PDF documents (G)
      * NOTE: the alpha channel is omitted
      *
+     * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
+     *
      * @return string
      */
-    public function getPdfColor()
+    public function getPdfColor($stroke = false)
     {
-        return sprintf('%F', $this->cmp_gray);
+        $mode = 'g';
+        if ($stroke) {
+            $mode = strtoupper($mode);
+        }
+        return sprintf('%F %s'."\n", $this->cmp_gray, $mode);
     }
 
     /**

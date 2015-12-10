@@ -126,11 +126,17 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
      * Get the color components format used in PDF documents (RGB)
      * NOTE: the alpha channel is omitted
      *
+     * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
+     *
      * @return string
      */
-    public function getPdfColor()
+    public function getPdfColor($stroke = false)
     {
-        return sprintf('%F %F %F', $this->cmp_red, $this->cmp_green, $this->cmp_blue);
+        $mode = 'rg';
+        if ($stroke) {
+            $mode = strtoupper($mode);
+        }
+        return sprintf('%F %F %F %s'."\n", $this->cmp_red, $this->cmp_green, $this->cmp_blue, $mode);
     }
 
     /**
