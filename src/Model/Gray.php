@@ -105,6 +105,16 @@ class Gray extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
     }
 
     /**
+     * Get a space separated string with color component values.
+     *
+     * @return string
+     */
+    public function getComponentsString()
+    {
+        return sprintf('%F', $this->cmp_gray);
+    }
+
+    /**
      * Get the color components format used in PDF documents (G)
      * NOTE: the alpha channel is omitted
      *
@@ -118,7 +128,7 @@ class Gray extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
         if ($stroke) {
             $mode = strtoupper($mode);
         }
-        return sprintf('%F %s'."\n", $this->cmp_gray, $mode);
+        return $this->getComponentsString().' '.$mode."\n";
     }
 
     /**

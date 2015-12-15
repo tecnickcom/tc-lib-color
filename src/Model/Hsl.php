@@ -125,6 +125,17 @@ class Hsl extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
     }
 
     /**
+     * Get a space separated string with color component values.
+     *
+     * @return string
+     */
+    public function getComponentsString()
+    {
+        $rgb = $this->toRgbArray();
+        return sprintf('%F %F %F', $rgb['red'], $rgb['green'], $rgb['blue']);
+    }
+
+    /**
      * Get the color components format used in PDF documents (RGB)
      * NOTE: the alpha channel is omitted
      *
@@ -138,8 +149,7 @@ class Hsl extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
         if ($stroke) {
             $mode = strtoupper($mode);
         }
-        $rgb = $this->toRgbArray();
-        return sprintf('%F %F %F %s'."\n", $rgb['red'], $rgb['green'], $rgb['blue'], $mode);
+        return $this->getComponentsString().' '.$mode."\n";
     }
 
     /**

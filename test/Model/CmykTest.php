@@ -128,6 +128,12 @@ class CmykTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('["T"]', $res);
     }
 
+    public function testGetComponentsString()
+    {
+        $res = $this->obj->getComponentsString();
+        $this->assertEquals('0.666000 0.333000 0.000000 0.250000', $res);
+    }
+
     public function testGetPdfColor()
     {
         $res = $this->obj->getPdfColor();

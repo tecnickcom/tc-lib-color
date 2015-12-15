@@ -133,6 +133,16 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
     }
 
     /**
+     * Get a space separated string with color component values.
+     *
+     * @return string
+     */
+    public function getComponentsString()
+    {
+        return sprintf('%F %F %F %F', $this->cmp_cyan, $this->cmp_magenta, $this->cmp_yellow, $this->cmp_key);
+    }
+
+    /**
      * Get the color components format used in PDF documents (CMYK)
      * NOTE: the alpha channel is omitted
      *
@@ -146,14 +156,7 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
         if ($stroke) {
             $mode = strtoupper($mode);
         }
-        return sprintf(
-            '%F %F %F %F %s'."\n",
-            $this->cmp_cyan,
-            $this->cmp_magenta,
-            $this->cmp_yellow,
-            $this->cmp_key,
-            $mode
-        );
+        return $this->getComponentsString().' '.$mode."\n";
     }
 
     /**

@@ -104,6 +104,12 @@ class GrayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('["T"]', $res);
     }
 
+    public function testGetComponentsString()
+    {
+        $res = $this->obj->getComponentsString();
+        $this->assertEquals('0.750000', $res);
+    }
+
     public function testGetPdfColor()
     {
         $res = $this->obj->getPdfColor();

@@ -103,4 +103,66 @@ class SpotTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test', $res['test']['name']);
         $this->assertEquals('0.250000 0.350000 0.450000 0.550000 k'."\n", $res['test']['color']->getPdfColor());
     }
+
+    public function testGetPdfSpotObjectsEmpty()
+    {
+        $obj = 1;
+        $res = $this->obj->getPdfSpotObjects($obj);
+        $this->assertEquals(1, $obj);
+        $this->assertEquals('', $res);
+    }
+
+    public function testGetPdfSpotResourcesEmpty()
+    {
+        $res = $this->obj->getPdfSpotResources();
+        $this->assertEquals('', $res);
+    }
+
+    public function testGetPdfSpotObjects()
+    {
+        $cmyk = new \Com\Tecnick\Color\Model\Cmyk(
+            array(
+                'cyan'    => 0.666,
+                'magenta' => 0.333,
+                'yellow'  => 0,
+                'key'     => 0.25,
+                'alpha'   => 0.85
+            )
+        );
+        $this->obj->addSpotColor('test', $cmyk);
+        $this->obj->getSpotColor('cyan');
+        $this->obj->getSpotColor('magenta');
+        $this->obj->getSpotColor('yellow');
+        $this->obj->getSpotColor('key');
+
+        $obj = 1;
+        $res = $this->obj->getPdfSpotObjects($obj);
+        $this->assertEquals(6, $obj);
+        $this->assertEquals(
+            '2 0 obj'."\n"
+            .'[/Separation /test /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
+            .' /C1 [0.666000 0.333000 0.000000 0.250000] /FunctionType 2 /Domain [0 1] /N 1>>]'."\n"
+            .'endobj'."\n"
+            .'3 0 obj'."\n"
+            .'[/Separation /cyan /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
+            .' /C1 [1.000000 0.000000 0.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'."\n"
+            .'endobj'."\n"
+            .'4 0 obj'."\n"
+            .'[/Separation /magenta /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
+            .' /C1 [0.000000 1.000000 0.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'."\n"
+            .'endobj'."\n"
+            .'5 0 obj'."\n"
+            .'[/Separation /yellow /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
+            .' /C1 [0.000000 0.000000 1.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'."\n"
+            .'endobj'."\n"
+            .'6 0 obj'."\n"
+            .'[/Separation /key /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
+            .' /C1 [0.000000 0.000000 0.000000 1.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'."\n"
+            .'endobj'."\n",
+            $res
+        );
+
+        $res = $this->obj->getPdfSpotResources();
+        $this->assertEquals('/ColorSpace << /CS1 2 0 R /CS2 3 0 R /CS3 4 0 R /CS4 5 0 R /CS5 6 0 R >>'."\n", $res);
+    }
 }

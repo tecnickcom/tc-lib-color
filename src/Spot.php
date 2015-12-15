@@ -145,9 +145,55 @@ class Spot extends \Com\Tecnick\Color\Web
             $num = (count($this->spot_colors) + 1);
         }
         $this->spot_colors[$key] = array(
-            'i'     => $num,
-            'name'  => $name,
-            'color' => $color,
+            'i'     => $num,   // color index
+            'n'     => 0,      // PDF object number
+            'name'  => $name,  // color name (key)
+            'color' => $color, // CMYK color object
         );
+    }
+
+    /**
+     * Returns the PDF command to output Spot color objects.
+     *
+     * @param int $pon Current PDF object number
+     *
+     * @return string PDF command
+     */
+    public function getPdfSpotObjects(&$pon)
+    {
+        $out = '';
+        foreach ($this->spot_colors as $name => $color) {
+            $out .= (++$pon).' 0 obj'."\n";
+            $this->spot_colors[$name]['n'] = $pon;
+            $out .= '[/Separation /'.str_replace(' ', '#20', $name)
+                .' /DeviceCMYK <<'
+                .'/Range [0 1 0 1 0 1 0 1]'
+                .' /C0 [0 0 0 0]'
+                .' /C1 ['.$color['color']->getComponentsString().']'
+                .' /FunctionType 2'
+                .' /Domain [0 1]'
+                .' /N 1'
+                .'>>]'."\n"
+                .'endobj'."\n";
+        }
+        return $out;
+    }
+
+    /**
+     * Returns the PDF command to output Spot color resources.
+     *
+     * @return string PDF command
+     */
+    public function getPdfSpotResources()
+    {
+        if (empty($this->spot_colors)) {
+            return '';
+        }
+        $out = '/ColorSpace << ';
+        foreach ($this->spot_colors as $color) {
+            $out .= '/CS'.$color['i'].' '.$color['n'].' 0 R ';
+        }
+        $out .= '>>'."\n";
+        return $out;
     }
 }

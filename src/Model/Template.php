@@ -61,7 +61,14 @@ interface Template
      * @return string
      */
     public function getJsPdfColor();
-    
+
+    /**
+     * Get a space separated string with color component values.
+     *
+     * @return string
+     */
+    public function getComponentsString();
+
     /**
      * Get the color components format used in PDF documents
      * NOTE: the alpha channel is omitted

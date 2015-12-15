@@ -123,6 +123,16 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
     }
 
     /**
+     * Get a space separated string with color component values.
+     *
+     * @return string
+     */
+    public function getComponentsString()
+    {
+        return sprintf('%F %F %F', $this->cmp_red, $this->cmp_green, $this->cmp_blue);
+    }
+
+    /**
      * Get the color components format used in PDF documents (RGB)
      * NOTE: the alpha channel is omitted
      *
@@ -136,7 +146,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
         if ($stroke) {
             $mode = strtoupper($mode);
         }
-        return sprintf('%F %F %F %s'."\n", $this->cmp_red, $this->cmp_green, $this->cmp_blue, $mode);
+        return $this->getComponentsString().' '.$mode."\n";
     }
 
     /**
