@@ -139,11 +139,10 @@ class Spot extends \Com\Tecnick\Color\Web
     public function addSpotColor($name, Cmyk $color)
     {
         $key = $this->normalizeSpotColorName($name);
-        $num = count($this->spot_colors);
         if (isset($this->spot_colors[$key])) {
             $num = $this->spot_colors[$key]['i'];
         } else {
-            $num = 1 + count($this->spot_colors);
+            $num = (count($this->spot_colors) + 1);
         }
         $this->spot_colors[$key] = array(
             'i'     => $num,
