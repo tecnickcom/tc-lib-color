@@ -76,9 +76,8 @@ class Pdf extends \Com\Tecnick\Color\Spot
         if (in_array($color, self::$jscolor)) {
             return 'color.'.$color;
         }
-        $webcolor = new Web();
         try {
-            if (($colobj = $webcolor->getColorObj($color)) !== null) {
+            if (($colobj = $this->getColorObj($color)) !== null) {
                 return $colobj->getJsPdfColor();
             }
         } catch (ColorException $e) {
