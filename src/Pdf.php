@@ -136,4 +136,21 @@ class Pdf extends \Com\Tecnick\Color\Spot
         }
         return '';
     }
+
+    /**
+     * Get the RGB color components format used in PDF documents
+     *
+     * @param string $color  HTML, CSS or Spot color to parse
+     *
+     * @return string
+     */
+    public function getPdfRgbComponents($color)
+    {
+        $col = $this->getColorObject($color);
+        if ($col === null) {
+            return '';
+        }
+        $cmp = $col->toRgbArray();
+        return sprintf('%F %F %F', $cmp['red'], $cmp['green'], $cmp['blue']);
+    }
 }
