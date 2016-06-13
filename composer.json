@@ -3,7 +3,7 @@
     "description": "PHP library to manipulate various color representations",
     "type": "library",
     "homepage": "http://www.tecnick.com",
-    "license": "GNU-LGPL v3",
+    "license": "LGPL-3.0",
     "keywords": ["tc-lib-color", "color", "colors", "colour", "colours", "javascript", "web", "rgb", "rgba", "cmyk", "hsl", "hsla"],
     "authors": [
         {
