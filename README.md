@@ -6,7 +6,7 @@
 [![Master Coverage Status](https://coveralls.io/repos/tecnickcom/tc-lib-color/badge.svg?branch=master&service=github)](https://coveralls.io/github/tecnickcom/tc-lib-color?branch=master)
 [![License](https://poser.pugx.org/tecnickcom/tc-lib-color/license)](https://packagist.org/packages/tecnickcom/tc-lib-color)
 [![Total Downloads](https://poser.pugx.org/tecnickcom/tc-lib-color/downloads)](https://packagist.org/packages/tecnickcom/tc-lib-color)
-*
+
 [![Develop Branch](https://img.shields.io/badge/-develop:-gray.svg)](https://github.com/tecnickcom/tc-lib-color/tree/develop)
 [![Develop Build Status](https://secure.travis-ci.org/tecnickcom/tc-lib-color.png?branch=develop)](https://travis-ci.org/tecnickcom/tc-lib-color?branch=develop)
 [![Develop Coverage Status](https://coveralls.io/repos/tecnickcom/tc-lib-color/badge.svg?branch=develop&service=github)](https://coveralls.io/github/tecnickcom/tc-lib-color?branch=develop)
