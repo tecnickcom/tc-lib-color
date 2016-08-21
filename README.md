@@ -20,6 +20,9 @@
 * **copyright**   2015-2015 Nicola Asuni - Tecnick.com LTD
 * **license**     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
 * **link**        https://github.com/tecnickcom/tc-lib-color
+* **SRC DOC**     https://tcpdf.org/docs/srcdoc/tc-lib-color
+* **RPM**         https://bintray.com/tecnickcom/rpm/tc-lib-color
+* **DEB**         https://bintray.com/tecnickcom/deb/tc-lib-color
 
 ## Description
 
