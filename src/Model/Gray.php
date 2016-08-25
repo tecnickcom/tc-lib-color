@@ -196,5 +196,6 @@ class Gray extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
     public function invertColor()
     {
         $this->cmp_gray = (1 - $this->cmp_gray);
+        return $this;
     }
 }

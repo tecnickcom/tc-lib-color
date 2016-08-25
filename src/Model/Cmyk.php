@@ -223,5 +223,6 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
         $this->cmp_magenta = (1 - $this->cmp_magenta);
         $this->cmp_yellow  = (1 - $this->cmp_yellow);
         $this->cmp_key     = (1 - $this->cmp_key);
+        return $this;
     }
 }

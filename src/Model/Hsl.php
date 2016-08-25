@@ -255,5 +255,6 @@ class Hsl extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
     public function invertColor()
     {
         $this->cmp_hue = ($this->cmp_hue >= 0.5) ? ($this->cmp_hue - 0.5) : ($this->cmp_hue + 0.5);
+        return $this;
     }
 }

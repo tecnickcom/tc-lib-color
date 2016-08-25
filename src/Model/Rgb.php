@@ -270,5 +270,6 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
         $this->cmp_red   = (1 - $this->cmp_red);
         $this->cmp_green = (1 - $this->cmp_green);
         $this->cmp_blue  = (1 - $this->cmp_blue);
+        return $this;
     }
 }
