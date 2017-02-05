@@ -92,6 +92,14 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('["CMYK",0.670000,0.330000,0.000000,0.250000]', $res);
         $res = $this->obj->getJsColorString('cmyka(67%,33%,0,25%,0.85)');
         $this->assertEquals('["CMYK",0.670000,0.330000,0.000000,0.250000]', $res);
+        $res = $this->obj->getJsColorString('g(-)');
+        $this->assertEquals('color.transparent', $res);
+        $res = $this->obj->getJsColorString('rgb(-)');
+        $this->assertEquals('color.transparent', $res);
+        $res = $this->obj->getJsColorString('hsl(-)');
+        $this->assertEquals('color.transparent', $res);
+        $res = $this->obj->getJsColorString('cmyk(-)');
+        $this->assertEquals('color.transparent', $res);
     }
 
     public function testGetColorObject()
@@ -225,6 +233,14 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('0.670000 0.330000 0.000000 0.250000 k'."\n", $res);
         $res = $this->obj->getPdfColor('cmyka(67%,33%,0,25%,0.85)', false, 1);
         $this->assertEquals('0.670000 0.330000 0.000000 0.250000 k'."\n", $res);
+        $res = $this->obj->getPdfColor('g(-)');
+        $this->assertEquals('', $res);
+        $res = $this->obj->getPdfColor('rgb(-)');
+        $this->assertEquals('', $res);
+        $res = $this->obj->getPdfColor('hsl(-)');
+        $this->assertEquals('', $res);
+        $res = $this->obj->getPdfColor('cmyk(-)');
+        $this->assertEquals('', $res);
     }
 
     public function testGetPdfRgbComponents()
