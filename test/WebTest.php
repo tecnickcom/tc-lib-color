@@ -15,6 +15,8 @@
 
 namespace Test;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Web Color class test
  *
@@ -26,7 +28,7 @@ namespace Test;
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  */
-class WebTest extends \PHPUnit_Framework_TestCase
+class WebTest extends TestCase
 {
     protected $obj = null;
 
@@ -48,8 +50,14 @@ class WebTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('f0f8ffff', $res);
         $res = $this->obj->getHexFromName('color.yellowgreen');
         $this->assertEquals('9acd32ff', $res);
-        $this->setExpectedException('\Com\Tecnick\Color\Exception');
-        $res = $this->obj->getHexFromName('invalid');
+    }
+
+    /**
+     * @expectedException \Com\Tecnick\Color\Exception
+     */
+    public function testGetHexFromNameInvalid()
+    {
+        $this->obj->getHexFromName('invalid');
     }
 
     public function testGetNameFromHex()
@@ -58,8 +66,14 @@ class WebTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('aliceblue', $res);
         $res = $this->obj->getNameFromHex('9acd32ff');
         $this->assertEquals('yellowgreen', $res);
-        $this->setExpectedException('\Com\Tecnick\Color\Exception');
-        $res = $this->obj->getNameFromHex('012345');
+    }
+
+    /**
+     * @expectedException \Com\Tecnick\Color\Exception
+     */
+    public function testGetNameFromHexBad()
+    {
+        $this->obj->getNameFromHex('012345');
     }
 
     public function testExtractHexCode()
@@ -80,24 +94,42 @@ class WebTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('11223344', $res);
         $res = $this->obj->extractHexCode('#11223344');
         $this->assertEquals('11223344', $res);
-        $this->setExpectedException('\Com\Tecnick\Color\Exception');
-        $res = $this->obj->extractHexCode('');
+    }
+
+    /**
+     * @expectedException \Com\Tecnick\Color\Exception
+     */
+    public function testExtractHexCodeBad()
+    {
+        $this->obj->extractHexCode('');
     }
 
     public function testGetRgbObjFromHex()
     {
         $res = $this->obj->getRgbObjFromHex('#87ceebff');
         $this->assertEquals('#87ceebff', $res->getRgbaHexColor());
-        $this->setExpectedException('\Com\Tecnick\Color\Exception');
-        $res = $this->obj->getRgbObjFromHex('xx');
+    }
+
+    /**
+     * @expectedException \Com\Tecnick\Color\Exception
+     */
+    public function testGetRgbObjFromHexBad()
+    {
+        $this->obj->getRgbObjFromHex('xx');
     }
 
     public function testGetRgbObjFromName()
     {
         $res = $this->obj->getRgbObjFromName('skyblue');
         $this->assertEquals('#87ceebff', $res->getRgbaHexColor());
-        $this->setExpectedException('\Com\Tecnick\Color\Exception');
-        $res = $this->obj->getRgbObjFromName('xx');
+    }
+
+    /**
+     * @expectedException \Com\Tecnick\Color\Exception
+     */
+    public function testGetRgbObjFromNameBad()
+    {
+        $this->obj->getRgbObjFromName('xx');
     }
 
     public function testNormalizeValue()
@@ -160,14 +192,24 @@ class WebTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('#3f80bfd9', $res->getRgbaHexColor());
         $res = $this->obj->getColorObj('cmyka(67%,33%,0,25%,0.85)');
         $this->assertEquals('#3f80bfd9', $res->getRgbaHexColor());
-        $this->setExpectedException('\Com\Tecnick\Color\Exception');
-        $res = $this->obj->getColorObj('g(-)');
-        $this->setExpectedException('\Com\Tecnick\Color\Exception');
-        $res = $this->obj->getColorObj('rgb(-)');
-        $this->setExpectedException('\Com\Tecnick\Color\Exception');
-        $res = $this->obj->getColorObj('hsl(-)');
-        $this->setExpectedException('\Com\Tecnick\Color\Exception');
-        $res = $this->obj->getColorObj('cmyk(-)');
+    }
+
+    public function getBadColor()
+    {
+        return array(
+            array('g(-)'),
+            array('rgb(-)'),
+            array('hsl(-)'),
+            array('cmyk(-)'),
+        );
+    }
+    /**
+     * @expectedException \Com\Tecnick\Color\Exception
+     * @dataProvider getBadColor
+     */
+    public function testGetColorObjBad($bad)
+    {
+        $this->obj->getColorObj($bad);
     }
 
     public function testGetRgbSquareDistance()

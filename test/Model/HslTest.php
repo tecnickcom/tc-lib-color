@@ -15,6 +15,8 @@
 
 namespace Test\Model;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Hsl Color class test
  *
@@ -26,7 +28,7 @@ namespace Test\Model;
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  */
-class HslTest extends \PHPUnit_Framework_TestCase
+class HslTest extends TestCase
 {
     protected $obj = null;
 
