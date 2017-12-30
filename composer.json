@@ -27,7 +27,8 @@
   ],
   "require": {
     "php": ">=5.4",
-    "ext-pcre": "*"
+    "ext-pcre": "*",
+    "php-coveralls/php-coveralls": "^2.0"
   },
   "require-dev": {
     "apigen/apigen": "^4.1.2",
