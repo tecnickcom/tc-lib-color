@@ -30,8 +30,8 @@
     "ext-pcre": "*"
   },
   "require-dev": {
-    "apigen/apigen": "^4.1.2",
-    "bartlett/php-compatinfo": "^5.0.10 || ^5.0.12",
+    "apigen/apigen": "^2.8.1 || ^4.1.2",
+    "bartlett/php-compatinfo": "^4.5.2 || ^5.0.10 || ^5.0.12",
     "pdepend/pdepend": "^2.5.2",
     "phploc/phploc": "^2.1 || ^3.0 || ^4.0",
     "phpmd/phpmd": "^2.6.0",
