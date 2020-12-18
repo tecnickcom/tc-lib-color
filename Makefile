@@ -168,7 +168,7 @@ endif
 .PHONY: deps
 deps: ensuretarget
 	rm -rf ./vendor/*
-	$(COMPOSER) install -vvv --no-interaction
+	($(COMPOSER) install -vvv --no-interaction)
 
 # Generate source code documentation
 .PHONY: doc
