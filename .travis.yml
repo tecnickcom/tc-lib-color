@@ -48,7 +48,7 @@ before_script:
   - if [ "$TRAVIS_PHP_VERSION" = "7.4" ]; then composer require php-coveralls/php-coveralls --no-interaction; fi
 
 script:
-  - make deps qa rpm deb
+  - make qa rpm deb
 
 after_failure:
   - cat ./target/logs/junit.xml
