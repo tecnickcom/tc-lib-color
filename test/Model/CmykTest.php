@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CmykTest extends TestCase
 {
-    public static function assertSimilarValues($expected, $actual, $delta = 0.01, $message = '')
+    public function assertSimilarValues($expected, $actual, $delta = 0.01, $message = '')
     {
         if (\is_callable(['parent', 'assertEqualsWithDelta'])) {
             return parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
