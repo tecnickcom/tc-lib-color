@@ -30,12 +30,17 @@ use PHPUnit\Framework\TestCase;
  */
 class HslTest extends TestCase
 {
-    protected $obj = null;
-
-    public function setUp()
+    public static function assertSimilarValues($expected, $actual, $delta = 0.01, $message = '')
     {
-        //$this->markTestSkipped(); // skip this test
-        $this->obj = new \Com\Tecnick\Color\Model\Hsl(
+        if (\is_callable(['parent', 'assertEqualsWithDelta'])) {
+            return parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
+        }
+        return $this->assertEquals($expected, $actual, $message, $delta);
+    }
+
+    protected function getTestObject()
+    {
+        return new \Com\Tecnick\Color\Model\Hsl(
             array(
                 'hue'        => 0.583,
                 'saturation' => 0.5,
@@ -47,36 +52,43 @@ class HslTest extends TestCase
 
     public function testGetType()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getType();
         $this->assertEquals('HSL', $res);
     }
 
     public function testGetNormalizedValue()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getNormalizedValue(0.5, 255);
         $this->assertEquals(128, $res);
     }
 
     public function testGetHexValue()
     {
+        $this->obj = $this->getTestObject();
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getHexValue(0.5, 255);
         $this->assertEquals('80', $res);
     }
 
     public function testGetRgbaHexColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getRgbaHexColor();
         $this->assertEquals('#4080bfd9', $res);
     }
 
     public function testGetRgbHexColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getRgbHexColor();
         $this->assertEquals('#4080bf', $res);
     }
 
     public function testGetArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getArray();
         $this->assertEquals(
             array(
@@ -91,6 +103,7 @@ class HslTest extends TestCase
 
     public function testGetNormalizedArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getNormalizedArray(255);
         $this->assertEquals(
             array(
@@ -105,12 +118,14 @@ class HslTest extends TestCase
 
     public function testGetCssColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getCssColor();
         $this->assertEquals('hsla(210,50%,50%,0.85)', $res);
     }
 
     public function testGetJsPdfColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getJsPdfColor();
         $this->assertEquals('["RGB",0.250000,0.501000,0.750000]', $res);
 
@@ -128,12 +143,14 @@ class HslTest extends TestCase
 
     public function testGetComponentsString()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getComponentsString();
         $this->assertEquals('0.250000 0.501000 0.750000', $res);
     }
 
     public function testGetPdfColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getPdfColor();
         $this->assertEquals('0.250000 0.501000 0.750000 rg'."\n", $res);
         
@@ -146,31 +163,29 @@ class HslTest extends TestCase
 
     public function testToGrayArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->toGrayArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'gray'  => 0.5,
                 'alpha' => 0.85
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
     }
 
     public function testToRgbArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->toRgbArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'red'   => 0.25,
                 'green' => 0.50,
                 'blue'  => 0.75,
                 'alpha' => 0.85
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
 
         $col = new \Com\Tecnick\Color\Model\Hsl(
@@ -182,16 +197,14 @@ class HslTest extends TestCase
             )
         );
         $res = $col->toRgbArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'red'   => 0.199,
                 'green' => 0.400,
                 'blue'  => 0.600,
                 'alpha' => 1
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
 
         $col = new \Com\Tecnick\Color\Model\Hsl(
@@ -203,16 +216,14 @@ class HslTest extends TestCase
             )
         );
         $res = $col->toRgbArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'red'   => 0.400,
                 'green' => 0.400,
                 'blue'  => 0.400,
                 'alpha' => 1
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
 
         $col = new \Com\Tecnick\Color\Model\Hsl(
@@ -224,16 +235,14 @@ class HslTest extends TestCase
             )
         );
         $res = $col->toRgbArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'red'   => 0.8,
                 'green' => 0.048,
                 'blue'  => 0,
                 'alpha' => 1
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
 
         $col = new \Com\Tecnick\Color\Model\Hsl(
@@ -245,39 +254,37 @@ class HslTest extends TestCase
             )
         );
         $res = $col->toRgbArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'red'   => 0.8,
                 'green' => 0,
                 'blue'  => 0,
                 'alpha' => 1
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
     }
 
     public function testToHslArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->toHslArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'hue'        => 0.583,
                 'saturation' => 0.5,
                 'lightness'  => 0.5,
                 'alpha'      => 0.85
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
     }
 
     public function testToCmykArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->toCmykArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'cyan'    => 0.666,
                 'magenta' => 0.333,
@@ -285,26 +292,23 @@ class HslTest extends TestCase
                 'key'     => 0.25,
                 'alpha'   => 0.85
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
     }
 
     public function testInvertColor()
     {
+        $this->obj = $this->getTestObject();
         $this->obj->invertColor();
         $res = $this->obj->toHslArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'hue'        => 0.083,
                 'saturation' => 0.5,
                 'lightness'  => 0.5,
                 'alpha'      => 0.85
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
     }
 }

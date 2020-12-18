@@ -30,14 +30,13 @@
     "ext-pcre": "*"
   },
   "require-dev": {
-    "apigen/apigen": "^2.8.1 || ^4.1.2",
-    "bartlett/php-compatinfo": "^4.5.2 || ^5.0.10 || ^5.0.12",
-    "pdepend/pdepend": "^2.5.2",
-    "phploc/phploc": "^2.1 || ^3.0 || ^4.0",
-    "phpmd/phpmd": "^2.6.0",
-    "phpunit/phpunit": "^4.8 || ^5.7 || ^6.5 || ^7.1",
-    "sebastian/phpcpd": "^2.0 || ^3.0 || ^4.0",
-    "squizlabs/php_codesniffer": "^2.8.0 || ^3.2.0"
+    "bartlett/php-compatinfo": "^4.5 || ^5.0 || ^5.2 || ^5.4|| ^6.0",
+    "pdepend/pdepend": "^2.8",
+    "phploc/phploc": "^2.1 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
+    "phpmd/phpmd": "^2.9 || 3.0",
+    "phpunit/phpunit": "^4.8 || ^5.7 || ^6.5 || ^7.5 || ^8.5 || ^9.5",
+    "sebastian/phpcpd": "^2.0 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
+    "squizlabs/php_codesniffer": "^2.9 || ^3.5"
   },
   "autoload": {
     "psr-4": {

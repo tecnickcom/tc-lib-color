@@ -30,12 +30,17 @@ use PHPUnit\Framework\TestCase;
  */
 class CmykTest extends TestCase
 {
-    protected $obj = null;
-
-    public function setUp()
+    public static function assertSimilarValues($expected, $actual, $delta = 0.01, $message = '')
     {
-        //$this->markTestSkipped(); // skip this test
-        $this->obj = new \Com\Tecnick\Color\Model\Cmyk(
+        if (\is_callable(['parent', 'assertEqualsWithDelta'])) {
+            return parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
+        }
+        return $this->assertEquals($expected, $actual, $message, $delta);
+    }
+
+    protected function getTestObject()
+    {
+        return new \Com\Tecnick\Color\Model\Cmyk(
             array(
                 'cyan'    => 0.666,
                 'magenta' => 0.333,
@@ -48,36 +53,42 @@ class CmykTest extends TestCase
 
     public function testGetType()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getType();
         $this->assertEquals('CMYK', $res);
     }
 
     public function testGetNormalizedValue()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getNormalizedValue(0.5, 255);
         $this->assertEquals(128, $res);
     }
 
     public function testGetHexValue()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getHexValue(0.5, 255);
         $this->assertEquals('80', $res);
     }
 
     public function testGetRgbaHexColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getRgbaHexColor();
         $this->assertEquals('#4080bfd9', $res);
     }
 
     public function testGetRgbHexColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getRgbHexColor();
         $this->assertEquals('#4080bf', $res);
     }
 
     public function testGetArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getArray();
         $this->assertEquals(
             array(
@@ -93,6 +104,7 @@ class CmykTest extends TestCase
 
     public function testGetNormalizedArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getNormalizedArray(100);
         $this->assertEquals(
             array(
@@ -108,12 +120,14 @@ class CmykTest extends TestCase
 
     public function testGetCssColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getCssColor();
         $this->assertEquals('rgba(25%,50%,75%,0.85)', $res);
     }
 
     public function testGetJsPdfColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getJsPdfColor();
         $this->assertEquals('["CMYK",0.666000,0.333000,0.000000,0.250000]', $res);
 
@@ -132,12 +146,14 @@ class CmykTest extends TestCase
 
     public function testGetComponentsString()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getComponentsString();
         $this->assertEquals('0.666000 0.333000 0.000000 0.250000', $res);
     }
 
     public function testGetPdfColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getPdfColor();
         $this->assertEquals('0.666000 0.333000 0.000000 0.250000 k'."\n", $res);
         
@@ -150,54 +166,52 @@ class CmykTest extends TestCase
 
     public function testToGrayArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->toGrayArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'gray'  => 0.25,
                 'alpha' => 0.85
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
     }
 
     public function testToRgbArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->toRgbArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'red'   => 0.25,
                 'green' => 0.50,
                 'blue'  => 0.75,
                 'alpha' => 0.85
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
     }
 
     public function testToHslArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->toHslArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'hue'        => 0.583,
                 'saturation' => 0.5,
                 'lightness'  => 0.5,
                 'alpha'      => 0.85
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
     }
 
     public function testToCmykArray()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->toCmykArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'cyan'    => 0.666,
                 'magenta' => 0.333,
@@ -205,17 +219,16 @@ class CmykTest extends TestCase
                 'key'     => 0.25,
                 'alpha'   => 0.85
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
     }
 
     public function testInvertColor()
     {
+        $this->obj = $this->getTestObject();
         $this->obj->invertColor();
         $res = $this->obj->toCmykArray();
-        $this->assertEquals(
+        $this->assertSimilarValues(
             array(
                 'cyan'    => 0.333,
                 'magenta' => 0.666,
@@ -223,9 +236,7 @@ class CmykTest extends TestCase
                 'key'     => 0.75,
                 'alpha'   => 0.85
             ),
-            $res,
-            '',
-            0.01
+            $res
         );
     }
 }

@@ -32,20 +32,21 @@ class PdfTest extends TestCase
 {
     protected $obj = null;
 
-    public function setUp()
+    protected function getTestObject()
     {
-        //$this->markTestSkipped(); // skip this test
-        $this->obj = new \Com\Tecnick\Color\Pdf;
+        return new \Com\Tecnick\Color\Pdf;
     }
 
     public function testGetJsMap()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getJsMap();
         $this->assertEquals(12, count($res));
     }
 
     public function testGetJsColorString()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getJsColorString('t()');
         $this->assertEquals('color.transparent', $res);
         $res = $this->obj->getJsColorString('["T"]');
@@ -106,6 +107,7 @@ class PdfTest extends TestCase
 
     public function testGetColorObject()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getColorObject('');
         $this->assertNull($res);
         $res = $this->obj->getColorObject('[*');
@@ -178,6 +180,7 @@ class PdfTest extends TestCase
 
     public function testGetPdfColor()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getPdfColor('magenta', false, 1);
         $this->assertEquals('/CS1 cs 1.000000 scn'."\n", $res);
         $res = $this->obj->getPdfColor('magenta', true, 1);
@@ -247,6 +250,7 @@ class PdfTest extends TestCase
 
     public function testGetPdfRgbComponents()
     {
+        $this->obj = $this->getTestObject();
         $res = $this->obj->getPdfRgbComponents('');
         $this->assertEquals('', $res);
 
