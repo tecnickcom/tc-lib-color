@@ -77,6 +77,9 @@ PHP=$(shell which php)
 # Composer executable (disable APC to as a work-around of a bug)
 COMPOSER=$(PHP) -d "apc.enable_cli=0" $(shell which composer)
 
+# phpDocumentor executable file
+PHPDOC=$(shell which phpDocumentor)
+
 # --- MAKE TARGETS ---
 
 # Display general help about this command
@@ -169,15 +172,16 @@ deps: ensuretarget
 
 # Generate source code documentation
 .PHONY: doc
-doc:
+doc: ensuretarget
 	rm -rf $(TARGETDIR)/doc
-	# TO BE IMPLEMENTED
+	$(PHPDOC) -d ./src -t $(TARGETDIR)/doc/
 
 # Create missing target directories for test and build artifacts
 .PHONY: ensuretarget
 ensuretarget:
 	mkdir -p $(TARGETDIR)/test
 	mkdir -p $(TARGETDIR)/report
+	mkdir -p $(TARGETDIR)/doc
 
 # Install this application
 .PHONY: install
