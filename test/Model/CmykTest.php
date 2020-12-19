@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CmykTest extends TestCase
 {
-    public function assertSimilarValues($expected, $actual, $delta = 0.01, $message = '')
+    public function bcAssertEqualsWithDelta($expected, $actual, $delta = 0.01, $message = '')
     {
         if (\is_callable(['parent', 'assertEqualsWithDelta'])) {
             return parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
@@ -168,7 +168,7 @@ class CmykTest extends TestCase
     {
         $this->obj = $this->getTestObject();
         $res = $this->obj->toGrayArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'gray'  => 0.25,
                 'alpha' => 0.85
@@ -181,7 +181,7 @@ class CmykTest extends TestCase
     {
         $this->obj = $this->getTestObject();
         $res = $this->obj->toRgbArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'red'   => 0.25,
                 'green' => 0.50,
@@ -196,7 +196,7 @@ class CmykTest extends TestCase
     {
         $this->obj = $this->getTestObject();
         $res = $this->obj->toHslArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'hue'        => 0.583,
                 'saturation' => 0.5,
@@ -211,7 +211,7 @@ class CmykTest extends TestCase
     {
         $this->obj = $this->getTestObject();
         $res = $this->obj->toCmykArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'cyan'    => 0.666,
                 'magenta' => 0.333,
@@ -228,7 +228,7 @@ class CmykTest extends TestCase
         $this->obj = $this->getTestObject();
         $this->obj->invertColor();
         $res = $this->obj->toCmykArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'cyan'    => 0.333,
                 'magenta' => 0.666,

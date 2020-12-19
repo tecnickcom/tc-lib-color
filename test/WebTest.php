@@ -30,12 +30,20 @@ use PHPUnit\Framework\TestCase;
  */
 class WebTest extends TestCase
 {
-    public function assertSimilarValues($expected, $actual, $delta = 0.01, $message = '')
+    public function bcAssertEqualsWithDelta($expected, $actual, $delta = 0.01, $message = '')
     {
         if (\is_callable(['parent', 'assertEqualsWithDelta'])) {
             return parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
         }
         return $this->assertEquals($expected, $actual, $message, $delta);
+    }
+
+    public function bcExpectException($exception)
+    {
+        if (\is_callable(['parent', 'expectException'])) {
+            return parent::expectException($exception);
+        }
+        return parent::setExpectedException($exception);
     }
 
     protected function getTestObject()
@@ -61,7 +69,7 @@ class WebTest extends TestCase
 
     public function testGetHexFromNameInvalid()
     {
-        $this->expectException('\Com\Tecnick\Color\Exception');
+        $this->bcExpectException('\Com\Tecnick\Color\Exception');
         $this->obj = $this->getTestObject();
         $this->obj->getHexFromName('invalid');
     }
@@ -77,7 +85,7 @@ class WebTest extends TestCase
 
     public function testGetNameFromHexBad()
     {
-        $this->expectException('\Com\Tecnick\Color\Exception');
+        $this->bcExpectException('\Com\Tecnick\Color\Exception');
         $this->obj = $this->getTestObject();
         $this->obj->getNameFromHex('012345');
     }
@@ -105,7 +113,7 @@ class WebTest extends TestCase
 
     public function testExtractHexCodeBad()
     {
-        $this->expectException('\Com\Tecnick\Color\Exception');
+        $this->bcExpectException('\Com\Tecnick\Color\Exception');
         $this->obj = $this->getTestObject();
         $this->obj->extractHexCode('');
     }
@@ -119,7 +127,7 @@ class WebTest extends TestCase
 
     public function testGetRgbObjFromHexBad()
     {
-        $this->expectException('\Com\Tecnick\Color\Exception');
+        $this->bcExpectException('\Com\Tecnick\Color\Exception');
         $this->obj = $this->getTestObject();
         $this->obj->getRgbObjFromHex('xx');
     }
@@ -133,7 +141,7 @@ class WebTest extends TestCase
 
     public function testGetRgbObjFromNameBad()
     {
-        $this->expectException('\Com\Tecnick\Color\Exception');
+        $this->bcExpectException('\Com\Tecnick\Color\Exception');
         $this->obj = $this->getTestObject();
         $this->obj->getRgbObjFromName('xx');
     }
@@ -144,7 +152,7 @@ class WebTest extends TestCase
         $res = $this->obj->normalizeValue('50%', 50);
         $this->assertEquals(0.5, $res);
         $res = $this->obj->normalizeValue(128, 255);
-        $this->assertSimilarValues(0.5, $res);
+        $this->bcAssertEqualsWithDelta(0.5, $res);
     }
 
     public function testGetColorObj()
@@ -216,7 +224,7 @@ class WebTest extends TestCase
      */
     public function testGetColorObjBad($bad)
     {
-        $this->expectException('\Com\Tecnick\Color\Exception');
+        $this->bcExpectException('\Com\Tecnick\Color\Exception');
         $this->obj = $this->getTestObject();
         $this->obj->getColorObj($bad);
     }

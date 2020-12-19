@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
  */
 class RgbTest extends TestCase
 {
-    public function assertSimilarValues($expected, $actual, $delta = 0.01, $message = '')
+    public function bcAssertEqualsWithDelta($expected, $actual, $delta = 0.01, $message = '')
     {
         if (\is_callable(['parent', 'assertEqualsWithDelta'])) {
             return parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
@@ -164,7 +164,7 @@ class RgbTest extends TestCase
     {
         $this->obj = $this->getTestObject();
         $res = $this->obj->toGrayArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'gray'  => 0.465,
                 'alpha' => 0.85
@@ -177,7 +177,7 @@ class RgbTest extends TestCase
     {
         $this->obj = $this->getTestObject();
         $res = $this->obj->toRgbArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'red'   => 0.25,
                 'green' => 0.50,
@@ -192,7 +192,7 @@ class RgbTest extends TestCase
     {
         $this->obj = $this->getTestObject();
         $res = $this->obj->toHslArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'hue'        => 0.583,
                 'saturation' => 0.5,
@@ -211,7 +211,7 @@ class RgbTest extends TestCase
             )
         );
         $res = $col->toHslArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'hue'        => 0,
                 'saturation' => 0,
@@ -230,7 +230,7 @@ class RgbTest extends TestCase
             )
         );
         $res = $col->toHslArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'hue'        => 0.416,
                 'saturation' => 0.500,
@@ -249,7 +249,7 @@ class RgbTest extends TestCase
             )
         );
         $res = $col->toHslArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'hue'        => 0.0833,
                 'saturation' => 0.500,
@@ -268,7 +268,7 @@ class RgbTest extends TestCase
             )
         );
         $res = $col->toHslArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'hue'        => 0.852,
                 'saturation' => 1,
@@ -283,7 +283,7 @@ class RgbTest extends TestCase
     {
         $this->obj = $this->getTestObject();
         $res = $this->obj->toCmykArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'cyan'    => 0.666,
                 'magenta' => 0.333,
@@ -303,7 +303,7 @@ class RgbTest extends TestCase
             )
         );
         $res = $col->toCmykArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'cyan'    => 0,
                 'magenta' => 0,
@@ -320,7 +320,7 @@ class RgbTest extends TestCase
         $this->obj = $this->getTestObject();
         $this->obj->invertColor();
         $res = $this->obj->toRgbArray();
-        $this->assertSimilarValues(
+        $this->bcAssertEqualsWithDelta(
             array(
                 'red'   => 0.75,
                 'green' => 0.50,
