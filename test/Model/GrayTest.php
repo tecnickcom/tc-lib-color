@@ -16,6 +16,7 @@
 namespace Test\Model;
 
 use PHPUnit\Framework\TestCase;
+use \Test\TestUtil;
 
 /**
  * Gray Color class test
@@ -28,7 +29,7 @@ use PHPUnit\Framework\TestCase;
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  */
-class GrayTest extends TestCase
+class GrayTest extends TestUtil
 {
     protected function getTestObject()
     {

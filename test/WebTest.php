@@ -28,24 +28,8 @@ use PHPUnit\Framework\TestCase;
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  */
-class WebTest extends TestCase
+class WebTest extends TestUtil
 {
-    public function bcAssertEqualsWithDelta($expected, $actual, $delta = 0.01, $message = '')
-    {
-        if (\is_callable(['parent', 'assertEqualsWithDelta'])) {
-            return parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
-        }
-        return $this->assertEquals($expected, $actual, $message, $delta);
-    }
-
-    public function bcExpectException($exception)
-    {
-        if (\is_callable(['parent', 'expectException'])) {
-            return parent::expectException($exception);
-        }
-        return parent::setExpectedException($exception);
-    }
-
     protected function getTestObject()
     {
         return new \Com\Tecnick\Color\Web;

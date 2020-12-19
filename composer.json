@@ -41,5 +41,8 @@
     "psr-4": {
       "Com\\Tecnick\\Color\\": "src"
     }
+  },
+  "autoload-dev": {
+    "psr-4": { "Test\\": "test" }
   }
 }

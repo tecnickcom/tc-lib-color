@@ -28,10 +28,8 @@ use PHPUnit\Framework\TestCase;
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  */
-class SpotTest extends TestCase
+class SpotTest extends TestUtil
 {
-    protected $obj = null;
-
     protected function getTestObject()
     {
         return new \Com\Tecnick\Color\Spot;
