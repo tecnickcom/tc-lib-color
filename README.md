@@ -80,15 +80,15 @@ Create a composer.json in your projects root-directory:
 ```json
 {
     "require": {
-        "tecnickcom/tc-lib-color": "dev-master"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:tecnickcom/tc-lib-color.git"
-        }
-    ]
+        "tecnickcom/tc-lib-color": "^1.14"
+    }
 }
+```
+
+Or add to an existing project with: 
+
+```bash
+composer require tecnickcom/tc-lib-color ^1.14
 ```
 
 
