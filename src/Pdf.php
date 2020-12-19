@@ -80,10 +80,8 @@ class Pdf extends \Com\Tecnick\Color\Spot
             if (($colobj = $this->getColorObj($color)) !== null) {
                 return $colobj->getJsPdfColor();
             }
-        } catch (Exception $e) {
-            if (!($e instanceof ColorException)) {
-                throw $e;
-            }
+        } catch (ColorException $e) {
+            assert(true); // noop
         }
         // default transparent color
         return 'color.'.self::$jscolor[0];
@@ -100,17 +98,13 @@ class Pdf extends \Com\Tecnick\Color\Spot
     {
         try {
             return $this->getSpotColorObj($color);
-        } catch (Exception $e) {
-            if (!($e instanceof ColorException)) {
-                throw $e;
-            }
+        } catch (ColorException $e) {
+            assert(true); // noop
         }
         try {
             return $this->getColorObj($color);
-        } catch (Exception $e) {
-            if (!($e instanceof ColorException)) {
-                throw $e;
-            }
+        } catch (ColorException $e) {
+            assert(true); // noop
         }
         return null;
     }
@@ -134,20 +128,16 @@ class Pdf extends \Com\Tecnick\Color\Spot
                 $tint = strtoupper($tint);
             }
             return sprintf('/CS%d %s'."\n", $col['i'], $tint);
-        } catch (Exception $e) {
-            if (!($e instanceof ColorException)) {
-                throw $e;
-            }
+        } catch (ColorException $e) {
+            assert(true); // noop
         }
         try {
             $col = $this->getColorObj($color);
             if ($col !== null) {
                 return $col->getPdfColor($stroke);
             }
-        } catch (Exception $e) {
-            if (!($e instanceof ColorException)) {
-                throw $e;
-            }
+        } catch (ColorException $e) {
+            assert(true); // noop
         }
         return '';
     }
