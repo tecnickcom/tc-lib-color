@@ -247,6 +247,14 @@ rpm:
 server:
 	$(PHP) -t example -S localhost:$(PORT)
 
+# Tag this GIT version
+.PHONY: tag
+tag:
+	git checkout main && \
+	git tag -a ${VERSION} -m "Release ${VERSION}" && \
+	git push origin --tags && \
+	git pull
+
 # Run unit tests
 .PHONY: test
 test:
