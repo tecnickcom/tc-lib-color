@@ -60,13 +60,13 @@ CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 TARGETDIR=$(CURRENTDIR)target
 
 # RPM Packaging path (where RPMs will be stored)
-PATHRPMPKG=$(CURRENTDIR)/target/RPM
+PATHRPMPKG=$(TARGETDIR)/RPM
 
 # DEB Packaging path (where DEBs will be stored)
-PATHDEBPKG=$(CURRENTDIR)/target/DEB
+PATHDEBPKG=$(TARGETDIR)/DEB
 
 # BZ2 Packaging path (where BZ2s will be stored)
-PATHBZ2PKG=$(CURRENTDIR)/target/BZ2
+PATHBZ2PKG=$(TARGETDIR)/BZ2
 
 # Default port number for the example server
 PORT?=8000
