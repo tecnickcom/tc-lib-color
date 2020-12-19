@@ -222,7 +222,7 @@ report: ensuretarget
 	./vendor/bin/phpcpd src --exclude vendor > $(TARGETDIR)/report/phpcpd.txt
 	./vendor/bin/phploc src --exclude vendor > $(TARGETDIR)/report/phploc.txt
 	./vendor/bin/pdepend --jdepend-xml=$(TARGETDIR)/report/dependencies.xml --summary-xml=$(TARGETDIR)/report/metrics.xml --jdepend-chart=$(TARGETDIR)/report/dependecies.svg --overview-pyramid=$(TARGETDIR)/report/overview-pyramid.svg --ignore=vendor ./src
-	./vendor/bartlett/php-compatinfo/bin/phpcompatinfo --no-ansi analyser:run src/ > $(TARGETDIR)/report/phpcompatinfo.txt
+	#./vendor/bartlett/php-compatinfo/bin/phpcompatinfo --no-ansi analyser:run src/ > $(TARGETDIR)/report/phpcompatinfo.txt
 
 # Build the RPM package for RedHat-like Linux distributions
 .PHONY: rpm
