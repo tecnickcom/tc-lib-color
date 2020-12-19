@@ -45,44 +45,44 @@ class HslTest extends TestUtil
 
     public function testGetType()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getType();
+        $testObj = $this->getTestObject();
+        $res = $testObj->getType();
         $this->assertEquals('HSL', $res);
     }
 
     public function testGetNormalizedValue()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getNormalizedValue(0.5, 255);
+        $testObj = $this->getTestObject();
+        $res = $testObj->getNormalizedValue(0.5, 255);
         $this->assertEquals(128, $res);
     }
 
     public function testGetHexValue()
     {
-        $this->obj = $this->getTestObject();
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getHexValue(0.5, 255);
+        $testObj = $this->getTestObject();
+        $testObj = $this->getTestObject();
+        $res = $testObj->getHexValue(0.5, 255);
         $this->assertEquals('80', $res);
     }
 
     public function testGetRgbaHexColor()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getRgbaHexColor();
+        $testObj = $this->getTestObject();
+        $res = $testObj->getRgbaHexColor();
         $this->assertEquals('#4080bfd9', $res);
     }
 
     public function testGetRgbHexColor()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getRgbHexColor();
+        $testObj = $this->getTestObject();
+        $res = $testObj->getRgbHexColor();
         $this->assertEquals('#4080bf', $res);
     }
 
     public function testGetArray()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getArray();
+        $testObj = $this->getTestObject();
+        $res = $testObj->getArray();
         $this->assertEquals(
             array(
                 'H' => 0.583,
@@ -96,8 +96,8 @@ class HslTest extends TestUtil
 
     public function testGetNormalizedArray()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getNormalizedArray(255);
+        $testObj = $this->getTestObject();
+        $res = $testObj->getNormalizedArray(255);
         $this->assertEquals(
             array(
                 'H' => 210,
@@ -111,15 +111,15 @@ class HslTest extends TestUtil
 
     public function testGetCssColor()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getCssColor();
+        $testObj = $this->getTestObject();
+        $res = $testObj->getCssColor();
         $this->assertEquals('hsla(210,50%,50%,0.85)', $res);
     }
 
     public function testGetJsPdfColor()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getJsPdfColor();
+        $testObj = $this->getTestObject();
+        $res = $testObj->getJsPdfColor();
         $this->assertEquals('["RGB",0.250000,0.501000,0.750000]', $res);
 
         $col = new \Com\Tecnick\Color\Model\Hsl(
@@ -136,28 +136,28 @@ class HslTest extends TestUtil
 
     public function testGetComponentsString()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getComponentsString();
+        $testObj = $this->getTestObject();
+        $res = $testObj->getComponentsString();
         $this->assertEquals('0.250000 0.501000 0.750000', $res);
     }
 
     public function testGetPdfColor()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->getPdfColor();
+        $testObj = $this->getTestObject();
+        $res = $testObj->getPdfColor();
         $this->assertEquals('0.250000 0.501000 0.750000 rg'."\n", $res);
         
-        $res = $this->obj->getPdfColor(false);
+        $res = $testObj->getPdfColor(false);
         $this->assertEquals('0.250000 0.501000 0.750000 rg'."\n", $res);
         
-        $res = $this->obj->getPdfColor(true);
+        $res = $testObj->getPdfColor(true);
         $this->assertEquals('0.250000 0.501000 0.750000 RG'."\n", $res);
     }
 
     public function testToGrayArray()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->toGrayArray();
+        $testObj = $this->getTestObject();
+        $res = $testObj->toGrayArray();
         $this->bcAssertEqualsWithDelta(
             array(
                 'gray'  => 0.5,
@@ -169,8 +169,8 @@ class HslTest extends TestUtil
 
     public function testToRgbArray()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->toRgbArray();
+        $testObj = $this->getTestObject();
+        $res = $testObj->toRgbArray();
         $this->bcAssertEqualsWithDelta(
             array(
                 'red'   => 0.25,
@@ -260,8 +260,8 @@ class HslTest extends TestUtil
 
     public function testToHslArray()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->toHslArray();
+        $testObj = $this->getTestObject();
+        $res = $testObj->toHslArray();
         $this->bcAssertEqualsWithDelta(
             array(
                 'hue'        => 0.583,
@@ -275,8 +275,8 @@ class HslTest extends TestUtil
 
     public function testToCmykArray()
     {
-        $this->obj = $this->getTestObject();
-        $res = $this->obj->toCmykArray();
+        $testObj = $this->getTestObject();
+        $res = $testObj->toCmykArray();
         $this->bcAssertEqualsWithDelta(
             array(
                 'cyan'    => 0.666,
@@ -291,9 +291,9 @@ class HslTest extends TestUtil
 
     public function testInvertColor()
     {
-        $this->obj = $this->getTestObject();
-        $this->obj->invertColor();
-        $res = $this->obj->toHslArray();
+        $testObj = $this->getTestObject();
+        $testObj->invertColor();
+        $res = $testObj->toHslArray();
         $this->bcAssertEqualsWithDelta(
             array(
                 'hue'        => 0.083,
