@@ -214,7 +214,7 @@ lint:
 
 # Run all tests and reports
 .PHONY: qa
-qa: lint test report
+qa: ensuretarget lint test report
 
 # Generate various reports
 .PHONY: report
