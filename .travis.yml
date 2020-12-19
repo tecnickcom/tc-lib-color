@@ -2,6 +2,9 @@ language: php
 
 sudo: false
 
+env:
+  - XDEBUG_MODE=coverage
+
 branches:
   only:
     - main
