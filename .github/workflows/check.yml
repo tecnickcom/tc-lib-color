@@ -1,7 +1,7 @@
 name: check
 
 env:
-  - XDEBUG_MODE: coverage
+  XDEBUG_MODE: coverage
 
 on:
   push:
