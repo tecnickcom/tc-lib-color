@@ -1,7 +1,7 @@
 name: check
 
 env:
-  XDEBUG_MODE: coverage
+  - XDEBUG_MODE: coverage
 
 on:
   push:
@@ -20,20 +20,16 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
+                php-version: ["7.2", "7.3", "7.4", "8.0", "8.1"]
                 experimental: [false]
-                coverage-extension: [pcov]
                 os: [ubuntu-latest]
+                coverage-extension: [pcov]
                 include:
                     #- { php-version: '5.3', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
                     - { php-version: '5.4', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
                     - { php-version: '5.5', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
                     - { php-version: '5.6', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
                     - { php-version: '7.1', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
-                    - { php-version: '7.2', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
-                    - { php-version: '7.3', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
-                    - { php-version: '7.4', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
-                    - { php-version: '8.0', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
-                    - { php-version: '8.1', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
                     - { php-version: 'nightly', experimental: true, os: ubuntu-latest, coverage-extension: 'pcov' }
         steps:
             - uses: actions/checkout@v2
