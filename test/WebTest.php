@@ -194,7 +194,7 @@ class WebTest extends TestUtil
         $this->assertEquals('#3f80bfd9', $res->getRgbaHexColor());
     }
 
-    public function getBadColor()
+    public static function getBadColor()
     {
         return array(
             array('g(-)'),
