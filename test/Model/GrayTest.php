@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GrayTest.php
  *
@@ -16,7 +17,7 @@
 namespace Test\Model;
 
 use PHPUnit\Framework\TestCase;
-use \Test\TestUtil;
+use Test\TestUtil;
 
 /**
  * Gray Color class test
@@ -124,13 +125,13 @@ class GrayTest extends TestUtil
     {
         $testObj = $this->getTestObject();
         $res = $testObj->getPdfColor();
-        $this->assertEquals('0.750000 g'."\n", $res);
-        
+        $this->assertEquals('0.750000 g' . "\n", $res);
+
         $res = $testObj->getPdfColor(false);
-        $this->assertEquals('0.750000 g'."\n", $res);
-        
+        $this->assertEquals('0.750000 g' . "\n", $res);
+
         $res = $testObj->getPdfColor(true);
-        $this->assertEquals('0.750000 G'."\n", $res);
+        $this->assertEquals('0.750000 G' . "\n", $res);
     }
 
     public function testToGrayArray()

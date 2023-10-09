@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Gray.php
  *
@@ -83,11 +84,11 @@ class Gray extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
     public function getCssColor()
     {
         return 'rgba('
-            .$this->getNormalizedValue($this->cmp_gray, 100).'%,'
-            .$this->getNormalizedValue($this->cmp_gray, 100).'%,'
-            .$this->getNormalizedValue($this->cmp_gray, 100).'%,'
-            .$this->cmp_alpha
-            .')';
+            . $this->getNormalizedValue($this->cmp_gray, 100) . '%,'
+            . $this->getNormalizedValue($this->cmp_gray, 100) . '%,'
+            . $this->getNormalizedValue($this->cmp_gray, 100) . '%,'
+            . $this->cmp_alpha
+            . ')';
     }
 
     /**
@@ -128,7 +129,7 @@ class Gray extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
         if ($stroke) {
             $mode = strtoupper($mode);
         }
-        return $this->getComponentsString().' '.$mode."\n";
+        return $this->getComponentsString() . ' ' . $mode . "\n";
     }
 
     /**

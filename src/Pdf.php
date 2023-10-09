@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Pdf.php
  *
@@ -15,9 +16,9 @@
 
 namespace Com\Tecnick\Color;
 
-use \Com\Tecnick\Color\Exception as ColorException;
-use \Com\Tecnick\Color\Web;
-use \Com\Tecnick\Color\Spot;
+use Com\Tecnick\Color\Exception as ColorException;
+use Com\Tecnick\Color\Web;
+use Com\Tecnick\Color\Spot;
 
 /**
  * Com\Tecnick\Color\Pdf
@@ -74,7 +75,7 @@ class Pdf extends \Com\Tecnick\Color\Spot
     public function getJsColorString($color)
     {
         if (in_array($color, self::$jscolor)) {
-            return 'color.'.$color;
+            return 'color.' . $color;
         }
         try {
             if (($colobj = $this->getColorObj($color)) !== null) {
@@ -84,7 +85,7 @@ class Pdf extends \Com\Tecnick\Color\Spot
             assert(true); // noop
         }
         // default transparent color
-        return 'color.'.self::$jscolor[0];
+        return 'color.' . self::$jscolor[0];
     }
 
     /**
@@ -127,7 +128,7 @@ class Pdf extends \Com\Tecnick\Color\Spot
             if ($stroke) {
                 $tint = strtoupper($tint);
             }
-            return sprintf('/CS%d %s'."\n", $col['i'], $tint);
+            return sprintf('/CS%d %s' . "\n", $col['i'], $tint);
         } catch (ColorException $e) {
             assert(true); // noop
         }

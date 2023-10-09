@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Model.php
  *
@@ -36,7 +37,7 @@ abstract class Model
      * @var string
      */
     protected $type;
-    
+
     /**
      * Value of the Alpha channel component.
      * Values range between 0.0 (fully transparent) and 1.0 (fully opaque)
@@ -53,7 +54,7 @@ abstract class Model
     public function __construct($components)
     {
         foreach ($components as $color => $value) {
-            $property = 'cmp_'.$color;
+            $property = 'cmp_' . $color;
             if (property_exists($this, $property)) {
                 $this->$property = (max(0, min(1, floatval($value))));
             }
@@ -105,10 +106,10 @@ abstract class Model
     {
         $rgba = $this->toRgbArray();
         return '#'
-            .$this->getHexValue($rgba['red'], 255)
-            .$this->getHexValue($rgba['green'], 255)
-            .$this->getHexValue($rgba['blue'], 255)
-            .$this->getHexValue($rgba['alpha'], 255);
+            . $this->getHexValue($rgba['red'], 255)
+            . $this->getHexValue($rgba['green'], 255)
+            . $this->getHexValue($rgba['blue'], 255)
+            . $this->getHexValue($rgba['alpha'], 255);
     }
 
     /**
@@ -120,8 +121,8 @@ abstract class Model
     {
         $rgba = $this->toRgbArray();
         return '#'
-            .$this->getHexValue($rgba['red'], 255)
-            .$this->getHexValue($rgba['green'], 255)
-            .$this->getHexValue($rgba['blue'], 255);
+            . $this->getHexValue($rgba['red'], 255)
+            . $this->getHexValue($rgba['green'], 255)
+            . $this->getHexValue($rgba['blue'], 255);
     }
 }

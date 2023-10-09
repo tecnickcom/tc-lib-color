@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Rgb.php
  *
@@ -101,11 +102,11 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
     public function getCssColor()
     {
         return 'rgba('
-            .$this->getNormalizedValue($this->cmp_red, 100).'%,'
-            .$this->getNormalizedValue($this->cmp_green, 100).'%,'
-            .$this->getNormalizedValue($this->cmp_blue, 100).'%,'
-            .$this->cmp_alpha
-            .')';
+            . $this->getNormalizedValue($this->cmp_red, 100) . '%,'
+            . $this->getNormalizedValue($this->cmp_green, 100) . '%,'
+            . $this->getNormalizedValue($this->cmp_blue, 100) . '%,'
+            . $this->cmp_alpha
+            . ')';
     }
 
     /**
@@ -146,7 +147,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
         if ($stroke) {
             $mode = strtoupper($mode);
         }
-        return $this->getComponentsString().' '.$mode."\n";
+        return $this->getComponentsString() . ' ' . $mode . "\n";
     }
 
     /**

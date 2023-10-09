@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WebTest.php
  *
@@ -32,7 +33,7 @@ class WebTest extends TestUtil
 {
     protected function getTestObject()
     {
-        return new \Com\Tecnick\Color\Web;
+        return new \Com\Tecnick\Color\Web();
     }
 
     public function testGetMap()

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Template.php
  *
@@ -76,14 +77,14 @@ interface Template
      * @return string
      */
     public function getPdfColor();
-    
+
     /**
      * Get an array with Gray color components
      *
      * @return array with keys ('gray')
      */
     public function toGrayArray();
-    
+
     /**
      * Get an array with RGB color components
      *

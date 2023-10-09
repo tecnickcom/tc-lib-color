@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cmyk.php
  *
@@ -111,11 +112,11 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
     {
         $rgb = $this->toRgbArray();
         return 'rgba('
-            .$this->getNormalizedValue($rgb['red'], 100).'%,'
-            .$this->getNormalizedValue($rgb['green'], 100).'%,'
-            .$this->getNormalizedValue($rgb['blue'], 100).'%,'
-            .$rgb['alpha']
-            .')';
+            . $this->getNormalizedValue($rgb['red'], 100) . '%,'
+            . $this->getNormalizedValue($rgb['green'], 100) . '%,'
+            . $this->getNormalizedValue($rgb['blue'], 100) . '%,'
+            . $rgb['alpha']
+            . ')';
     }
 
     /**
@@ -156,7 +157,7 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
         if ($stroke) {
             $mode = strtoupper($mode);
         }
-        return $this->getComponentsString().' '.$mode."\n";
+        return $this->getComponentsString() . ' ' . $mode . "\n";
     }
 
     /**

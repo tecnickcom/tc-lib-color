@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Css.php
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Color;
 
-use \Com\Tecnick\Color\Exception as ColorException;
+use Com\Tecnick\Color\Exception as ColorException;
 
 /**
  * Com\Tecnick\Color\Css
@@ -44,19 +45,19 @@ abstract class Css
     protected function getColorObjFromJs($color)
     {
         if (!isset($color[2]) || (strpos('tgrc', $color[2]) === false)) {
-             throw new ColorException('invalid javascript color: '.$color);
+             throw new ColorException('invalid javascript color: ' . $color);
         }
         switch ($color[2]) {
             case 'g':
                 $rex = '/[\[][\"\']g[\"\'][\,]([0-9\.]+)[\]]/';
                 if (preg_match($rex, $color, $col) !== 1) {
-                    throw new ColorException('invalid javascript color: '.$color);
+                    throw new ColorException('invalid javascript color: ' . $color);
                 }
                 return new \Com\Tecnick\Color\Model\Gray(array('gray' => $col[1], 'alpha' => 1));
             case 'r':
                 $rex = '/[\[][\"\']rgb[\"\'][\,]([0-9\.]+)[\,]([0-9\.]+)[\,]([0-9\.]+)[\]]/';
                 if (preg_match($rex, $color, $col) !== 1) {
-                    throw new ColorException('invalid javascript color: '.$color);
+                    throw new ColorException('invalid javascript color: ' . $color);
                 }
                 return new \Com\Tecnick\Color\Model\Rgb(
                     array(
@@ -69,7 +70,7 @@ abstract class Css
             case 'c':
                 $rex = '/[\[][\"\']cmyk[\"\'][\,]([0-9\.]+)[\,]([0-9\.]+)[\,]([0-9\.]+)[\,]([0-9\.]+)[\]]/';
                 if (preg_match($rex, $color, $col) !== 1) {
-                    throw new ColorException('invalid javascript color: '.$color);
+                    throw new ColorException('invalid javascript color: ' . $color);
                 }
                 return new \Com\Tecnick\Color\Model\Cmyk(
                     array(
@@ -127,7 +128,7 @@ abstract class Css
     {
         $rex = '/[\(]([0-9\%]+)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
-            throw new ColorException('invalid css color: '.$color);
+            throw new ColorException('invalid css color: ' . $color);
         }
         return new \Com\Tecnick\Color\Model\Gray(
             array(
@@ -150,7 +151,7 @@ abstract class Css
     {
         $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
-            throw new ColorException('invalid css color: '.$color);
+            throw new ColorException('invalid css color: ' . $color);
         }
         return new \Com\Tecnick\Color\Model\Rgb(
             array(
@@ -175,7 +176,7 @@ abstract class Css
     {
         $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
-            throw new ColorException('invalid css color: '.$color);
+            throw new ColorException('invalid css color: ' . $color);
         }
         return new \Com\Tecnick\Color\Model\Hsl(
             array(
@@ -200,7 +201,7 @@ abstract class Css
     {
         $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
-            throw new ColorException('invalid css color: '.$color);
+            throw new ColorException('invalid css color: ' . $color);
         }
         return new \Com\Tecnick\Color\Model\Cmyk(
             array(

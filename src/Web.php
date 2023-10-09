@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Web.php
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Color;
 
-use \Com\Tecnick\Color\Exception as ColorException;
+use Com\Tecnick\Color\Exception as ColorException;
 
 /**
  * Com\Tecnick\Color\Web
@@ -216,7 +217,7 @@ class Web extends \Com\Tecnick\Color\Css
             $name = substr($name, ($dotpos + 1));
         }
         if (empty(self::$webhex[$name])) {
-            throw new ColorException('unable to find the color hex for the name: '.$name);
+            throw new ColorException('unable to find the color hex for the name: ' . $name);
         }
         return self::$webhex[$name];
     }
@@ -234,7 +235,7 @@ class Web extends \Com\Tecnick\Color\Css
     {
         $name = array_search($this->extractHexCode($hex), self::$webhex, true);
         if ($name === false) {
-            throw new ColorException('unable to find the color name for the hex code: '.$hex);
+            throw new ColorException('unable to find the color name for the hex code: ' . $hex);
         }
         return $name;
     }
@@ -251,16 +252,16 @@ class Web extends \Com\Tecnick\Color\Css
     public function extractHexCode($hex)
     {
         if (preg_match('/^[#]?([0-9a-f]{3,8})$/', strtolower($hex), $match) !== 1) {
-            throw new ColorException('unable to extract the color hash: '.$hex);
+            throw new ColorException('unable to extract the color hash: ' . $hex);
         }
         $hex = $match[1];
         switch (strlen($hex)) {
             case 3:
-                return $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2].'ff';
+                return $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2] . 'ff';
             case 4:
-                return $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2].$hex[3].$hex[3];
+                return $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2] . $hex[3] . $hex[3];
             case 6:
-                return $hex.'ff';
+                return $hex . 'ff';
         }
         return $hex;
     }

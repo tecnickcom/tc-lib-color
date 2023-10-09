@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HslTest.php
  *
@@ -16,7 +17,7 @@
 namespace Test\Model;
 
 use PHPUnit\Framework\TestCase;
-use \Test\TestUtil;
+use Test\TestUtil;
 
 /**
  * Hsl Color class test
@@ -145,13 +146,13 @@ class HslTest extends TestUtil
     {
         $testObj = $this->getTestObject();
         $res = $testObj->getPdfColor();
-        $this->assertEquals('0.250000 0.501000 0.750000 rg'."\n", $res);
-        
+        $this->assertEquals('0.250000 0.501000 0.750000 rg' . "\n", $res);
+
         $res = $testObj->getPdfColor(false);
-        $this->assertEquals('0.250000 0.501000 0.750000 rg'."\n", $res);
-        
+        $this->assertEquals('0.250000 0.501000 0.750000 rg' . "\n", $res);
+
         $res = $testObj->getPdfColor(true);
-        $this->assertEquals('0.250000 0.501000 0.750000 RG'."\n", $res);
+        $this->assertEquals('0.250000 0.501000 0.750000 RG' . "\n", $res);
     }
 
     public function testToGrayArray()
