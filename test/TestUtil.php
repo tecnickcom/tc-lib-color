@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Web Color class test
  *
- * @since      2020-12-19
+ * @since       2020-12-19
  * @category    Library
  * @package     Color
  * @author      Nicola Asuni <info@tecnick.com>
@@ -34,7 +34,8 @@ class TestUtil extends TestCase
     public function bcAssertEqualsWithDelta($expected, $actual, $delta = 0.01, $message = '')
     {
         if (\is_callable([self::class, 'assertEqualsWithDelta'])) {
-            return parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
+            parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
+            return;
         }
         return $this->assertEquals($expected, $actual, $message, $delta);
     }
@@ -42,7 +43,8 @@ class TestUtil extends TestCase
     public function bcExpectException($exception)
     {
         if (\is_callable([self::class, 'expectException'])) {
-            return parent::expectException($exception);
+            parent::expectException($exception);
+            return;
         }
         return parent::setExpectedException($exception);
     }

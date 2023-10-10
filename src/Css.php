@@ -33,6 +33,8 @@ use Com\Tecnick\Color\Exception as ColorException;
  */
 abstract class Css
 {
+    abstract public function normalizeValue($value, $max);
+
     /**
      * Get the color object from acrobat Javascript syntax
      *

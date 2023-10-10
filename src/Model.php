@@ -46,6 +46,8 @@ abstract class Model
      */
     protected $cmp_alpha = 1.0;
 
+    abstract public function toRgbArray();
+
     /**
      * Initialize a new color object
      *
