@@ -7,7 +7,7 @@
  * @category    Library
  * @package     Color
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  *
@@ -25,7 +25,7 @@ namespace Com\Tecnick\Color\Model;
  * @category    Library
  * @package     Color
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  */
@@ -192,10 +192,9 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
         $min = min($this->cmp_red, $this->cmp_green, $this->cmp_blue);
         $max = max($this->cmp_red, $this->cmp_green, $this->cmp_blue);
         $lightness = (($min + $max) / 2);
-        if ($min == $max) {
-            $saturation = 0;
-            $hue = 0;
-        } else {
+        $saturation = 0;
+        $hue = 0;
+        if ($min != $max) {
             $diff = ($max - $min);
             if ($lightness < 0.5) {
                 $saturation = ($diff / ($max + $min));
