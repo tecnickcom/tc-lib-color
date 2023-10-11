@@ -3,7 +3,7 @@
 
 [![Latest Stable Version](https://poser.pugx.org/tecnickcom/tc-lib-color/version)](https://packagist.org/packages/tecnickcom/tc-lib-color)
 ![Build](https://github.com/tecnickcom/tc-lib-color/actions/workflows/check.yml/badge.svg)
-[![Coverage](https://coveralls.io/repos/tecnickcom/tc-lib-color/badge.svg?branch=main&service=github)](https://coveralls.io/github/tecnickcom/tc-lib-color?branch=main)
+[![Coverage](https://codecov.io/gh/tecnickcom/tc-lib-color/graph/badge.svg?token=l3UCVbShmc)](https://codecov.io/gh/tecnickcom/tc-lib-color)
 [![License](https://poser.pugx.org/tecnickcom/tc-lib-color/license)](https://packagist.org/packages/tecnickcom/tc-lib-color)
 [![Downloads](https://poser.pugx.org/tecnickcom/tc-lib-color/downloads)](https://packagist.org/packages/tecnickcom/tc-lib-color)
 
