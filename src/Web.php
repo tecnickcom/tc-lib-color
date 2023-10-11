@@ -271,8 +271,6 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @param string $hex hexadecimal color hash (i.e. #RGB, #RGBA, #RRGGBB, #RRGGBBAA)
      *
-     * @return array with keys ('red', 'green', 'blue', 'alpha')
-     *
      * @throws ColorException if the color is not found
      */
     public function getRgbObjFromHex($hex)
@@ -322,8 +320,8 @@ class Web extends \Com\Tecnick\Color\Css
     /**
      * Get the normalized integer value from [0..$max] to [0..1]
      *
-     * @param float $value Value to convert
-     * @param int   $max   Max input value
+     * @param string $value Value to convert
+     * @param int    $max   Max input value
      *
      * @return float value [0..1]
      */
@@ -339,8 +337,6 @@ class Web extends \Com\Tecnick\Color\Css
      * Parse the input color string and return the correspondent color Object
      *
      * @param string $color String containing web color definition
-     *
-     * @return \Com\Tecnick\Color\Model or null in case of transparent color
      *
      * @throws ColorException in case of error
      */

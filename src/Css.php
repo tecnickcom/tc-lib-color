@@ -40,8 +40,6 @@ abstract class Css
      *
      * @param string $color color specification (e.g.: ["RGB",0.1,0.3,1])
      *
-     * @return \Com\Tecnick\Color\Model or null for transparent color
-     *
      * @throws ColorException if the color is not found
      */
     protected function getColorObjFromJs($color)
@@ -93,8 +91,6 @@ abstract class Css
      *
      * @param string $type  color type: t, g, rgb, rgba, hsl, hsla, cmyk
      * @param string $color color specification (e.g.: rgb(255,128,64))
-     *
-     * @return \Com\Tecnick\Color\Model or null for transparency (default)
      *
      * @throws ColorException if the color is not found
      */

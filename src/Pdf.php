@@ -17,8 +17,6 @@
 namespace Com\Tecnick\Color;
 
 use Com\Tecnick\Color\Exception as ColorException;
-use Com\Tecnick\Color\Web;
-use Com\Tecnick\Color\Spot;
 
 /**
  * Com\Tecnick\Color\Pdf
@@ -92,8 +90,6 @@ class Pdf extends \Com\Tecnick\Color\Spot
      * Returns a color object from an HTML, CSS or Spot color representation.
      *
      * @param string $color HTML, CSS or Spot color to parse
-     *
-     * @return object or null in case of error or if the color is not found
      */
     public function getColorObject($color)
     {

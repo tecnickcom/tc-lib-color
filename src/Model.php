@@ -79,7 +79,7 @@ abstract class Model
      * @param float $value Fraction value to convert [0..1]
      * @param int   $max   Maximum value to return (reference value)
      *
-     * @return integer value [0..$max]
+     * @return float value [0..$max]
      */
     public function getNormalizedValue($value, $max)
     {
@@ -92,7 +92,7 @@ abstract class Model
      * @param float $value Fraction value to convert [0..1]
      * @param int   $max   Maximum value to return (reference value)
      *
-     * @return integer value [0..$max]
+     * @return string
      */
     public function getHexValue($value, $max)
     {
