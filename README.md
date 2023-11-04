@@ -62,7 +62,7 @@ All artifacts are generated in the target directory.
 
 Examples are located in the `example` directory.
 
-Start a development server (requires PHP 5.4) using the command:
+Start a development server (requires PHP 7.2) using the command:
 
 ```
 make server
