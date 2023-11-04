@@ -318,7 +318,7 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @return float value [0..1]
      */
-    public function normalizeValue(int|float|string $value, int $max): float
+    public function normalizeValue(mixed $value, int $max): float
     {
         if (is_string($value) && (strpos($value, '%') !== false)) {
             return max(0, min(1, ((float) $value / 100)));
