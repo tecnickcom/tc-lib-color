@@ -3,13 +3,13 @@
 /**
  * Css.php
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2023 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
  */
@@ -23,13 +23,13 @@ use Com\Tecnick\Color\Exception as ColorException;
  *
  * Css Color class
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2023 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  */
 abstract class Css
 {
@@ -42,46 +42,54 @@ abstract class Css
      *
      * @throws ColorException if the color is not found
      */
-    protected function getColorObjFromJs($color)
+    protected function getColorObjFromJs(string $color)
     {
-        if (!isset($color[2]) || (strpos('tgrc', $color[2]) === false)) {
-             throw new ColorException('invalid javascript color: ' . $color);
+        if (! isset($color[2]) || (strpos('tgrc', $color[2]) === false)) {
+            throw new ColorException('invalid javascript color: ' . $color);
         }
+
         switch ($color[2]) {
             case 'g':
                 $rex = '/[\[][\"\']g[\"\'][\,]([0-9\.]+)[\]]/';
                 if (preg_match($rex, $color, $col) !== 1) {
                     throw new ColorException('invalid javascript color: ' . $color);
                 }
-                return new \Com\Tecnick\Color\Model\Gray(array('gray' => $col[1], 'alpha' => 1));
+
+                return new \Com\Tecnick\Color\Model\Gray([
+                    'gray' => $col[1],
+                    'alpha' => 1,
+                ]);
             case 'r':
                 $rex = '/[\[][\"\']rgb[\"\'][\,]([0-9\.]+)[\,]([0-9\.]+)[\,]([0-9\.]+)[\]]/';
                 if (preg_match($rex, $color, $col) !== 1) {
                     throw new ColorException('invalid javascript color: ' . $color);
                 }
+
                 return new \Com\Tecnick\Color\Model\Rgb(
-                    array(
-                        'red'   => $col[1],
+                    [
+                        'red' => $col[1],
                         'green' => $col[2],
-                        'blue'  => $col[3],
-                        'alpha' => 1
-                    )
+                        'blue' => $col[3],
+                        'alpha' => 1,
+                    ]
                 );
             case 'c':
                 $rex = '/[\[][\"\']cmyk[\"\'][\,]([0-9\.]+)[\,]([0-9\.]+)[\,]([0-9\.]+)[\,]([0-9\.]+)[\]]/';
                 if (preg_match($rex, $color, $col) !== 1) {
                     throw new ColorException('invalid javascript color: ' . $color);
                 }
+
                 return new \Com\Tecnick\Color\Model\Cmyk(
-                    array(
-                        'cyan'    => $col[1],
+                    [
+                        'cyan' => $col[1],
                         'magenta' => $col[2],
-                        'yellow'  => $col[3],
-                        'key'     => $col[4],
-                        'alpha'   => 1
-                    )
+                        'yellow' => $col[3],
+                        'key' => $col[4],
+                        'alpha' => 1,
+                    ]
                 );
         }
+
         // case 't'
         return null;
     }
@@ -94,7 +102,7 @@ abstract class Css
      *
      * @throws ColorException if the color is not found
      */
-    protected function getColorObjFromCss($type, $color)
+    protected function getColorObjFromCss($type, string $color)
     {
         switch ($type) {
             case 'g':
@@ -109,6 +117,7 @@ abstract class Css
             case 'cmyka':
                 return $this->getColorObjFromCssCmyk($color);
         }
+
         // case 't'
         return null;
     }
@@ -122,17 +131,18 @@ abstract class Css
      *
      * @throws ColorException if the color is not found
      */
-    private function getColorObjFromCssGray($color)
+    private function getColorObjFromCssGray(string $color)
     {
         $rex = '/[\(]([0-9\%]+)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
+
         return new \Com\Tecnick\Color\Model\Gray(
-            array(
+            [
                 'gray' => $this->normalizeValue($col[1], 255),
-                'alpha' => 1
-            )
+                'alpha' => 1,
+            ]
         );
     }
 
@@ -145,19 +155,20 @@ abstract class Css
      *
      * @throws ColorException if the color is not found
      */
-    private function getColorObjFromCssRgb($color)
+    private function getColorObjFromCssRgb(string $color)
     {
         $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
+
         return new \Com\Tecnick\Color\Model\Rgb(
-            array(
-                'red'   => $this->normalizeValue($col[1], 255),
+            [
+                'red' => $this->normalizeValue($col[1], 255),
                 'green' => $this->normalizeValue($col[2], 255),
-                'blue'  => $this->normalizeValue($col[3], 255),
-                'alpha' => (isset($col[4][0]) ? $col[4] : 1)
-            )
+                'blue' => $this->normalizeValue($col[3], 255),
+                'alpha' => (isset($col[4][0]) ? $col[4] : 1),
+            ]
         );
     }
 
@@ -170,19 +181,20 @@ abstract class Css
      *
      * @throws ColorException if the color is not found
      */
-    private function getColorObjFromCssHsl($color)
+    private function getColorObjFromCssHsl(string $color)
     {
         $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
+
         return new \Com\Tecnick\Color\Model\Hsl(
-            array(
-                'hue'        => $this->normalizeValue($col[1], 360),
+            [
+                'hue' => $this->normalizeValue($col[1], 360),
                 'saturation' => $this->normalizeValue($col[2], 1),
-                'lightness'  => $this->normalizeValue($col[3], 1),
-                'alpha'      => (isset($col[4][0]) ? $col[4] : 1)
-            )
+                'lightness' => $this->normalizeValue($col[3], 1),
+                'alpha' => (isset($col[4][0]) ? $col[4] : 1),
+            ]
         );
     }
 
@@ -195,20 +207,21 @@ abstract class Css
      *
      * @throws ColorException if the color is not found
      */
-    private function getColorObjFromCssCmyk($color)
+    private function getColorObjFromCssCmyk(string $color)
     {
         $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
+
         return new \Com\Tecnick\Color\Model\Cmyk(
-            array(
-                'cyan'    => $this->normalizeValue($col[1], 100),
+            [
+                'cyan' => $this->normalizeValue($col[1], 100),
                 'magenta' => $this->normalizeValue($col[2], 100),
-                'yellow'  => $this->normalizeValue($col[3], 100),
-                'key'     => $this->normalizeValue($col[4], 100),
-                'alpha'   => (isset($col[5][0]) ? $col[5] : 1)
-            )
+                'yellow' => $this->normalizeValue($col[3], 100),
+                'key' => $this->normalizeValue($col[4], 100),
+                'alpha' => (isset($col[5][0]) ? $col[5] : 1),
+            ]
         );
     }
 }

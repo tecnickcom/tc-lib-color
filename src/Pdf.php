@@ -3,13 +3,13 @@
 /**
  * Pdf.php
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2023 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
  */
@@ -23,20 +23,20 @@ use Com\Tecnick\Color\Exception as ColorException;
  *
  * PDF Color class
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2023 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  */
 class Pdf extends \Com\Tecnick\Color\Spot
 {
     /**
      * Array of valid JavaScript color names to be used in PDF documents
      */
-    public const JSCOLOR = array(
+    public const JSCOLOR = [
         'transparent',
         'black',
         'white',
@@ -49,7 +49,7 @@ class Pdf extends \Com\Tecnick\Color\Spot
         'dkGray',
         'gray',
         'ltGray',
-    );
+    ];
 
     /**
      * Convert color to javascript string
@@ -63,13 +63,15 @@ class Pdf extends \Com\Tecnick\Color\Spot
         if (in_array($color, self::JSCOLOR)) {
             return 'color.' . $color;
         }
+
         try {
             if (($colobj = $this->getColorObj($color)) !== null) {
                 return $colobj->getJsPdfColor();
             }
-        } catch (ColorException $e) {
+        } catch (ColorException $colorException) {
             assert(true); // noop
         }
+
         // default transparent color
         return 'color.' . self::JSCOLOR[0];
     }
@@ -83,14 +85,16 @@ class Pdf extends \Com\Tecnick\Color\Spot
     {
         try {
             return $this->getSpotColorObj($color);
-        } catch (ColorException $e) {
+        } catch (ColorException $colorException) {
             assert(true); // noop
         }
+
         try {
             return $this->getColorObj($color);
-        } catch (ColorException $e) {
+        } catch (ColorException $colorException) {
             assert(true); // noop
         }
+
         return null;
     }
 
@@ -112,34 +116,36 @@ class Pdf extends \Com\Tecnick\Color\Spot
             if ($stroke) {
                 $tint = strtoupper($tint);
             }
+
             return sprintf('/CS%d %s' . "\n", $col['i'], $tint);
-        } catch (ColorException $e) {
+        } catch (ColorException $colorException) {
             assert(true); // noop
         }
+
         try {
             $col = $this->getColorObj($color);
             if ($col !== null) {
                 return $col->getPdfColor($stroke);
             }
-        } catch (ColorException $e) {
+        } catch (ColorException $colorException) {
             assert(true); // noop
         }
+
         return '';
     }
 
     /**
      * Get the RGB color components format used in PDF documents
      *
-     * @param string $color  HTML, CSS or Spot color to parse
-     *
-     * @return string
+     * @param string $color HTML, CSS or Spot color to parse
      */
-    public function getPdfRgbComponents($color)
+    public function getPdfRgbComponents($color): string
     {
         $col = $this->getColorObject($color);
         if ($col === null) {
             return '';
         }
+
         $cmp = $col->toRgbArray();
         return sprintf('%F %F %F', $cmp['red'], $cmp['green'], $cmp['blue']);
     }

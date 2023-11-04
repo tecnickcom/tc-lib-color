@@ -3,13 +3,13 @@
 /**
  * Cmyk.php
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2023 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
  */
@@ -21,13 +21,13 @@ namespace Com\Tecnick\Color\Model;
  *
  * CMYK Color Model class
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2023 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  */
 class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\Template
 {
@@ -71,15 +71,15 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      *
      * @return array with keys ('C', 'M', 'Y', 'K', 'A')
      */
-    public function getArray()
+    public function getArray(): array
     {
-        return array(
+        return [
             'C' => $this->cmp_cyan,
             'M' => $this->cmp_magenta,
             'Y' => $this->cmp_yellow,
             'K' => $this->cmp_key,
-            'A' => $this->cmp_alpha
-        );
+            'A' => $this->cmp_alpha,
+        ];
     }
 
     /**
@@ -90,25 +90,23 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      *
      * @return array with keys ('C', 'M', 'Y', 'K', 'A')
      */
-    public function getNormalizedArray($max)
+    public function getNormalizedArray($max): array
     {
-        return array(
+        return [
             'C' => $this->getNormalizedValue($this->cmp_cyan, $max),
             'M' => $this->getNormalizedValue($this->cmp_magenta, $max),
             'Y' => $this->getNormalizedValue($this->cmp_yellow, $max),
             'K' => $this->getNormalizedValue($this->cmp_key, $max),
             'A' => $this->cmp_alpha,
-        );
+        ];
     }
 
     /**
      * Get the CSS representation of the color: rgba(R, G, B, A)
      * NOTE: Supported since CSS3 and above.
      *       Use getHexadecimalColor() for CSS1 and CSS2
-     *
-     * @return string
      */
-    public function getCssColor()
+    public function getCssColor(): string
     {
         $rgb = $this->toRgbArray();
         return 'rgba('
@@ -122,23 +120,20 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
     /**
      * Get the color format used in Acrobat JavaScript
      * NOTE: the alpha channel is omitted from this representation unless is 0 = transparent
-     *
-     * @return string
      */
-    public function getJsPdfColor()
+    public function getJsPdfColor(): string
     {
         if ($this->cmp_alpha == 0) {
             return '["T"]'; // transparent color
         }
+
         return sprintf('["CMYK",%F,%F,%F,%F]', $this->cmp_cyan, $this->cmp_magenta, $this->cmp_yellow, $this->cmp_key);
     }
 
     /**
      * Get a space separated string with color component values.
-     *
-     * @return string
      */
-    public function getComponentsString()
+    public function getComponentsString(): string
     {
         return sprintf('%F %F %F %F', $this->cmp_cyan, $this->cmp_magenta, $this->cmp_yellow, $this->cmp_key);
     }
@@ -148,15 +143,14 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      * NOTE: the alpha channel is omitted
      *
      * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
-     *
-     * @return string
      */
-    public function getPdfColor($stroke = false)
+    public function getPdfColor($stroke = false): string
     {
         $mode = 'k';
         if ($stroke) {
             $mode = strtoupper($mode);
         }
+
         return $this->getComponentsString() . ' ' . $mode . "\n";
     }
 
@@ -165,12 +159,12 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      *
      * @return array with keys ('gray')
      */
-    public function toGrayArray()
+    public function toGrayArray(): array
     {
-        return array(
-            'gray'  => $this->cmp_key,
-            'alpha' => $this->cmp_alpha
-        );
+        return [
+            'gray' => $this->cmp_key,
+            'alpha' => $this->cmp_alpha,
+        ];
     }
 
     /**
@@ -178,14 +172,14 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      *
      * @return array with keys ('red', 'green', 'blue', 'alpha')
      */
-    public function toRgbArray()
+    public function toRgbArray(): array
     {
-        return array(
-            'red'   => max(0, min(1, (1 - (($this->cmp_cyan    * (1 - $this->cmp_key)) + $this->cmp_key)))),
+        return [
+            'red' => max(0, min(1, (1 - (($this->cmp_cyan * (1 - $this->cmp_key)) + $this->cmp_key)))),
             'green' => max(0, min(1, (1 - (($this->cmp_magenta * (1 - $this->cmp_key)) + $this->cmp_key)))),
-            'blue'  => max(0, min(1, (1 - (($this->cmp_yellow  * (1 - $this->cmp_key)) + $this->cmp_key)))),
-            'alpha' => $this->cmp_alpha
-        );
+            'blue' => max(0, min(1, (1 - (($this->cmp_yellow * (1 - $this->cmp_key)) + $this->cmp_key)))),
+            'alpha' => $this->cmp_alpha,
+        ];
     }
 
     /**
@@ -193,7 +187,7 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      *
      * @return array with keys ('hue', 'saturation', 'lightness', 'alpha')
      */
-    public function toHslArray()
+    public function toHslArray(): array
     {
         $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
         return $rgb->toHslArray();
@@ -204,26 +198,26 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      *
      * @return array with keys ('cyan', 'magenta', 'yellow', 'key', 'alpha')
      */
-    public function toCmykArray()
+    public function toCmykArray(): array
     {
-        return array(
-            'cyan'    => $this->cmp_cyan,
+        return [
+            'cyan' => $this->cmp_cyan,
             'magenta' => $this->cmp_magenta,
-            'yellow'  => $this->cmp_yellow,
-            'key'     => $this->cmp_key,
-            'alpha'   => $this->cmp_alpha
-        );
+            'yellow' => $this->cmp_yellow,
+            'key' => $this->cmp_key,
+            'alpha' => $this->cmp_alpha,
+        ];
     }
 
     /**
      * Invert the color
      */
-    public function invertColor()
+    public function invertColor(): self
     {
-        $this->cmp_cyan    = (1 - $this->cmp_cyan);
+        $this->cmp_cyan = (1 - $this->cmp_cyan);
         $this->cmp_magenta = (1 - $this->cmp_magenta);
-        $this->cmp_yellow  = (1 - $this->cmp_yellow);
-        $this->cmp_key     = (1 - $this->cmp_key);
+        $this->cmp_yellow = (1 - $this->cmp_yellow);
+        $this->cmp_key = (1 - $this->cmp_key);
         return $this;
     }
 }

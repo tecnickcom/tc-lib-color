@@ -11,6 +11,8 @@
 .phpunit.cache
 .phpunit.result.cache
 composer.lock
+ecs.php
 phpunit.xml
+rector.php
 target
 vendor

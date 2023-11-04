@@ -3,13 +3,13 @@
 /**
  * Model.php
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2023 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
  */
@@ -21,13 +21,13 @@ namespace Com\Tecnick\Color;
  *
  * Color Model class
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2023 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  */
 abstract class Model
 {
@@ -58,7 +58,7 @@ abstract class Model
         foreach ($components as $color => $value) {
             $property = 'cmp_' . $color;
             if (property_exists($this, $property)) {
-                $this->$property = (max(0, min(1, floatval($value))));
+                $this->$property = (max(0, min(1, (float) $value)));
             }
         }
     }
@@ -83,7 +83,7 @@ abstract class Model
      */
     public function getNormalizedValue($value, $max)
     {
-        return round(max(0, min($max, ($max * floatval($value)))));
+        return round(max(0, min($max, ($max * (float) $value))));
     }
 
     /**
