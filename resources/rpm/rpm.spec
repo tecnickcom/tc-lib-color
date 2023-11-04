@@ -16,7 +16,7 @@ URL:       https://github.com/%{gh_owner}/%{gh_project}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires:  php(language) >= 7.2.0
+Requires:  php(language) >= 8.0.0
 Requires:  php-pcre
 
 Provides:  php-composer(%{c_vendor}/%{gh_project}) = %{version}
