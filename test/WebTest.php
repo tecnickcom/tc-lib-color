@@ -97,8 +97,8 @@ class WebTest extends TestUtil
     public function testGetRgbObjFromHex(): void
     {
         $web = $this->getTestObject();
-        $res = $web->getRgbObjFromHex('#87ceebff');
-        $this->assertEquals('#87ceebff', $res->getRgbaHexColor());
+        $rgb = $web->getRgbObjFromHex('#87ceebff');
+        $this->assertEquals('#87ceebff', $rgb->getRgbaHexColor());
     }
 
     public function testGetRgbObjFromHexBad(): void

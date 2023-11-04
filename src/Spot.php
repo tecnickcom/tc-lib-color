@@ -38,7 +38,16 @@ class Spot extends \Com\Tecnick\Color\Web
      * Array of default Spot colors
      * Color keys must be in lowercase and without spaces.
      *
-     * @var array<string, array<string, string|array<string, int>>>
+     * @var array<string, array{
+     *       'name': string,
+     *       'color': array{
+     *           'cyan': int|float,
+     *           'magenta': int|float,
+     *           'yellow': int|float,
+     *           'key': int|float,
+     *           'alpha': int|float,
+     *       }
+     *     }>
      */
     public const DEFAULT_SPOT_COLORS = [
         'none' => [
@@ -156,14 +165,14 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Array of Spot colors
      *
-     * @var array<string, array<string, int|string|Cmyk>>
+     * @var array<string, array{'i': int, 'n': int, 'name': string, 'color': Cmyk}>
      */
     protected $spot_colors = [];
 
     /**
      * Returns the array of spot colors.
      *
-     * @return array<string, array<string, int|string|Cmyk>> Spot colors array.
+     * @return array<string, array{'i': int, 'n': int, 'name': string, 'color': Cmyk}>
      */
     public function getSpotColors(): array
     {
@@ -186,7 +195,7 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @param string $name Full name of the spot color.
      *
-     * @return array<string, int|string|Cmyk> Spot color data array.
+     * @return array{'i': int, 'n': int, 'name': string, 'color': Cmyk}
      *
      * @throws ColorException if the color is not found
      */
