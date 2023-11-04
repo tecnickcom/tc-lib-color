@@ -35,10 +35,8 @@ class Pdf extends \Com\Tecnick\Color\Spot
 {
     /**
      * Array of valid JavaScript color names to be used in PDF documents
-     *
-     * @var array
      */
-    protected static $jscolor = array(
+    public const JSCOLOR = array(
         'transparent',
         'black',
         'white',
@@ -54,16 +52,6 @@ class Pdf extends \Com\Tecnick\Color\Spot
     );
 
     /**
-     * Return the Js color array of names
-     *
-     * @return array
-     */
-    public function getJsMap()
-    {
-        return self::$jscolor;
-    }
-
-    /**
      * Convert color to javascript string
      *
      * @param string|object $color color name or color object
@@ -72,7 +60,7 @@ class Pdf extends \Com\Tecnick\Color\Spot
      */
     public function getJsColorString($color)
     {
-        if (in_array($color, self::$jscolor)) {
+        if (in_array($color, self::JSCOLOR)) {
             return 'color.' . $color;
         }
         try {
@@ -83,7 +71,7 @@ class Pdf extends \Com\Tecnick\Color\Spot
             assert(true); // noop
         }
         // default transparent color
-        return 'color.' . self::$jscolor[0];
+        return 'color.' . self::JSCOLOR[0];
     }
 
     /**

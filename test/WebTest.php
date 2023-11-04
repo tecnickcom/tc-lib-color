@@ -36,13 +36,6 @@ class WebTest extends TestUtil
         return new \Com\Tecnick\Color\Web();
     }
 
-    public function testGetMap()
-    {
-        $testObj = $this->getTestObject();
-        $res = $testObj->getMap();
-        $this->assertEquals(149, count($res));
-    }
-
     public function testGetHexFromName()
     {
         $testObj = $this->getTestObject();

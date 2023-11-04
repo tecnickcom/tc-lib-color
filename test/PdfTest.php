@@ -36,13 +36,6 @@ class PdfTest extends TestUtil
         return new \Com\Tecnick\Color\Pdf();
     }
 
-    public function testGetJsMap()
-    {
-        $testObj = $this->getTestObject();
-        $res = $testObj->getJsMap();
-        $this->assertEquals(12, count($res));
-    }
-
     public function testGetJsColorString()
     {
         $testObj = $this->getTestObject();

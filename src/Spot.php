@@ -40,7 +40,7 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @var array
      */
-    protected static $default_spot_colors = array (
+    public const DEFAULT_SPOT_COLORS = array (
         'none' => array('name' => 'None',
             'color' => array('cyan' => 0, 'magenta' => 0, 'yellow' => 0, 'key' => 0, 'alpha' => 1)),
         'all' => array('name' => 'All',
@@ -108,10 +108,10 @@ class Spot extends \Com\Tecnick\Color\Web
         $key = $this->normalizeSpotColorName($name);
         if (empty($this->spot_colors[$key])) {
             // search on default spot colors
-            if (empty(self::$default_spot_colors[$key])) {
+            if (empty(self::DEFAULT_SPOT_COLORS[$key])) {
                 throw new ColorException('unable to find the spot color: ' . $key);
             }
-            $this->addSpotColor($key, new Cmyk(self::$default_spot_colors[$key]['color']));
+            $this->addSpotColor($key, new Cmyk(self::DEFAULT_SPOT_COLORS[$key]['color']));
         }
         return $this->spot_colors[$key];
     }

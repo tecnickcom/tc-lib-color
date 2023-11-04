@@ -34,11 +34,9 @@ use Com\Tecnick\Color\Exception as ColorException;
 class Web extends \Com\Tecnick\Color\Css
 {
     /**
-     * Array of WEB safe colors #RRGGBBAA
-     *
-     * @var array
+     * Maps WEB safe color names with theur hexadecimal representation (#RRGGBBAA).
      */
-    protected static $webhex = array(
+    public const WEBHEX = array(
         'aliceblue'            => 'f0f8ffff',
         'antiquewhite'         => 'faebd7ff',
         'aqua'                 => '00ffffff',
@@ -191,16 +189,6 @@ class Web extends \Com\Tecnick\Color\Css
     );
 
     /**
-     * Get the color map (name => hexhash)
-     *
-     * @return array
-     */
-    public function getMap()
-    {
-        return self::$webhex;
-    }
-
-    /**
      * Get the color hexadecimal hash code from name
      *
      * @param string $name Name of the color to search (e.g.: 'turquoise')
@@ -216,10 +204,10 @@ class Web extends \Com\Tecnick\Color\Css
             // remove parent name (i.e.: color.green)
             $name = substr($name, ($dotpos + 1));
         }
-        if (empty(self::$webhex[$name])) {
+        if (empty(self::WEBHEX[$name])) {
             throw new ColorException('unable to find the color hex for the name: ' . $name);
         }
-        return self::$webhex[$name];
+        return self::WEBHEX[$name];
     }
 
     /**
@@ -233,7 +221,7 @@ class Web extends \Com\Tecnick\Color\Css
      */
     public function getNameFromHex($hex)
     {
-        $name = array_search($this->extractHexCode($hex), self::$webhex, true);
+        $name = array_search($this->extractHexCode($hex), self::WEBHEX, true);
         if ($name === false) {
             throw new ColorException('unable to find the color name for the hex code: ' . $hex);
         }
@@ -385,7 +373,7 @@ class Web extends \Com\Tecnick\Color\Css
     {
         $color = '';
         $mindist = 3; // = 1^2 + 1^2 + 1^2
-        foreach (self::$webhex as $name => $hex) {
+        foreach (self::WEBHEX as $name => $hex) {
             $dist = $this->getRgbSquareDistance($col, $this->getHexArray($hex));
             if ($dist <= $mindist) {
                 $mindist = $dist;
