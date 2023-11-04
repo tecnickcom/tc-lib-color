@@ -211,7 +211,7 @@ class WebTest extends TestUtil
      */
     public static function getBadColor(): array
     {
-        return [['g(-)'], ['rgb(-)'], ['hsl(-)'], ['cmyk(-)']];
+        return [['g()'], ['rgb()'], ['hsl()'], ['cmyk()']];
     }
 
     /**
