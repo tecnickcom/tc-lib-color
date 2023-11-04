@@ -145,6 +145,7 @@ class WebTest extends TestUtil
         $res = $web->getColorObj('color.transparent');
         $this->assertNull($res);
         $res = $web->getColorObj('royalblue');
+        $this->assertNotNull($res);
         $this->assertEquals('#4169e1ff', $res->getRgbaHexColor());
         $res = $web->getColorObj('#1a2b3c4d');
         $this->assertEquals('#1a2b3c4d', $res->getRgbaHexColor());
@@ -186,6 +187,9 @@ class WebTest extends TestUtil
         $this->assertEquals('#3f80bfd9', $res->getRgbaHexColor());
     }
 
+    /**
+     * @return array<string[]>
+     */
     public static function getBadColor(): array
     {
         return [['g(-)'], ['rgb(-)'], ['hsl(-)'], ['cmyk(-)']];

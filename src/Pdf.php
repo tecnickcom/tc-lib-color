@@ -54,16 +54,16 @@ class Pdf extends \Com\Tecnick\Color\Spot
     /**
      * Convert color to javascript string
      *
-     * @param string|object $color color name or color object
+     * @param string $color color name or color object
      */
-    public function getJsColorString(string|object $color): string
+    public function getJsColorString(string $color): string
     {
         if (in_array($color, self::JSCOLOR)) {
             return 'color.' . $color;
         }
 
         try {
-            if (($colobj = $this->getColorObj($color)) !== null) {
+            if (($colobj = $this->getColorObj($color)) instanceof \Com\Tecnick\Color\Model) {
                 return $colobj->getJsPdfColor();
             }
         } catch (ColorException $colorException) {
@@ -79,7 +79,7 @@ class Pdf extends \Com\Tecnick\Color\Spot
      *
      * @param string $color HTML, CSS or Spot color to parse
      */
-    public function getColorObject(string $color)
+    public function getColorObject(string $color): ?\Com\Tecnick\Color\Model
     {
         try {
             return $this->getSpotColorObj($color);
@@ -120,7 +120,7 @@ class Pdf extends \Com\Tecnick\Color\Spot
 
         try {
             $col = $this->getColorObj($color);
-            if ($col !== null) {
+            if ($col instanceof \Com\Tecnick\Color\Model) {
                 return $col->getPdfColor($stroke);
             }
         } catch (ColorException $colorException) {
@@ -137,12 +137,12 @@ class Pdf extends \Com\Tecnick\Color\Spot
      */
     public function getPdfRgbComponents(string $color): string
     {
-        $col = $this->getColorObject($color);
-        if ($col === null) {
+        $model = $this->getColorObject($color);
+        if (! $model instanceof \Com\Tecnick\Color\Model) {
             return '';
         }
 
-        $cmp = $col->toRgbArray();
+        $cmp = $model->toRgbArray();
         return sprintf('%F %F %F', $cmp['red'], $cmp['green'], $cmp['blue']);
     }
 }

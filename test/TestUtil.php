@@ -31,11 +31,18 @@ use PHPUnit\Framework\TestCase;
  */
 class TestUtil extends TestCase
 {
-    public function bcAssertEqualsWithDelta(mixed $expected, mixed $actual, $delta = 0.01, string $message = ''): void
-    {
+    public function bcAssertEqualsWithDelta(
+        mixed $expected,
+        mixed $actual,
+        float $delta = 0.01,
+        string $message = ''
+    ): void {
         parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
     }
 
+    /**
+     * @param class-string<\Throwable> $exception
+     */
     public function bcExpectException($exception): void
     {
         parent::expectException($exception);

@@ -29,7 +29,7 @@ namespace Com\Tecnick\Color;
  * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link      https://github.com/tecnickcom/tc-lib-color
  */
-abstract class Model
+abstract class Model implements \Com\Tecnick\Color\Model\Template
 {
     /**
      * Color Model type (GRAY, RGB, HSL, CMYK)
@@ -46,14 +46,12 @@ abstract class Model
      */
     protected $cmp_alpha = 1.0;
 
-    abstract public function toRgbArray();
-
     /**
-     * Initialize a new color object
+     * Initialize a new color object.
      *
-     * @param array $components Array of color components is the range [0..1]
+     * @param array<string, int|float|string> $components color components.
      */
-    public function __construct($components)
+    public function __construct(array $components)
     {
         foreach ($components as $color => $value) {
             $property = 'cmp_' . $color;

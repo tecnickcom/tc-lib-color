@@ -42,7 +42,7 @@ abstract class Css
      *
      * @throws ColorException if the color is not found
      */
-    protected function getColorObjFromJs(string $color)
+    protected function getColorObjFromJs(string $color): ?\Com\Tecnick\Color\Model
     {
         if (! isset($color[2]) || (strpos('tgrc', $color[2]) === false)) {
             throw new ColorException('invalid javascript color: ' . $color);
@@ -102,7 +102,7 @@ abstract class Css
      *
      * @throws ColorException if the color is not found
      */
-    protected function getColorObjFromCss(string $type, string $color)
+    protected function getColorObjFromCss(string $type, string $color): ?\Com\Tecnick\Color\Model
     {
         switch ($type) {
             case 'g':

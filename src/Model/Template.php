@@ -34,7 +34,7 @@ interface Template
     /**
      * Get an array with all color components
      *
-     * @return array
+     * @return array<string, float>
      */
     public function getArray();
 
@@ -43,6 +43,8 @@ interface Template
      * NOTE: the alpha and other fraction component values are kept in the [0..1] range.
      *
      * @param int $max Maximum value to return (reference value)
+     *
+     * @return array<string, float>
      */
     public function getNormalizedArray(int $max): array;
 
@@ -63,36 +65,38 @@ interface Template
     public function getComponentsString(): string;
 
     /**
-     * Get the color components format used in PDF documents
+     * Get the color components format used in PDF documents (RGB)
      * NOTE: the alpha channel is omitted
+     *
+     * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
      */
-    public function getPdfColor(): string;
+    public function getPdfColor(bool $stroke = false): string;
 
     /**
      * Get an array with Gray color components
      *
-     * @return array with keys ('gray')
+     * @return array<string, float> with keys ('gray')
      */
     public function toGrayArray(): array;
 
     /**
      * Get an array with RGB color components
      *
-     * @return array with keys ('red', 'green', 'blue', 'alpha')
+     * @return array<string, float> with keys ('red', 'green', 'blue', 'alpha')
      */
     public function toRgbArray(): array;
 
     /**
      * Get an array with HSL color components
      *
-     * @return array with keys ('hue', 'saturation', 'lightness', 'alpha')
+     * @return array<string, float> with keys ('hue', 'saturation', 'lightness', 'alpha')
      */
     public function toHslArray(): array;
 
     /**
      * Get an array with CMYK color components
      *
-     * @return array with keys ('cyan', 'magenta', 'yellow', 'key', 'alpha')
+     * @return array<string, float> with keys ('cyan', 'magenta', 'yellow', 'key', 'alpha')
      */
     public function toCmykArray(): array;
 

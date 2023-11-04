@@ -38,7 +38,7 @@ class Spot extends \Com\Tecnick\Color\Web
      * Array of default Spot colors
      * Color keys must be in lowercase and without spaces.
      *
-     * @var array
+     * @var array<string, array<string, string|array<string, int>>>
      */
     public const DEFAULT_SPOT_COLORS = [
         'none' => [
@@ -156,14 +156,14 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Array of Spot colors
      *
-     * @var array
+     * @var array<string, array<string, int|string|Cmyk>>
      */
     protected $spot_colors = [];
 
     /**
      * Returns the array of spot colors.
      *
-     * @return array Spot colors array.
+     * @return array<string, array<string, int|string|Cmyk>> Spot colors array.
      */
     public function getSpotColors(): array
     {
@@ -175,15 +175,18 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @param string $name Full name of the spot color.
      */
-    public function normalizeSpotColorName(string $name): ?string
+    public function normalizeSpotColorName(string $name): string
     {
-        return preg_replace('/[^a-z0-9]*/', '', strtolower($name));
+        $ret = preg_replace('/[^a-z0-9]*/', '', strtolower($name));
+        return $ret ?? '';
     }
 
     /**
      * Return the requested spot color data array
      *
      * @param string $name Full name of the spot color.
+     *
+     * @return array<string, int|string|Cmyk> Spot color data array.
      *
      * @throws ColorException if the color is not found
      */
@@ -209,7 +212,7 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @throws ColorException if the color is not found
      */
-    public function getSpotColorObj(string $name)
+    public function getSpotColorObj(string $name): Cmyk
     {
         $spot = $this->getSpotColor($name);
         return $spot['color'];
@@ -224,16 +227,13 @@ class Spot extends \Com\Tecnick\Color\Web
     public function addSpotColor(string $name, Cmyk $cmyk): void
     {
         $key = $this->normalizeSpotColorName($name);
-        $num = isset($this->spot_colors[$key]) ? $this->spot_colors[$key]['i'] : count($this->spot_colors) + 1;
+        $num = isset($this->spot_colors[$key]) ? $this->spot_colors[$key]['i'] : (count($this->spot_colors) + 1);
 
         $this->spot_colors[$key] = [
-            'i' => $num,
-            // color index
-            'n' => 0,
-            // PDF object number
-            'name' => $name,
-            // color name (key)
-            'color' => $cmyk,
+            'i' => $num, // color index
+            'n' => 0, // PDF object number
+            'name' => $name, // color name (key)
+            'color' => $cmyk, // CMYK color object
         ];
     }
 

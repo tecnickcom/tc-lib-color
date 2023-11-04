@@ -29,7 +29,7 @@ namespace Com\Tecnick\Color\Model;
  * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link      https://github.com/tecnickcom/tc-lib-color
  */
-class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\Template
+class Rgb extends \Com\Tecnick\Color\Model
 {
     /**
      * Color Model type
@@ -62,7 +62,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
     /**
      * Get an array with all color components
      *
-     * @return array with keys ('R', 'G', 'B', 'A')
+     * @return array<string, float> with keys ('R', 'G', 'B', 'A')
      */
     public function getArray(): array
     {
@@ -80,7 +80,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
      *
      * @param int $max Maximum value to return (reference value)
      *
-     * @return array with keys ('R', 'G', 'B', 'A')
+     * @return array<string, float> with keys ('R', 'G', 'B', 'A')
      */
     public function getNormalizedArray(int $max): array
     {
@@ -147,7 +147,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
     /**
      * Get an array with Gray color components
      *
-     * @return array with keys ('gray')
+     * @return array<string, float> with keys ('gray')
      */
     public function toGrayArray(): array
     {
@@ -167,7 +167,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
     /**
      * Get an array with RGB color components
      *
-     * @return array with keys ('red', 'green', 'blue', 'alpha')
+     * @return array<string, float> with keys ('red', 'green', 'blue', 'alpha')
      */
     public function toRgbArray(): array
     {
@@ -182,7 +182,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
     /**
      * Get an array with HSL color components
      *
-     * @return array with keys ('hue', 'saturation', 'lightness', 'alpha')
+     * @return array<string, float> with keys ('hue', 'saturation', 'lightness', 'alpha')
      */
     public function toHslArray(): array
     {
@@ -222,7 +222,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
     /**
      * Get an array with CMYK color components
      *
-     * @return array with keys ('cyan', 'magenta', 'yellow', 'key', 'alpha')
+     * @return array<string, float> with keys ('cyan', 'magenta', 'yellow', 'key', 'alpha')
      */
     public function toCmykArray(): array
     {

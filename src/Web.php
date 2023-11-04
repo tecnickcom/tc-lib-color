@@ -298,7 +298,7 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @param string $hex hexadecimal color hash (i.e. RRGGBBAA)
      *
-     * @return array with keys ('red', 'green', 'blue', 'alpha')
+     * @return array<string, float> with keys ('red', 'green', 'blue', 'alpha')
      */
     private function getHexArray(string $hex): array
     {
@@ -334,7 +334,7 @@ class Web extends \Com\Tecnick\Color\Css
      *
      * @throws ColorException in case of error
      */
-    public function getColorObj(string $color)
+    public function getColorObj(string $color): ?\Com\Tecnick\Color\Model
     {
         $color = preg_replace('/[\s]*/', '', strtolower($color));
         if (empty($color) || (strpos($color, 'transparent') !== false)) {
@@ -360,20 +360,20 @@ class Web extends \Com\Tecnick\Color\Css
     /**
      * Get the square of the distance between 2 RGB points
      *
-     * @param array $cola First color as RGB array
-     * @param array $colb Second color as RGB array
+     * @param array<string, float> $cola First color as RGB array
+     * @param array<string, float> $colb Second color as RGB array
      */
     public function getRgbSquareDistance(array $cola, array $colb): float
     {
-        return (float) (($cola['red'] - $colb['red']) ** 2
+        return ($cola['red'] - $colb['red']) ** 2
             + ($cola['green'] - $colb['green']) ** 2
-            + ($cola['blue'] - $colb['blue']) ** 2);
+            + ($cola['blue'] - $colb['blue']) ** 2;
     }
 
     /**
      * Get the name of the closest web color
      *
-     * @param array $col Color as RGB array (keys: 'red', 'green', 'blue')
+     * @param array<string, float> $col Color as RGB array (keys: 'red', 'green', 'blue')
      */
     public function getClosestWebColor(array $col): string
     {
