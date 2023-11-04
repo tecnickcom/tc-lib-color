@@ -65,10 +65,8 @@ abstract class Model
 
     /**
      * Get the color model type (GRAY, RGB, HSL, CMYK)
-     *
-     * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -81,9 +79,9 @@ abstract class Model
      *
      * @return float value [0..$max]
      */
-    public function getNormalizedValue($value, $max)
+    public function getNormalizedValue(float $value, int $max): float
     {
-        return round(max(0, min($max, ($max * (float) $value))));
+        return round(max(0, min($max, ($max * $value))));
     }
 
     /**
@@ -91,20 +89,16 @@ abstract class Model
      *
      * @param float $value Fraction value to convert [0..1]
      * @param int   $max   Maximum value to return (reference value)
-     *
-     * @return string
      */
-    public function getHexValue($value, $max)
+    public function getHexValue(float $value, int $max): string
     {
         return sprintf('%02x', $this->getNormalizedValue($value, $max));
     }
 
     /**
      * Get the Hexadecimal representation of the color with alpha channel: #RRGGBBAA
-     *
-     * @return string
      */
-    public function getRgbaHexColor()
+    public function getRgbaHexColor(): string
     {
         $rgba = $this->toRgbArray();
         return '#'
@@ -116,10 +110,8 @@ abstract class Model
 
     /**
      * Get the Hexadecimal representation of the color: #RRGGBB
-     *
-     * @return string
      */
-    public function getRgbHexColor()
+    public function getRgbHexColor(): string
     {
         $rgba = $this->toRgbArray();
         return '#'

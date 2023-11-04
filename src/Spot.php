@@ -165,7 +165,7 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @return array Spot colors array.
      */
-    public function getSpotColors()
+    public function getSpotColors(): array
     {
         return $this->spot_colors;
     }
@@ -175,7 +175,7 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @param string $name Full name of the spot color.
      */
-    public function normalizeSpotColorName($name): ?string
+    public function normalizeSpotColorName(string $name): ?string
     {
         return preg_replace('/[^a-z0-9]*/', '', strtolower($name));
     }
@@ -185,11 +185,9 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @param string $name Full name of the spot color.
      *
-     * @return array
-     *
      * @throws ColorException if the color is not found
      */
-    public function getSpotColor($name)
+    public function getSpotColor(string $name): array
     {
         $key = $this->normalizeSpotColorName($name);
         if (empty($this->spot_colors[$key])) {
@@ -211,7 +209,7 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @throws ColorException if the color is not found
      */
-    public function getSpotColorObj($name)
+    public function getSpotColorObj(string $name)
     {
         $spot = $this->getSpotColor($name);
         return $spot['color'];
@@ -223,7 +221,7 @@ class Spot extends \Com\Tecnick\Color\Web
      * @param string $name Full name of the spot color.
      * @param Cmyk   $cmyk CMYK color object
      */
-    public function addSpotColor($name, Cmyk $cmyk): void
+    public function addSpotColor(string $name, Cmyk $cmyk): void
     {
         $key = $this->normalizeSpotColorName($name);
         $num = isset($this->spot_colors[$key]) ? $this->spot_colors[$key]['i'] : count($this->spot_colors) + 1;
@@ -246,7 +244,7 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @return string PDF command
      */
-    public function getPdfSpotObjects(&$pon): string
+    public function getPdfSpotObjects(int &$pon): string
     {
         $out = '';
         foreach ($this->spot_colors as $name => $color) {

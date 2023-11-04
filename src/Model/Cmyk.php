@@ -90,7 +90,7 @@ class Cmyk extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      *
      * @return array with keys ('C', 'M', 'Y', 'K', 'A')
      */
-    public function getNormalizedArray($max): array
+    public function getNormalizedArray(int $max): array
     {
         return [
             'C' => $this->getNormalizedValue($this->cmp_cyan, $max),

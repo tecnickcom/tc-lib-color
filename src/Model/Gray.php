@@ -66,7 +66,7 @@ class Gray extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      *
      * @return array with keys ('G', 'A')
      */
-    public function getNormalizedArray($max): array
+    public function getNormalizedArray(int $max): array
     {
         return [
             'G' => $this->getNormalizedValue($this->cmp_gray, $max),
@@ -116,7 +116,7 @@ class Gray extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\
      *
      * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
      */
-    public function getPdfColor($stroke = false): string
+    public function getPdfColor(bool $stroke = false): string
     {
         $mode = 'g';
         if ($stroke) {

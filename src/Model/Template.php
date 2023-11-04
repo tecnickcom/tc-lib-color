@@ -43,71 +43,61 @@ interface Template
      * NOTE: the alpha and other fraction component values are kept in the [0..1] range.
      *
      * @param int $max Maximum value to return (reference value)
-     *
-     * @return array
      */
-    public function getNormalizedArray($max);
+    public function getNormalizedArray(int $max): array;
 
     /**
      * Get the CSS representation of the color
-     *
-     * @return string
      */
-    public function getCssColor();
+    public function getCssColor(): string;
 
     /**
      * Get the color format used in Acrobat JavaScript
      * NOTE: the alpha channel is omitted from this representation unless is 0 = transparent
-     *
-     * @return string
      */
-    public function getJsPdfColor();
+    public function getJsPdfColor(): string;
 
     /**
      * Get a space separated string with color component values.
-     *
-     * @return string
      */
-    public function getComponentsString();
+    public function getComponentsString(): string;
 
     /**
      * Get the color components format used in PDF documents
      * NOTE: the alpha channel is omitted
-     *
-     * @return string
      */
-    public function getPdfColor();
+    public function getPdfColor(): string;
 
     /**
      * Get an array with Gray color components
      *
      * @return array with keys ('gray')
      */
-    public function toGrayArray();
+    public function toGrayArray(): array;
 
     /**
      * Get an array with RGB color components
      *
      * @return array with keys ('red', 'green', 'blue', 'alpha')
      */
-    public function toRgbArray();
+    public function toRgbArray(): array;
 
     /**
      * Get an array with HSL color components
      *
      * @return array with keys ('hue', 'saturation', 'lightness', 'alpha')
      */
-    public function toHslArray();
+    public function toHslArray(): array;
 
     /**
      * Get an array with CMYK color components
      *
      * @return array with keys ('cyan', 'magenta', 'yellow', 'key', 'alpha')
      */
-    public function toCmykArray();
+    public function toCmykArray(): array;
 
     /**
      * Invert the color
      */
-    public function invertColor();
+    public function invertColor(): self;
 }

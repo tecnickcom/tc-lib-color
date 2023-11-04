@@ -82,7 +82,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
      *
      * @return array with keys ('R', 'G', 'B', 'A')
      */
-    public function getNormalizedArray($max): array
+    public function getNormalizedArray(int $max): array
     {
         return [
             'R' => $this->getNormalizedValue($this->cmp_red, $max),
@@ -134,7 +134,7 @@ class Rgb extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
      *
      * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
      */
-    public function getPdfColor($stroke = false): string
+    public function getPdfColor(bool $stroke = false): string
     {
         $mode = 'rg';
         if ($stroke) {

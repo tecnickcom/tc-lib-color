@@ -33,7 +33,7 @@ use Com\Tecnick\Color\Exception as ColorException;
  */
 abstract class Css
 {
-    abstract public function normalizeValue($value, $max);
+    abstract public function normalizeValue(int|float|string $value, int $max): float;
 
     /**
      * Get the color object from acrobat Javascript syntax
@@ -102,7 +102,7 @@ abstract class Css
      *
      * @throws ColorException if the color is not found
      */
-    protected function getColorObjFromCss($type, string $color)
+    protected function getColorObjFromCss(string $type, string $color)
     {
         switch ($type) {
             case 'g':
@@ -127,11 +127,9 @@ abstract class Css
      *
      * @param string $color color specification (e.g.: rgb(255,128,64))
      *
-     * @return \Com\Tecnick\Color\Model
-     *
      * @throws ColorException if the color is not found
      */
-    private function getColorObjFromCssGray(string $color)
+    private function getColorObjFromCssGray(string $color): \Com\Tecnick\Color\Model\Gray
     {
         $rex = '/[\(]([0-9\%]+)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
@@ -151,11 +149,9 @@ abstract class Css
      *
      * @param string $color color specification (e.g.: rgb(255,128,64))
      *
-     * @return \Com\Tecnick\Color\Model
-     *
      * @throws ColorException if the color is not found
      */
-    private function getColorObjFromCssRgb(string $color)
+    private function getColorObjFromCssRgb(string $color): \Com\Tecnick\Color\Model\Rgb
     {
         $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
@@ -177,11 +173,9 @@ abstract class Css
      *
      * @param string $color color specification (e.g.: rgb(255,128,64))
      *
-     * @return \Com\Tecnick\Color\Model
-     *
      * @throws ColorException if the color is not found
      */
-    private function getColorObjFromCssHsl(string $color)
+    private function getColorObjFromCssHsl(string $color): \Com\Tecnick\Color\Model\Hsl
     {
         $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {
@@ -203,11 +197,9 @@ abstract class Css
      *
      * @param string $color color specification (e.g.: rgb(255,128,64))
      *
-     * @return \Com\Tecnick\Color\Model
-     *
      * @throws ColorException if the color is not found
      */
-    private function getColorObjFromCssCmyk(string $color)
+    private function getColorObjFromCssCmyk(string $color): \Com\Tecnick\Color\Model\Cmyk
     {
         $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\)]/';
         if (preg_match($rex, $color, $col) !== 1) {

@@ -82,7 +82,7 @@ class Hsl extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
      *
      * @return array with keys ('H', 'S', 'L', 'A')
      */
-    public function getNormalizedArray($max): array
+    public function getNormalizedArray(int $max): array
     {
         $max = 360;
         return [
@@ -137,7 +137,7 @@ class Hsl extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
      *
      * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
      */
-    public function getPdfColor($stroke = false): string
+    public function getPdfColor(bool $stroke = false): string
     {
         $mode = 'rg';
         if ($stroke) {
@@ -197,10 +197,8 @@ class Hsl extends \Com\Tecnick\Color\Model implements \Com\Tecnick\Color\Model\T
      * @param float $vala Temporary value A
      * @param float $valb Temporary value B
      * @param float $hue  Hue value
-     *
-     * @return float
      */
-    private function convertHuetoRgb($vala, $valb, $hue)
+    private function convertHuetoRgb(float $vala, float $valb, float $hue): float
     {
         if ($hue < 0) {
             ++$hue;

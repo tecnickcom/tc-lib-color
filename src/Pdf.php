@@ -55,10 +55,8 @@ class Pdf extends \Com\Tecnick\Color\Spot
      * Convert color to javascript string
      *
      * @param string|object $color color name or color object
-     *
-     * @return string
      */
-    public function getJsColorString($color)
+    public function getJsColorString(string|object $color): string
     {
         if (in_array($color, self::JSCOLOR)) {
             return 'color.' . $color;
@@ -81,7 +79,7 @@ class Pdf extends \Com\Tecnick\Color\Spot
      *
      * @param string $color HTML, CSS or Spot color to parse
      */
-    public function getColorObject($color)
+    public function getColorObject(string $color)
     {
         try {
             return $this->getSpotColorObj($color);
@@ -105,14 +103,12 @@ class Pdf extends \Com\Tecnick\Color\Spot
      * @param string $color  HTML, CSS or Spot color to parse
      * @param bool   $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
      * @param float  $tint   Intensity of the color (from 0 to 1; 1 = full intensity).
-     *
-     * @return string
      */
-    public function getPdfColor($color, $stroke = false, $tint = 1)
+    public function getPdfColor(string $color, bool $stroke = false, float $tint = 1): string
     {
         try {
             $col = $this->getSpotColor($color);
-            $tint = sprintf('cs %F scn', (max(0, min(1, (float) $tint))));
+            $tint = sprintf('cs %F scn', (max(0, min(1, $tint))));
             if ($stroke) {
                 $tint = strtoupper($tint);
             }
@@ -139,7 +135,7 @@ class Pdf extends \Com\Tecnick\Color\Spot
      *
      * @param string $color HTML, CSS or Spot color to parse
      */
-    public function getPdfRgbComponents($color): string
+    public function getPdfRgbComponents(string $color): string
     {
         $col = $this->getColorObject($color);
         if ($col === null) {
