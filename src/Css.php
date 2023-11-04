@@ -33,7 +33,7 @@ use Com\Tecnick\Color\Exception as ColorException;
  */
 abstract class Css
 {
-    abstract public function normalizeValue(int|float|string $value, int $max): float;
+    abstract public function normalizeValue(mixed $value, int $max): float;
 
     /**
      * Get the color object from acrobat Javascript syntax
