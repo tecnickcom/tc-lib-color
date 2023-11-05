@@ -78,7 +78,7 @@ Create a composer.json in your projects root-directory:
 ```json
 {
     "require": {
-        "tecnickcom/tc-lib-color": "^1.14"
+        "tecnickcom/tc-lib-color": "^2.0"
     }
 }
 ```
@@ -86,7 +86,7 @@ Create a composer.json in your projects root-directory:
 Or add to an existing project with: 
 
 ```bash
-composer require tecnickcom/tc-lib-color ^1.14
+composer require tecnickcom/tc-lib-color ^2.0
 ```
 
 
