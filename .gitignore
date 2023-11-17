@@ -7,6 +7,8 @@
 **/.vagrant
 **/auth.json
 **/nbproject
+**/temp.php
+**/test.php
 .phpdoc
 .phpunit.cache
 .phpunit.result.cache
