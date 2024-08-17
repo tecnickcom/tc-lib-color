@@ -99,7 +99,9 @@ class SpotTest extends TestUtil
                 'alpha' => 0.65,
             ]
         );
-        $spot->addSpotColor('test', $cmyk);
+        $key = $spot->addSpotColor('test', $cmyk);
+        $this->assertEquals('test', $key);
+
         $res = $spot->getSpotColors();
         $this->assertArrayHasKey('test', $res);
         $this->assertEquals(1, $res['test']['i']);

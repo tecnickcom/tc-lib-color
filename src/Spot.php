@@ -232,8 +232,10 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @param string $name Full name of the spot color.
      * @param Cmyk   $cmyk CMYK color object
+     *
+     * @return string Spot color key.
      */
-    public function addSpotColor(string $name, Cmyk $cmyk): void
+    public function addSpotColor(string $name, Cmyk $cmyk): string
     {
         $key = $this->normalizeSpotColorName($name);
         $num = isset($this->spot_colors[$key]) ? $this->spot_colors[$key]['i'] : (count($this->spot_colors) + 1);
@@ -244,6 +246,8 @@ class Spot extends \Com\Tecnick\Color\Web
             'name' => $name, // color name (key)
             'color' => $cmyk, // CMYK color object
         ];
+
+        return $key;
     }
 
     /**
