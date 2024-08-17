@@ -170,5 +170,8 @@ class SpotTest extends TestUtil
 
         $res = $spot->getPdfSpotResources();
         $this->assertEquals('/ColorSpace << /CS1 2 0 R /CS2 3 0 R /CS3 4 0 R /CS4 5 0 R /CS5 6 0 R >>' . "\n", $res);
+
+        $resk = $spot->getPdfSpotResourcesByKeys(['cyan','yellow']);
+        $this->assertEquals('/ColorSpace << /CS2 3 0 R /CS4 5 0 R >>' . "\n", $resk);
     }
 }

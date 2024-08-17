@@ -285,11 +285,34 @@ class Spot extends \Com\Tecnick\Color\Web
             return '';
         }
 
-        $out = '/ColorSpace << ';
+        $out = '/ColorSpace <<';
+
         foreach ($this->spot_colors as $spot_color) {
-            $out .= '/CS' . $spot_color['i'] . ' ' . $spot_color['n'] . ' 0 R ';
+            $out .= ' /CS' . $spot_color['i'] . ' ' . $spot_color['n'] . ' 0 R';
         }
 
-        return $out . ('>>' . "\n");
+        return $out . ' >>' . "\n";
+    }
+
+    /**
+     * Returns the PDF command to output Spot color resources.
+     *
+     * @param array<string> $keys Array of font keys.
+     *
+     * @return string PDF command
+     */
+    public function getPdfSpotResourcesByKeys(array $keys): string
+    {
+        if (empty($keys)) {
+            return '';
+        }
+
+        $out = '/ColorSpace <<';
+
+        foreach ($keys as $key) {
+            $out .= ' /CS' . $this->spot_colors[$key]['i'] . ' ' . $this->spot_colors[$key]['n'] . ' 0 R';
+        }
+
+        return $out . ' >>' . "\n";
     }
 }
