@@ -31,6 +31,13 @@ use Com\Tecnick\Color\Model\Cmyk;
  * @copyright 2015-2024 Nicola Asuni - Tecnick.com LTD
  * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link      https://github.com/tecnickcom/tc-lib-color
+ *
+ * @phpstan-type TSpotColor array{
+ *                 'i': int,
+ *                 'n': int,
+ *                 'name': string,
+ *                 'color': Cmyk,
+ *               }
  */
 class Spot extends \Com\Tecnick\Color\Web
 {
@@ -165,14 +172,14 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Array of Spot colors
      *
-     * @var array<string, array{'i': int, 'n': int, 'name': string, 'color': Cmyk}>
+     * @var array<string, TSpotColor>
      */
     protected $spot_colors = [];
 
     /**
      * Returns the array of spot colors.
      *
-     * @return array<string, array{'i': int, 'n': int, 'name': string, 'color': Cmyk}>
+     * @return array<string, TSpotColor>
      */
     public function getSpotColors(): array
     {
@@ -195,7 +202,7 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @param string $name Full name of the spot color.
      *
-     * @return array{'i': int, 'n': int, 'name': string, 'color': Cmyk}
+     * @return TSpotColor
      *
      * @throws ColorException if the color is not found
      */
@@ -279,23 +286,35 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
+     * Returns the PDF command to output the provided Spot color resources.
+     *
+     * @param array<string, array{'i': int, 'n': int}> $data Spot color array.
+     *
+     * @return string PDF command
+     */
+    private function getOutPdfSpotResources(array $data): string
+    {
+        if (empty($data)) {
+            return '';
+        }
+
+        $out = '/ColorSpace <<';
+
+        foreach ($data as $spot_color) {
+            $out .= ' /CS' . $spot_color['i'] . ' ' . $spot_color['n'] . ' 0 R';
+        }
+
+        return $out . ' >>' . "\n";
+    }
+
+    /**
      * Returns the PDF command to output Spot color resources.
      *
      * @return string PDF command
      */
     public function getPdfSpotResources(): string
     {
-        if ($this->spot_colors === []) {
-            return '';
-        }
-
-        $out = '/ColorSpace <<';
-
-        foreach ($this->spot_colors as $spot_color) {
-            $out .= ' /CS' . $spot_color['i'] . ' ' . $spot_color['n'] . ' 0 R';
-        }
-
-        return $out . ' >>' . "\n";
+        return $this->getOutPdfSpotResources($this->spot_colors);
     }
 
     /**
@@ -311,12 +330,14 @@ class Spot extends \Com\Tecnick\Color\Web
             return '';
         }
 
-        $out = '/ColorSpace <<';
-
+        $data = [];
         foreach ($keys as $key) {
-            $out .= ' /CS' . $this->spot_colors[$key]['i'] . ' ' . $this->spot_colors[$key]['n'] . ' 0 R';
+            $data[$key] = [
+                'i' => $this->spot_colors[$key]['i'],
+                'n' => $this->spot_colors[$key]['n'],
+            ];
         }
 
-        return $out . ' >>' . "\n";
+        return $this->getOutPdfSpotResources($data);
     }
 }
