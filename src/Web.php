@@ -336,7 +336,7 @@ class Web extends \Com\Tecnick\Color\Css
      */
     public function getColorObj(string $color): ?\Com\Tecnick\Color\Model
     {
-        $color = preg_replace('/[\s]*/', '', strtolower($color));
+        $color = preg_replace('/[\s]*+/', '', strtolower($color));
         if (empty($color) || (strpos($color, 'transparent') !== false)) {
             return null;
         }

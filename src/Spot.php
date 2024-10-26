@@ -193,7 +193,7 @@ class Spot extends \Com\Tecnick\Color\Web
      */
     public function normalizeSpotColorName(string $name): string
     {
-        $ret = preg_replace('/[^a-z0-9]*/', '', strtolower($name));
+        $ret = preg_replace('/[^a-z0-9]*+/', '', strtolower($name));
         return $ret ?? '';
     }
 
