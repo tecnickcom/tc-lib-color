@@ -261,7 +261,7 @@ tag:
 .PHONY: test
 test:
 	cp phpunit.xml.dist phpunit.xml
-	./vendor/bin/phpunit --migrate-configuration || true
+	#./vendor/bin/phpunit --migrate-configuration || true
 	XDEBUG_MODE=coverage ./vendor/bin/phpunit --stderr test
 
 # Remove all installed files

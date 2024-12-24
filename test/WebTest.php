@@ -16,6 +16,8 @@
 
 namespace Test;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 /**
  * Web Color class test
  *
@@ -214,9 +216,8 @@ class WebTest extends TestUtil
         return [['g(-)'], ['rgb(-)'], ['hsl(-)'], ['cmyk(-)']];
     }
 
-    /**
-     * @dataProvider getBadColor
-     */
+
+    #[DataProvider('getBadColor')]
     public function testGetColorObjBad(string $bad): void
     {
         $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
