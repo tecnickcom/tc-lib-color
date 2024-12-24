@@ -79,7 +79,9 @@ abstract class Model implements \Com\Tecnick\Color\Model\Template
      */
     public function getNormalizedValue(float $value, int $max): float
     {
-        return round(max(0, min($max, ($max * $value))));
+        // NOTE: The last round has been added for backward compatibility because of:
+        // https://github.com/php/php-src/issues/14332
+        return round(max(0, min($max, ($max * round($value, 14)))));
     }
 
     /**
