@@ -212,8 +212,8 @@ endif
 .PHONY: lint
 lint:
 	./vendor/bin/phpcs --ignore="./vendor/" --standard=phpcs.xml src test
-	./vendor/bin/phpmd src text codesize,unusedcode,naming,design --exclude vendor
-	./vendor/bin/phpmd test text unusedcode,naming,design
+	./vendor/bin/phpmd src text codesize,unusedcode,naming,design --exclude */vendor/*
+	./vendor/bin/phpmd test text unusedcode,naming,design --exclude */vendor/*
 	php -r 'exit((int)version_compare(PHP_MAJOR_VERSION, "7", ">"));' || ./vendor/phpstan.phar analyse
 
 # Run all tests and reports
