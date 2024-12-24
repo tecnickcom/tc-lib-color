@@ -188,10 +188,18 @@ class WebTest extends TestUtil
         $this->assertEquals('#4080bfd9', $res->getRgbaHexColor());
         $res = $web->getColorObj('hsl(210,50%,50%)');
         $this->assertNotNull($res);
-        $this->assertEquals('#4080bfff', $res->getRgbaHexColor());
+        if (PHP_VERSION_ID < 80400) {
+            $this->assertEquals('#4080bfff', $res->getRgbaHexColor());
+        } else {
+            $this->assertEquals('#407fbfff', $res->getRgbaHexColor());
+        }
         $res = $web->getColorObj('hsla(210,50%,50%,0.85)');
         $this->assertNotNull($res);
-        $this->assertEquals('#4080bfd9', $res->getRgbaHexColor());
+        if (PHP_VERSION_ID < 80400) {
+            $this->assertEquals('#4080bfd9', $res->getRgbaHexColor());
+        } else {
+            $this->assertEquals('#407fbfd9', $res->getRgbaHexColor());
+        }
         $res = $web->getColorObj('cmyk(67%,33%,0,25%)');
         $this->assertNotNull($res);
         $this->assertEquals('#3f80bfff', $res->getRgbaHexColor());
