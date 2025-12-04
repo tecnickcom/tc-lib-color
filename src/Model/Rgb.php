@@ -117,7 +117,7 @@ class Rgb extends \Com\Tecnick\Color\Model
             return '["T"]'; // transparent color
         }
 
-        return sprintf('["RGB",%F,%F,%F]', $this->cmp_red, $this->cmp_green, $this->cmp_blue);
+        return \sprintf('["RGB",%F,%F,%F]', $this->cmp_red, $this->cmp_green, $this->cmp_blue);
     }
 
     /**
@@ -125,7 +125,7 @@ class Rgb extends \Com\Tecnick\Color\Model
      */
     public function getComponentsString(): string
     {
-        return sprintf('%F %F %F', $this->cmp_red, $this->cmp_green, $this->cmp_blue);
+        return \sprintf('%F %F %F', $this->cmp_red, $this->cmp_green, $this->cmp_blue);
     }
 
     /**
@@ -138,7 +138,7 @@ class Rgb extends \Com\Tecnick\Color\Model
     {
         $mode = 'rg';
         if ($stroke) {
-            $mode = strtoupper($mode);
+            $mode = \strtoupper($mode);
         }
 
         return $this->getComponentsString() . ' ' . $mode . "\n";
@@ -153,9 +153,9 @@ class Rgb extends \Com\Tecnick\Color\Model
     {
         // convert using the SMPTE 295M-1997 standard conversion constants
         return [
-            'gray' => (max(
+            'gray' => (\max(
                 0,
-                min(
+                \min(
                     1,
                     ((0.2126 * $this->cmp_red) + (0.7152 * $this->cmp_green) + (0.0722 * $this->cmp_blue))
                 )
@@ -186,8 +186,8 @@ class Rgb extends \Com\Tecnick\Color\Model
      */
     public function toHslArray(): array
     {
-        $min = min($this->cmp_red, $this->cmp_green, $this->cmp_blue);
-        $max = max($this->cmp_red, $this->cmp_green, $this->cmp_blue);
+        $min = \min($this->cmp_red, $this->cmp_green, $this->cmp_blue);
+        $max = \max($this->cmp_red, $this->cmp_green, $this->cmp_blue);
         $lightness = (($min + $max) / 2);
         $saturation = 0;
         $hue = 0;
@@ -212,9 +212,9 @@ class Rgb extends \Com\Tecnick\Color\Model
         }
 
         return [
-            'hue' => max(0, min(1, $hue)),
-            'saturation' => max(0, min(1, $saturation)),
-            'lightness' => max(0, min(1, $lightness)),
+            'hue' => \max(0, \min(1, $hue)),
+            'saturation' => \max(0, \min(1, $saturation)),
+            'lightness' => \max(0, \min(1, $lightness)),
             'alpha' => $this->cmp_alpha,
         ];
     }
@@ -254,10 +254,10 @@ class Rgb extends \Com\Tecnick\Color\Model
         }
 
         return [
-            'cyan' => max(0, min(1, $cyan)),
-            'magenta' => max(0, min(1, $magenta)),
-            'yellow' => max(0, min(1, $yellow)),
-            'key' => max(0, min(1, $key)),
+            'cyan' => \max(0, \min(1, $cyan)),
+            'magenta' => \max(0, \min(1, $magenta)),
+            'yellow' => \max(0, \min(1, $yellow)),
+            'key' => \max(0, \min(1, $key)),
             'alpha' => $this->cmp_alpha,
         ];
     }

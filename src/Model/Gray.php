@@ -99,7 +99,7 @@ class Gray extends \Com\Tecnick\Color\Model
             return '["T"]'; // transparent color
         }
 
-        return sprintf('["G",%F]', $this->cmp_gray);
+        return \sprintf('["G",%F]', $this->cmp_gray);
     }
 
     /**
@@ -107,7 +107,7 @@ class Gray extends \Com\Tecnick\Color\Model
      */
     public function getComponentsString(): string
     {
-        return sprintf('%F', $this->cmp_gray);
+        return \sprintf('%F', $this->cmp_gray);
     }
 
     /**
@@ -120,7 +120,7 @@ class Gray extends \Com\Tecnick\Color\Model
     {
         $mode = 'g';
         if ($stroke) {
-            $mode = strtoupper($mode);
+            $mode = \strtoupper($mode);
         }
 
         return $this->getComponentsString() . ' ' . $mode . "\n";

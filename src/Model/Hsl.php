@@ -119,7 +119,7 @@ class Hsl extends \Com\Tecnick\Color\Model
             return '["T"]'; // transparent color
         }
 
-        return sprintf('["RGB",%F,%F,%F]', $rgb['red'], $rgb['green'], $rgb['blue']);
+        return \sprintf('["RGB",%F,%F,%F]', $rgb['red'], $rgb['green'], $rgb['blue']);
     }
 
     /**
@@ -128,7 +128,7 @@ class Hsl extends \Com\Tecnick\Color\Model
     public function getComponentsString(): string
     {
         $rgb = $this->toRgbArray();
-        return sprintf('%F %F %F', $rgb['red'], $rgb['green'], $rgb['blue']);
+        return \sprintf('%F %F %F', $rgb['red'], $rgb['green'], $rgb['blue']);
     }
 
     /**
@@ -141,7 +141,7 @@ class Hsl extends \Com\Tecnick\Color\Model
     {
         $mode = 'rg';
         if ($stroke) {
-            $mode = strtoupper($mode);
+            $mode = \strtoupper($mode);
         }
 
         return $this->getComponentsString() . ' ' . $mode . "\n";
@@ -209,18 +209,18 @@ class Hsl extends \Com\Tecnick\Color\Model
         }
 
         if ((6 * $hue) < 1) {
-            return max(0, min(1, ($vala + (($valb - $vala) * 6 * $hue))));
+            return \max(0, \min(1, ($vala + (($valb - $vala) * 6 * $hue))));
         }
 
         if ((2 * $hue) < 1) {
-            return max(0, min(1, $valb));
+            return \max(0, \min(1, $valb));
         }
 
         if ((3 * $hue) < 2) {
-            return max(0, min(1, ($vala + (($valb - $vala) * ((2 / 3) - $hue) * 6))));
+            return \max(0, \min(1, ($vala + (($valb - $vala) * ((2 / 3) - $hue) * 6))));
         }
 
-        return max(0, min(1, $vala));
+        return \max(0, \min(1, $vala));
     }
 
     /**

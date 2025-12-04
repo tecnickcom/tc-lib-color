@@ -127,7 +127,7 @@ class Cmyk extends \Com\Tecnick\Color\Model
             return '["T"]'; // transparent color
         }
 
-        return \sprintf('["CMYK",%F,%F,%F,%F]', $this->cmp_cyan, $this->cmp_magenta, $this->cmp_yellow, $this->cmp_key);
+        return \s\printf('["CMYK",%F,%F,%F,%F]', $this->cmp_cyan, $this->cmp_magenta, $this->cmp_yellow, $this->cmp_key);
     }
 
     /**
@@ -135,89 +135,11 @@ class Cmyk extends \Com\Tecnick\Color\Model
      */
     public function getComponentsString(): string
     {
-        return \sprintf('%F %F %F %F', $this->cmp_cyan, $this->cmp_magenta, $this->cmp_yellow, $this->cmp_key);
+        return \s\printf('%F %F %F %F', $this->cmp_cyan, $this->cmp_magenta, $this->cmp_yellow, $this->cmp_key);
     }
 
     /**
      * Get the color components format used in PDF documents (CMYK)
      * NOTE: the alpha channel is omitted
      *
-     * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
-     */
-    public function getPdfColor($stroke = false): string
-    {
-        $mode = 'k';
-        if ($stroke) {
-            $mode = \strtoupper($mode);
-        }
-
-        return $this->getComponentsString() . ' ' . $mode . "\n";
-    }
-
-    /**
-     * Get an array with Gray color components
-     *
-     * @return array<string, float> with keys ('gray')
-     */
-    public function toGrayArray(): array
-    {
-        return [
-            'gray' => $this->cmp_key,
-            'alpha' => $this->cmp_alpha,
-        ];
-    }
-
-    /**
-     * Get an array with RGB color components
-     *
-     * @return array<string, float> with keys ('red', 'green', 'blue', 'alpha')
-     */
-    public function toRgbArray(): array
-    {
-        return [
-            'red' => \max(0, \min(1, (1 - (($this->cmp_cyan * (1 - $this->cmp_key)) + $this->cmp_key)))),
-            'green' => \max(0, \min(1, (1 - (($this->cmp_magenta * (1 - $this->cmp_key)) + $this->cmp_key)))),
-            'blue' => \max(0, \min(1, (1 - (($this->cmp_yellow * (1 - $this->cmp_key)) + $this->cmp_key)))),
-            'alpha' => $this->cmp_alpha,
-        ];
-    }
-
-    /**
-     * Get an array with HSL color components
-     *
-     * @return array<string, float> with keys ('hue', 'saturation', 'lightness', 'alpha')
-     */
-    public function toHslArray(): array
-    {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
-        return $rgb->toHslArray();
-    }
-
-    /**
-     * Get an array with CMYK color components
-     *
-     * @return array<string, float> with keys ('cyan', 'magenta', 'yellow', 'key', 'alpha')
-     */
-    public function toCmykArray(): array
-    {
-        return [
-            'cyan' => $this->cmp_cyan,
-            'magenta' => $this->cmp_magenta,
-            'yellow' => $this->cmp_yellow,
-            'key' => $this->cmp_key,
-            'alpha' => $this->cmp_alpha,
-        ];
-    }
-
-    /**
-     * Invert the color
-     */
-    public function invertColor(): self
-    {
-        $this->cmp_cyan = (1 - $this->cmp_cyan);
-        $this->cmp_magenta = (1 - $this->cmp_magenta);
-        $this->cmp_yellow = (1 - $this->cmp_yellow);
-        $this->cmp_key = (1 - $this->cmp_key);
-        return $this;
-    }
-}
+     * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and a

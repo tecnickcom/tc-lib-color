@@ -38,7 +38,7 @@ class SpotTest extends TestUtil
     {
         $spot = $this->getTestObject();
         $res = $spot->getSpotColors();
-        $this->assertEquals(0, count($res));
+        $this->assertEquals(0, \count($res));
     }
 
     public function testNormalizeSpotColorName(): void
