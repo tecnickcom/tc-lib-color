@@ -60,9 +60,9 @@ class Rgb extends \Com\Tecnick\Color\Model
     protected $cmp_blue = 0.0;
 
     /**
-     * Get an array with all color components
+     * Get an array with all color components.
      *
-     * @return array<string, float> with keys ('R', 'G', 'B', 'A')
+     * @return array<float> with keys ('R', 'G', 'B', 'A')
      */
     public function getArray(): array
     {
@@ -71,6 +71,26 @@ class Rgb extends \Com\Tecnick\Color\Model
             'G' => $this->cmp_green,
             'B' => $this->cmp_blue,
             'A' => $this->cmp_alpha,
+        ];
+    }
+
+    /**
+     * Get an array with all color components for
+     * the PDF appearance characteristics dictionary.
+     *
+     * The numbers that shall be in the range 0.0 to 1.0.
+     * The number of array elements determines the colour space
+     * in which the colour shall be defined:
+     * 3 = DeviceRGB
+     *
+     * @return array<float> DeviceRGB color components('R', 'G', 'B')
+     */
+    public function getPDFacArray(): array
+    {
+        return [
+            $this->cmp_red,
+            $this->cmp_green,
+            $this->cmp_blue,
         ];
     }
 

@@ -60,7 +60,7 @@ class Hsl extends \Com\Tecnick\Color\Model
     protected $cmp_lightness = 0.0;
 
     /**
-     * Get an array with all color components
+     * Get an array with all color components.
      *
      * @return array<string, float> with keys ('H', 'S', 'L', 'A')
      */
@@ -71,6 +71,27 @@ class Hsl extends \Com\Tecnick\Color\Model
             'S' => $this->cmp_saturation,
             'L' => $this->cmp_lightness,
             'A' => $this->cmp_alpha,
+        ];
+    }
+
+    /**
+     * Get an array with all color components for
+     * the PDF appearance characteristics dictionary.
+     *
+     * The numbers that shall be in the range 0.0 to 1.0.
+     * The number of array elements determines the colour space
+     * in which the colour shall be defined:
+     * 3 = DeviceRGB
+     *
+     * @return array<float> DeviceRGB color components('R', 'G', 'B')
+     */
+    public function getPDFacArray(): array
+    {
+        $rgb = $this->toRgbArray();
+        return [
+            $rgb['red'],
+            $rgb['green'],
+            $rgb['blue'],
         ];
     }
 

@@ -86,6 +86,15 @@ class GrayTest extends TestUtil
         ], $res);
     }
 
+    public function testGetPDFacArray(): void
+    {
+        $gray = $this->getTestObject();
+        $res = $gray->getPDFacArray();
+        $this->assertEquals([
+            0.75,
+        ], $res);
+    }
+
     public function testGetNormalizedArray(): void
     {
         $gray = $this->getTestObject();

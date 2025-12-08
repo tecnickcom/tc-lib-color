@@ -46,7 +46,7 @@ class Gray extends \Com\Tecnick\Color\Model
     protected $cmp_gray = 0.0;
 
     /**
-     * Get an array with all color components
+     * Get an array with all color components.
      *
      * @return array<string, float> with keys ('G', 'A')
      */
@@ -55,6 +55,24 @@ class Gray extends \Com\Tecnick\Color\Model
         return [
             'G' => $this->cmp_gray,
             'A' => $this->cmp_alpha,
+        ];
+    }
+
+    /**
+     * Get an array with all color components for
+     * the PDF appearance characteristics dictionary.
+     *
+     * The numbers that shall be in the range 0.0 to 1.0.
+     * The number of array elements determines the colour space
+     * in which the colour shall be defined:
+     * 1 = DeviceGray
+     *
+     * @return array<float> DeviceGray color component ('G')
+     */
+    public function getPDFacArray(): array
+    {
+        return [
+            $this->cmp_gray,
         ];
     }
 

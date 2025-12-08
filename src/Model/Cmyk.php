@@ -67,7 +67,7 @@ class Cmyk extends \Com\Tecnick\Color\Model
     protected $cmp_key = 0.0;
 
     /**
-     * Get an array with all color components
+     * Get an array with all color components.
      *
      * @return array<string, float> with keys ('C', 'M', 'Y', 'K', 'A')
      */
@@ -79,6 +79,27 @@ class Cmyk extends \Com\Tecnick\Color\Model
             'Y' => $this->cmp_yellow,
             'K' => $this->cmp_key,
             'A' => $this->cmp_alpha,
+        ];
+    }
+
+    /**
+     * Get an array with all color components for
+     * the PDF appearance characteristics dictionary.
+     *
+     * The numbers that shall be in the range 0.0 to 1.0.
+     * The number of array elements determines the colour space
+     * in which the colour shall be defined:
+     * 4 = DeviceCMYK
+     *
+     * @return array<float> DeviceCMYK color components ('C', 'M', 'Y', 'K')
+     */
+    public function getPDFacArray(): array
+    {
+        return [
+            $this->cmp_cyan,
+            $this->cmp_magenta,
+            $this->cmp_yellow,
+            $this->cmp_key,
         ];
     }
 

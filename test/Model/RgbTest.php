@@ -93,6 +93,20 @@ class RgbTest extends TestUtil
         );
     }
 
+    public function testGetPDFacArray(): void
+    {
+        $rgb = $this->getTestObject();
+        $res = $rgb->getPDFacArray();
+        $this->assertEquals(
+            [
+                0.25,
+                0.50,
+                0.75,
+            ],
+            $res
+        );
+    }
+
     public function testGetNormalizedArray(): void
     {
         $rgb = $this->getTestObject();

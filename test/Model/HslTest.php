@@ -95,6 +95,20 @@ class HslTest extends TestUtil
         );
     }
 
+    public function testGetPDFacArray(): void
+    {
+        $hsl = $this->getTestObject();
+        $res = $hsl->getPDFacArray();
+        $this->bcAssertEqualsWithDelta(
+            [
+                0.25,
+                0.50,
+                0.75,
+            ],
+            $res
+        );
+    }
+
     public function testGetNormalizedArray(): void
     {
         $hsl = $this->getTestObject();

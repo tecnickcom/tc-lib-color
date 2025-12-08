@@ -95,6 +95,21 @@ class CmykTest extends TestUtil
         );
     }
 
+    public function testPDFacArray(): void
+    {
+        $cmyk = $this->getTestObject();
+        $res = $cmyk->getPDFacArray();
+        $this->assertEquals(
+            [
+                0.666,
+                0.333,
+                0,
+                0.25,
+            ],
+            $res
+        );
+    }
+
     public function testGetNormalizedArray(): void
     {
         $cmyk = $this->getTestObject();
