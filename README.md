@@ -1,4 +1,4 @@
-# tc-lib-color
+#   tc-lib-color
 
 > PHP color toolkit for conversion and normalization across common color models.
 
@@ -17,6 +17,8 @@ If this library helps your graphics workflow, please consider [supporting develo
 ## Overview
 
 `tc-lib-color` provides utilities for parsing, converting, and formatting color values used in web and PDF rendering pipelines.
+
+The library is designed to centralize color logic so applications avoid ad-hoc conversion code and rounding drift across modules. It provides a consistent normalization layer that helps keep visual output aligned between browser previews and final PDF rendering.
 
 | | |
 |---|---|

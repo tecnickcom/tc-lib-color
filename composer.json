@@ -2,7 +2,7 @@
   "name": "tecnickcom/tc-lib-color",
   "description": "PHP library to manipulate various color representations",
   "type": "library",
-  "homepage": "http://www.tecnick.com",
+  "homepage": "https://tcpdf.org",
   "license": "LGPL-3.0-or-later",
   "keywords": [
     "tc-lib-color",
