@@ -33,13 +33,17 @@ The library is designed to centralize color logic so applications avoid ad-hoc c
 ## Features
 
 ### Color Models
-- RGB/RGBA and hexadecimal color handling
-- HSL/HSLA and CMYK conversion workflows
-- Grayscale and spot color support
+- Grayscale (GRAY)
+- RGB/RGBA and hexadecimal color handling (RGB)
+- HSL/HSLA conversion workflows (HSL)
+- CMYK conversion workflows (CMYK)
+- CIE Lab color handling and conversion workflows (LAB)
+- Spot colors (Separation), with DeviceCMYK and Lab alternate color-space support for PDF output
 
 ### Integration Helpers
 - CSS-ready color output
 - PDF-oriented color conversion helpers
+- Cross-model conversion helpers on all color models
 - Named web color lookup and normalization
 
 ---

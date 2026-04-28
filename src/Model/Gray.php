@@ -204,6 +204,17 @@ class Gray extends \Com\Tecnick\Color\Model
     }
 
     /**
+     * Get an array with Lab color components
+     *
+     * @return array<string, float> with keys ('lstar', 'astar', 'bstar', 'alpha')
+     */
+    public function toLabArray(): array
+    {
+        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
+        return $rgb->toLabArray();
+    }
+
+    /**
      * Invert the color
      */
     public function invertColor(): self

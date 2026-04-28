@@ -207,6 +207,22 @@ class GrayTest extends TestUtil
         );
     }
 
+    public function testToLabArray(): void
+    {
+        $gray = $this->getTestObject();
+        $res = $gray->toLabArray();
+        $this->bcAssertEqualsWithDelta(
+            [
+                'lstar' => 77,
+                'astar' => 0,
+                'bstar' => 0,
+                'alpha' => 0.85,
+            ],
+            $res,
+            1.5
+        );
+    }
+
     public function testInvertColor(): void
     {
         $gray = $this->getTestObject();

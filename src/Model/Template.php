@@ -117,6 +117,13 @@ interface Template
     public function toCmykArray(): array;
 
     /**
+     * Get an array with Lab color components.
+     *
+     * @return array<string, float> with keys ('lstar', 'astar', 'bstar', 'alpha').
+     */
+    public function toLabArray(): array;
+
+    /**
      * Invert the color.
      */
     public function invertColor(): self;

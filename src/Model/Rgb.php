@@ -283,6 +283,57 @@ class Rgb extends \Com\Tecnick\Color\Model
     }
 
     /**
+     * Get an array with Lab color components
+     *
+     * @return array<string, float> with keys ('lstar', 'astar', 'bstar', 'alpha')
+     */
+    public function toLabArray(): array
+    {
+        $red = $this->srgbToLinear($this->cmp_red);
+        $green = $this->srgbToLinear($this->cmp_green);
+        $blue = $this->srgbToLinear($this->cmp_blue);
+
+        $xTri = ((0.4124564 * $red) + (0.3575761 * $green) + (0.1804375 * $blue)) * 100.0;
+        $yTri = ((0.2126729 * $red) + (0.7151522 * $green) + (0.0721750 * $blue)) * 100.0;
+        $zTri = ((0.0193339 * $red) + (0.1191920 * $green) + (0.9503041 * $blue)) * 100.0;
+
+        $fxn = $this->pivotXyzToLab($xTri / 95.047);
+        $fyn = $this->pivotXyzToLab($yTri / 100.000);
+        $fzn = $this->pivotXyzToLab($zTri / 108.883);
+
+        return [
+            'lstar' => \max(0.0, \min(100.0, (116.0 * $fyn) - 16.0)),
+            'astar' => \max(-128.0, \min(127.0, 500.0 * ($fxn - $fyn))),
+            'bstar' => \max(-128.0, \min(127.0, 200.0 * ($fyn - $fzn))),
+            'alpha' => $this->cmp_alpha,
+        ];
+    }
+
+    /**
+     * Convert sRGB component in [0..1] to linear RGB.
+     */
+    private function srgbToLinear(float $component): float
+    {
+        if ($component <= 0.04045) {
+            return $component / 12.92;
+        }
+
+        return \pow(($component + 0.055) / 1.055, 2.4);
+    }
+
+    /**
+     * Apply the CIE Lab forward pivot function.
+     */
+    private function pivotXyzToLab(float $value): float
+    {
+        if ($value > 0.008856451679035631) {
+            return \pow($value, 1.0 / 3.0);
+        }
+
+        return (7.787037037037037 * $value) + (16.0 / 116.0);
+    }
+
+    /**
      * Invert the color
      */
     public function invertColor(): self

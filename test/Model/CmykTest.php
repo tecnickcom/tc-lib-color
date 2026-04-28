@@ -231,6 +231,22 @@ class CmykTest extends TestUtil
         );
     }
 
+    public function testToLabArray(): void
+    {
+        $cmyk = $this->getTestObject();
+        $res = $cmyk->toLabArray();
+        $this->bcAssertEqualsWithDelta(
+            [
+                'lstar' => 52,
+                'astar' => 0,
+                'bstar' => -39,
+                'alpha' => 0.85,
+            ],
+            $res,
+            1.5
+        );
+    }
+
     public function testInvertColor(): void
     {
         $cmyk = $this->getTestObject();

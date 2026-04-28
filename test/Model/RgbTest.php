@@ -322,6 +322,40 @@ class RgbTest extends TestUtil
         );
     }
 
+    public function testToLabArray(): void
+    {
+        $rgb = $this->getTestObject();
+        $res = $rgb->toLabArray();
+        $this->bcAssertEqualsWithDelta(
+            [
+                'lstar' => 52,
+                'astar' => 0,
+                'bstar' => -39,
+                'alpha' => 0.85,
+            ],
+            $res,
+            1.5
+        );
+    }
+
+    public function testToLabArrayLowValueBranch(): void
+    {
+        $rgb = new \Com\Tecnick\Color\Model\Rgb(
+            [
+                'red' => 0,
+                'green' => 0,
+                'blue' => 0,
+                'alpha' => 1,
+            ]
+        );
+
+        $lab = $rgb->toLabArray();
+        $this->assertSame(0.0, $lab['lstar']);
+        $this->assertEqualsWithDelta(0.0, $lab['astar'], 0.05);
+        $this->assertEqualsWithDelta(0.0, $lab['bstar'], 0.05);
+        $this->assertEquals(1.0, $lab['alpha']);
+    }
+
     public function testInvertColor(): void
     {
         $rgb = $this->getTestObject();

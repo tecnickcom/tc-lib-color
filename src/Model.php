@@ -32,7 +32,7 @@ namespace Com\Tecnick\Color;
 abstract class Model implements \Com\Tecnick\Color\Model\Template
 {
     /**
-     * Color Model type (GRAY, RGB, HSL, CMYK)
+     * Color Model type (GRAY, RGB, HSL, CMYK, LAB)
      *
      * @var string
      */
@@ -62,7 +62,7 @@ abstract class Model implements \Com\Tecnick\Color\Model\Template
     }
 
     /**
-     * Get the color model type (GRAY, RGB, HSL, CMYK)
+     * Get the color model type (GRAY, RGB, HSL, CMYK, LAB)
      */
     public function getType(): string
     {

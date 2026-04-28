@@ -304,6 +304,22 @@ class HslTest extends TestUtil
         );
     }
 
+    public function testToLabArray(): void
+    {
+        $hsl = $this->getTestObject();
+        $res = $hsl->toLabArray();
+        $this->bcAssertEqualsWithDelta(
+            [
+                'lstar' => 52,
+                'astar' => 0,
+                'bstar' => -39,
+                'alpha' => 0.85,
+            ],
+            $res,
+            1.5
+        );
+    }
+
     public function testInvertColor(): void
     {
         $hsl = $this->getTestObject();
