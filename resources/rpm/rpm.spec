@@ -9,11 +9,9 @@ Version:   %{_version}
 Release:   %{_release}%{?dist}
 Summary:   PHP library to manipulate various color representations
 
-Group:     Development/Libraries
 License:   LGPLv3+
 URL:       https://github.com/%{gh_owner}/%{gh_project}
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires:  php(language) >= 8.1.0
@@ -29,18 +27,14 @@ PHP library to manipulate various color representations (GRAY, RGB, HSL, CMYK) a
 #(cd %{_current_directory} && make build)
 
 %install
-rm -rf $RPM_BUILD_ROOT
-(cd %{_current_directory} && make install DESTDIR=$RPM_BUILD_ROOT)
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-#(cd %{_current_directory} && make clean)
+rm -rf %{buildroot}
+(cd %{_current_directory} && make install DESTDIR=%{buildroot})
 
 %files
 %attr(-,root,root) %{_libpath}
 %attr(-,root,root) %{_docpath}
 %docdir %{_docpath}
-#%config(noreplace) %{_configpath}*
+# Optional config files can be listed here when used by a project.
 
 %changelog
 * Thu Jul 02 2026 Nicola Asuni <info@tecnick.com> 1.5.0-1
