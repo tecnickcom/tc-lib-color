@@ -96,6 +96,22 @@ class WebTest extends TestUtil
         $web->extractHexCode('');
     }
 
+    public function testExtractHexCodeInvalidLength(): void
+    {
+        $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
+        $web = $this->getTestObject();
+        // 5-character hex code is accepted by regex but not handled by switch
+        $web->extractHexCode('12345');
+    }
+
+    public function testExtractHexCodeInvalidLength7(): void
+    {
+        $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
+        $web = $this->getTestObject();
+        // 7-character hex code is accepted by regex but not handled by switch
+        $web->extractHexCode('1234567');
+    }
+
     public function testGetRgbObjFromHex(): void
     {
         $web = $this->getTestObject();

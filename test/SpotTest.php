@@ -251,6 +251,10 @@ class SpotTest extends TestUtil
 
         $resk_empty = $spot->getPdfSpotResourcesByKeys([]);
         $this->assertEquals('', $resk_empty);
+
+        // Test with non-existent keys to trigger continue statement
+        $resk_mixed = $spot->getPdfSpotResourcesByKeys(['cyan', 'nonexistent', 'yellow', 'invalid']);
+        $this->assertEquals('/ColorSpace << /CS2 3 0 R /CS4 5 0 R >>' . "\n", $resk_mixed);
     }
 
     public function testGetPdfSpotObjectsLab(): void

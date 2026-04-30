@@ -204,7 +204,7 @@ class Spot extends \Com\Tecnick\Color\Web
      */
     public function normalizeSpotColorName(string $name): string
     {
-        $ret = \preg_replace('/[^a-z0-9]*+/', '', \strtolower($name));
+        $ret = \preg_replace('/[^a-z0-9]+/', '', \strtolower($name));
         return $ret ?? '';
     }
 
@@ -468,6 +468,10 @@ class Spot extends \Com\Tecnick\Color\Web
 
         $data = [];
         foreach ($keys as $key) {
+            if (! isset($this->spot_colors[$key])) {
+                continue;
+            }
+
             $data[$key] = [
                 'i' => $this->spot_colors[$key]['i'],
                 'n' => $this->spot_colors[$key]['n'],

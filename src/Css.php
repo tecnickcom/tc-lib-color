@@ -123,9 +123,9 @@ abstract class Css
     }
 
     /**
-     * Get the color object from a CSS CMYK color string
+     * Get the color object from a CSS Gray color string
      *
-     * @param string $color color specification (e.g.: rgb(255,128,64))
+     * @param string $color color specification (e.g.: g(128))
      *
      * @throws ColorException if the color is not found
      */
@@ -145,7 +145,7 @@ abstract class Css
     }
 
     /**
-     * Get the color object from a CSS CMYK color string
+     * Get the color object from a CSS RGB/RGBA color string
      *
      * @param string $color color specification (e.g.: rgb(255,128,64))
      *
@@ -169,9 +169,9 @@ abstract class Css
     }
 
     /**
-     * Get the color object from a CSS CMYK color string
+     * Get the color object from a CSS HSL/HSLA color string
      *
-     * @param string $color color specification (e.g.: rgb(255,128,64))
+     * @param string $color color specification (e.g.: hsl(120,100%,50%))
      *
      * @throws ColorException if the color is not found
      */

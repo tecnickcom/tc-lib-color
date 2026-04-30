@@ -180,8 +180,8 @@ class Gray extends \Com\Tecnick\Color\Model
     public function toHslArray(): array
     {
         return [
-            'hue' => 0,
-            'saturation' => 0,
+            'hue' => 0.0,
+            'saturation' => 0.0,
             'lightness' => $this->cmp_gray,
             'alpha' => $this->cmp_alpha,
         ];

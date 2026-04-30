@@ -105,9 +105,8 @@ class Hsl extends \Com\Tecnick\Color\Model
      */
     public function getNormalizedArray(int $max): array
     {
-        $max = 360;
         return [
-            'H' => $this->getNormalizedValue($this->cmp_hue, $max),
+            'H' => $this->getNormalizedValue($this->cmp_hue, 360),
             'S' => $this->cmp_saturation,
             'L' => $this->cmp_lightness,
             'A' => $this->cmp_alpha,
@@ -175,10 +174,8 @@ class Hsl extends \Com\Tecnick\Color\Model
      */
     public function toGrayArray(): array
     {
-        return [
-            'gray' => $this->cmp_lightness,
-            'alpha' => $this->cmp_alpha,
-        ];
+        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
+        return $rgb->toGrayArray();
     }
 
     /**

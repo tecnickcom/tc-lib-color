@@ -254,9 +254,11 @@ class Web extends \Com\Tecnick\Color\Css
                 return $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2] . $hex[3] . $hex[3];
             case 6:
                 return $hex . 'ff';
+            case 8:
+                return $hex;
         }
 
-        return $hex;
+        throw new ColorException('unable to extract the color hash: ' . $hex);
     }
 
     /**
@@ -336,7 +338,7 @@ class Web extends \Com\Tecnick\Color\Css
      */
     public function getColorObj(string $color): ?\Com\Tecnick\Color\Model
     {
-        $color = \preg_replace('/[\s]*+/', '', \strtolower($color));
+        $color = \preg_replace('/\s+/', '', \strtolower($color));
         if (empty($color) || (\strpos($color, 'transparent') !== false)) {
             return null;
         }

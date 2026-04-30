@@ -175,7 +175,7 @@ class HslTest extends TestUtil
         $res = $hsl->toGrayArray();
         $this->bcAssertEqualsWithDelta(
             [
-                'gray' => 0.5,
+                'gray' => 0.46561520,
                 'alpha' => 0.85,
             ],
             $res

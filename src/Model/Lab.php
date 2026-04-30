@@ -269,8 +269,9 @@ class Lab extends \Com\Tecnick\Color\Model
      */
     private function pivotLabToXyz(float $value): float
     {
-        if (\pow($value, 3.0) > 0.008856451679035631) {
-            return \pow($value, 3.0);
+        $cubed = \pow($value, 3.0);
+        if ($cubed > 0.008856451679035631) {
+            return $cubed;
         }
 
         return ($value - (16.0 / 116.0)) / 7.787037037037037;

@@ -178,7 +178,7 @@ class CmykTest extends TestUtil
         $res = $cmyk->toGrayArray();
         $this->bcAssertEqualsWithDelta(
             [
-                'gray' => 0.25,
+                'gray' => 0.46518510,
                 'alpha' => 0.85,
             ],
             $res
