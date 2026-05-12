@@ -46,6 +46,8 @@ jobs:
                   path: ~/.composer/cache/
                   key: composer-cache
             - name: Install dependencies
+              env:
+                GH_TOKEN: ${{ github.token }}
               run: make deps
             - name: Run all tests
               run: make qa
