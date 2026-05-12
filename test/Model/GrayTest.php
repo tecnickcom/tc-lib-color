@@ -33,12 +33,10 @@ class GrayTest extends TestUtil
 {
     protected function getTestObject(): \Com\Tecnick\Color\Model\Gray
     {
-        return new \Com\Tecnick\Color\Model\Gray(
-            [
-                'gray' => 0.75,
-                'alpha' => 0.85,
-            ]
-        );
+        return new \Com\Tecnick\Color\Model\Gray([
+            'gray' => 0.75,
+            'alpha' => 0.85,
+        ]);
     }
 
     public function testGetType(): void
@@ -80,29 +78,38 @@ class GrayTest extends TestUtil
     {
         $gray = $this->getTestObject();
         $res = $gray->getArray();
-        $this->assertEquals([
-            'G' => 0.75,
-            'A' => 0.85,
-        ], $res);
+        $this->assertEquals(
+            [
+                'G' => 0.75,
+                'A' => 0.85,
+            ],
+            $res,
+        );
     }
 
     public function testGetPDFacArray(): void
     {
         $gray = $this->getTestObject();
         $res = $gray->getPDFacArray();
-        $this->assertEquals([
-            0.75,
-        ], $res);
+        $this->assertEquals(
+            [
+                0.75,
+            ],
+            $res,
+        );
     }
 
     public function testGetNormalizedArray(): void
     {
         $gray = $this->getTestObject();
         $res = $gray->getNormalizedArray(255);
-        $this->assertEquals([
-            'G' => 191,
-            'A' => 0.85,
-        ], $res);
+        $this->assertEquals(
+            [
+                'G' => 191,
+                'A' => 0.85,
+            ],
+            $res,
+        );
     }
 
     public function testGetCssColor(): void
@@ -118,12 +125,10 @@ class GrayTest extends TestUtil
         $res = $testObj->getJsPdfColor();
         $this->assertEquals('["G",0.750000]', $res);
 
-        $gray = new \Com\Tecnick\Color\Model\Gray(
-            [
-                'gray' => 0.5,
-                'alpha' => 0,
-            ]
-        );
+        $gray = new \Com\Tecnick\Color\Model\Gray([
+            'gray' => 0.5,
+            'alpha' => 0,
+        ]);
         $res = $gray->getJsPdfColor();
         $this->assertEquals('["T"]', $res);
     }
@@ -157,7 +162,7 @@ class GrayTest extends TestUtil
                 'gray' => 0.75,
                 'alpha' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 
@@ -172,7 +177,7 @@ class GrayTest extends TestUtil
                 'blue' => 0.75,
                 'alpha' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 
@@ -187,7 +192,7 @@ class GrayTest extends TestUtil
                 'lightness' => 0.75,
                 'alpha' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 
@@ -203,7 +208,7 @@ class GrayTest extends TestUtil
                 'key' => 0.75,
                 'alpha' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 
@@ -219,7 +224,7 @@ class GrayTest extends TestUtil
                 'alpha' => 0.85,
             ],
             $res,
-            1.5
+            1.5,
         );
     }
 
@@ -234,7 +239,7 @@ class GrayTest extends TestUtil
                 'gray' => 0.25,
                 'alpha' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 }

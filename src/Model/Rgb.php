@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Rgb.php
  *
@@ -43,21 +45,21 @@ class Rgb extends \Com\Tecnick\Color\Model
      *
      * @var float
      */
-    protected $cmp_red = 0.0;
+    protected float $cmp_red = 0.0;
 
     /**
      * Value of the Green color component [0..1]
      *
      * @var float
      */
-    protected $cmp_green = 0.0;
+    protected float $cmp_green = 0.0;
 
     /**
      * Value of the Blue color component [0..1]
      *
      * @var float
      */
-    protected $cmp_blue = 0.0;
+    protected float $cmp_blue = 0.0;
 
     /**
      * Get an array with all color components.
@@ -119,12 +121,17 @@ class Rgb extends \Com\Tecnick\Color\Model
      */
     public function getCssColor(): string
     {
-        return 'rgba('
-            . $this->getNormalizedValue($this->cmp_red, 100) . '%,'
-            . $this->getNormalizedValue($this->cmp_green, 100) . '%,'
-            . $this->getNormalizedValue($this->cmp_blue, 100) . '%,'
+        return (
+            'rgba('
+            . $this->getNormalizedValue($this->cmp_red, 100)
+            . '%,'
+            . $this->getNormalizedValue($this->cmp_green, 100)
+            . '%,'
+            . $this->getNormalizedValue($this->cmp_blue, 100)
+            . '%,'
             . $this->cmp_alpha
-            . ')';
+            . ')'
+        );
     }
 
     /**
@@ -133,7 +140,7 @@ class Rgb extends \Com\Tecnick\Color\Model
      */
     public function getJsPdfColor(): string
     {
-        if ($this->cmp_alpha == 0) {
+        if ($this->cmp_alpha === 0.0) {
             return '["T"]'; // transparent color
         }
 
@@ -173,12 +180,9 @@ class Rgb extends \Com\Tecnick\Color\Model
     {
         // convert using the SMPTE 295M-1997 standard conversion constants
         return [
-            'gray' => (\max(
-                0,
-                \min(
-                    1,
-                    ((0.2126 * $this->cmp_red) + (0.7152 * $this->cmp_green) + (0.0722 * $this->cmp_blue))
-                )
+            'gray' => \max(0, \min(
+                1,
+                (0.2126 * $this->cmp_red) + (0.7152 * $this->cmp_green) + (0.0722 * $this->cmp_blue),
             )),
             'alpha' => $this->cmp_alpha,
         ];
@@ -208,23 +212,23 @@ class Rgb extends \Com\Tecnick\Color\Model
     {
         $min = \min($this->cmp_red, $this->cmp_green, $this->cmp_blue);
         $max = \max($this->cmp_red, $this->cmp_green, $this->cmp_blue);
-        $lightness = (($min + $max) / 2);
+        $lightness = ($min + $max) / 2;
         $saturation = 0;
         $hue = 0;
-        if ($min != $max) {
-            $diff = ($max - $min);
+        if ($min !== $max) {
+            $diff = $max - $min;
             $saturation = $lightness < 0.5 ? $diff / ($max + $min) : $diff / (2.0 - $max - $min);
 
             switch ($max) {
                 case $this->cmp_red:
-                    $dgb = ($this->cmp_green - $this->cmp_blue);
-                    $hue = ($dgb / $diff) + (($dgb < 0) ? 6 : 0);
+                    $dgb = $this->cmp_green - $this->cmp_blue;
+                    $hue = ($dgb / $diff) + ($dgb < 0 ? 6 : 0);
                     break;
                 case $this->cmp_green:
-                    $hue = (2.0 + (($this->cmp_blue - $this->cmp_red) / $diff));
+                    $hue = 2.0 + (($this->cmp_blue - $this->cmp_red) / $diff);
                     break;
                 case $this->cmp_blue:
-                    $hue = (4.0 + (($this->cmp_red - $this->cmp_green) / $diff));
+                    $hue = 4.0 + (($this->cmp_red - $this->cmp_green) / $diff);
                     break;
             }
 
@@ -246,10 +250,10 @@ class Rgb extends \Com\Tecnick\Color\Model
      */
     public function toCmykArray(): array
     {
-        $cyan = (1 - $this->cmp_red);
-        $magenta = (1 - $this->cmp_green);
-        $yellow = (1 - $this->cmp_blue);
-        $key = 1;
+        $cyan = 1 - $this->cmp_red;
+        $magenta = 1 - $this->cmp_green;
+        $yellow = 1 - $this->cmp_blue;
+        $key = 1.0;
         if ($cyan < $key) {
             $key = $cyan;
         }
@@ -262,15 +266,17 @@ class Rgb extends \Com\Tecnick\Color\Model
             $key = $yellow;
         }
 
-        if ($key == 1) {
+        if ($key === 1.0) {
             // black
             $cyan = 0;
             $magenta = 0;
             $yellow = 0;
-        } else {
-            $cyan = (($cyan - $key) / (1 - $key));
-            $magenta = (($magenta - $key) / (1 - $key));
-            $yellow = (($yellow - $key) / (1 - $key));
+        }
+
+        if ($key < 1.0) {
+            $cyan = ($cyan - $key) / (1 - $key);
+            $magenta = ($magenta - $key) / (1 - $key);
+            $yellow = ($yellow - $key) / (1 - $key);
         }
 
         return [
@@ -293,9 +299,9 @@ class Rgb extends \Com\Tecnick\Color\Model
         $green = $this->srgbToLinear($this->cmp_green);
         $blue = $this->srgbToLinear($this->cmp_blue);
 
-        $xTri = ((0.4124564 * $red) + (0.3575761 * $green) + (0.1804375 * $blue)) * 100.0;
-        $yTri = ((0.2126729 * $red) + (0.7151522 * $green) + (0.0721750 * $blue)) * 100.0;
-        $zTri = ((0.0193339 * $red) + (0.1191920 * $green) + (0.9503041 * $blue)) * 100.0;
+        $xTri = ((0.412_456_4 * $red) + (0.357_576_1 * $green) + (0.180_437_5 * $blue)) * 100.0;
+        $yTri = ((0.212_672_9 * $red) + (0.715_152_2 * $green) + (0.072_175_0 * $blue)) * 100.0;
+        $zTri = ((0.019_333_9 * $red) + (0.119_192_0 * $green) + (0.950_304_1 * $blue)) * 100.0;
 
         $fxn = $this->pivotXyzToLab($xTri / 95.047);
         $fyn = $this->pivotXyzToLab($yTri / 100.000);
@@ -314,11 +320,11 @@ class Rgb extends \Com\Tecnick\Color\Model
      */
     private function srgbToLinear(float $component): float
     {
-        if ($component <= 0.04045) {
+        if ($component <= 0.040_45) {
             return $component / 12.92;
         }
 
-        return \pow(($component + 0.055) / 1.055, 2.4);
+        return (float) \pow(($component + 0.055) / 1.055, 2.4);
     }
 
     /**
@@ -326,11 +332,11 @@ class Rgb extends \Com\Tecnick\Color\Model
      */
     private function pivotXyzToLab(float $value): float
     {
-        if ($value > 0.008856451679035631) {
-            return \pow($value, 1.0 / 3.0);
+        if ($value > 0.008_856_451_679_035_631) {
+            return (float) \pow($value, 1.0 / 3.0);
         }
 
-        return (7.787037037037037 * $value) + (16.0 / 116.0);
+        return (7.787_037_037_037_037 * $value) + (16.0 / 116.0);
     }
 
     /**
@@ -338,9 +344,9 @@ class Rgb extends \Com\Tecnick\Color\Model
      */
     public function invertColor(): self
     {
-        $this->cmp_red = (1 - $this->cmp_red);
-        $this->cmp_green = (1 - $this->cmp_green);
-        $this->cmp_blue = (1 - $this->cmp_blue);
+        $this->cmp_red = 1 - $this->cmp_red;
+        $this->cmp_green = 1 - $this->cmp_green;
+        $this->cmp_blue = 1 - $this->cmp_blue;
         return $this;
     }
 }

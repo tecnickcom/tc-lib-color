@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Model.php
  *
@@ -44,7 +46,7 @@ abstract class Model implements \Com\Tecnick\Color\Model\Template
      *
      * @var float
      */
-    protected $cmp_alpha = 1.0;
+    protected float $cmp_alpha = 1.0;
 
     /**
      * Initialize a new color object.
@@ -54,10 +56,103 @@ abstract class Model implements \Com\Tecnick\Color\Model\Template
     public function __construct(array $components)
     {
         foreach ($components as $color => $value) {
-            $property = 'cmp_' . $color;
-            if (\property_exists($this, $property)) {
-                $this->$property = (\max(0, \min(1, (float) $value)));
-            }
+            $this->setComponentValue($color, \max(0, \min(1, (float) $value)));
+        }
+    }
+
+    /**
+     * Set a known component value while keeping dynamic property writes analyzable.
+     */
+    private function setComponentValue(string $color, float $value): void
+    {
+        switch ($color) {
+            case 'alpha':
+                $this->cmp_alpha = $value;
+                break;
+            case 'gray':
+                if (\property_exists($this, 'cmp_gray')) {
+                    $this->cmp_gray = $value;
+                }
+
+                break;
+            case 'red':
+                if (\property_exists($this, 'cmp_red')) {
+                    $this->cmp_red = $value;
+                }
+
+                break;
+            case 'green':
+                if (\property_exists($this, 'cmp_green')) {
+                    $this->cmp_green = $value;
+                }
+
+                break;
+            case 'blue':
+                if (\property_exists($this, 'cmp_blue')) {
+                    $this->cmp_blue = $value;
+                }
+
+                break;
+            case 'hue':
+                if (\property_exists($this, 'cmp_hue')) {
+                    $this->cmp_hue = $value;
+                }
+
+                break;
+            case 'saturation':
+                if (\property_exists($this, 'cmp_saturation')) {
+                    $this->cmp_saturation = $value;
+                }
+
+                break;
+            case 'lightness':
+                if (\property_exists($this, 'cmp_lightness')) {
+                    $this->cmp_lightness = $value;
+                }
+
+                break;
+            case 'cyan':
+                if (\property_exists($this, 'cmp_cyan')) {
+                    $this->cmp_cyan = $value;
+                }
+
+                break;
+            case 'magenta':
+                if (\property_exists($this, 'cmp_magenta')) {
+                    $this->cmp_magenta = $value;
+                }
+
+                break;
+            case 'yellow':
+                if (\property_exists($this, 'cmp_yellow')) {
+                    $this->cmp_yellow = $value;
+                }
+
+                break;
+            case 'key':
+                if (\property_exists($this, 'cmp_key')) {
+                    $this->cmp_key = $value;
+                }
+
+                break;
+            case 'lstar':
+                if (\property_exists($this, 'cmp_lstar')) {
+                    $this->cmp_lstar = $value;
+                }
+
+                break;
+            case 'astar':
+                if (\property_exists($this, 'cmp_astar')) {
+                    $this->cmp_astar = $value;
+                }
+
+                break;
+            case 'bstar':
+                if (\property_exists($this, 'cmp_bstar')) {
+                    $this->cmp_bstar = $value;
+                }
+
+                break;
         }
     }
 
@@ -81,7 +176,7 @@ abstract class Model implements \Com\Tecnick\Color\Model\Template
     {
         // NOTE: The last round has been added for backward compatibility because of:
         // https://github.com/php/php-src/issues/14332
-        return \round(\max(0, \min($max, ($max * \round($value, 14)))));
+        return \round(\max(0, \min($max, $max * \round($value, 14))));
     }
 
     /**
@@ -101,11 +196,13 @@ abstract class Model implements \Com\Tecnick\Color\Model\Template
     public function getRgbaHexColor(): string
     {
         $rgba = $this->toRgbArray();
-        return '#'
-            . $this->getHexValue($rgba['red'], 255)
-            . $this->getHexValue($rgba['green'], 255)
-            . $this->getHexValue($rgba['blue'], 255)
-            . $this->getHexValue($rgba['alpha'], 255);
+        return (
+            '#'
+            . $this->getHexValue($rgba['red'] ?? 0.0, 255)
+            . $this->getHexValue($rgba['green'] ?? 0.0, 255)
+            . $this->getHexValue($rgba['blue'] ?? 0.0, 255)
+            . $this->getHexValue($rgba['alpha'] ?? 1.0, 255)
+        );
     }
 
     /**
@@ -114,9 +211,11 @@ abstract class Model implements \Com\Tecnick\Color\Model\Template
     public function getRgbHexColor(): string
     {
         $rgba = $this->toRgbArray();
-        return '#'
-            . $this->getHexValue($rgba['red'], 255)
-            . $this->getHexValue($rgba['green'], 255)
-            . $this->getHexValue($rgba['blue'], 255);
+        return (
+            '#'
+            . $this->getHexValue($rgba['red'] ?? 0.0, 255)
+            . $this->getHexValue($rgba['green'] ?? 0.0, 255)
+            . $this->getHexValue($rgba['blue'] ?? 0.0, 255)
+        );
     }
 }

@@ -36,6 +36,9 @@ class WebTest extends TestUtil
         return new \Com\Tecnick\Color\Web();
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetHexFromName(): void
     {
         $web = $this->getTestObject();
@@ -45,13 +48,19 @@ class WebTest extends TestUtil
         $this->assertEquals('9acd32ff', $res);
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetHexFromNameInvalid(): void
     {
-        $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
+        $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
         $web = $this->getTestObject();
         $web->getHexFromName('invalid');
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetNameFromHex(): void
     {
         $web = $this->getTestObject();
@@ -61,13 +70,19 @@ class WebTest extends TestUtil
         $this->assertEquals('yellowgreen', $res);
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetNameFromHexBad(): void
     {
-        $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
+        $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
         $web = $this->getTestObject();
         $web->getNameFromHex('012345');
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testExtractHexCode(): void
     {
         $web = $this->getTestObject();
@@ -89,29 +104,41 @@ class WebTest extends TestUtil
         $this->assertEquals('11223344', $res);
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testExtractHexCodeBad(): void
     {
-        $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
+        $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
         $web = $this->getTestObject();
         $web->extractHexCode('');
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testExtractHexCodeInvalidLength(): void
     {
-        $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
+        $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
         $web = $this->getTestObject();
         // 5-character hex code is accepted by regex but not handled by switch
         $web->extractHexCode('12345');
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testExtractHexCodeInvalidLength7(): void
     {
-        $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
+        $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
         $web = $this->getTestObject();
         // 7-character hex code is accepted by regex but not handled by switch
         $web->extractHexCode('1234567');
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetRgbObjFromHex(): void
     {
         $web = $this->getTestObject();
@@ -119,13 +146,19 @@ class WebTest extends TestUtil
         $this->assertEquals('#87ceebff', $rgb->getRgbaHexColor());
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetRgbObjFromHexBad(): void
     {
-        $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
+        $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
         $web = $this->getTestObject();
         $web->getRgbObjFromHex('xx');
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetRgbObjFromName(): void
     {
         $web = $this->getTestObject();
@@ -133,9 +166,12 @@ class WebTest extends TestUtil
         $this->assertEquals('#87ceebff', $rgb->getRgbaHexColor());
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetRgbObjFromNameBad(): void
     {
-        $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
+        $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
         $web = $this->getTestObject();
         $web->getRgbObjFromName('xx');
     }
@@ -149,6 +185,9 @@ class WebTest extends TestUtil
         $this->bcAssertEqualsWithDelta(0.5, $res);
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetColorObj(): void
     {
         $web = $this->getTestObject();
@@ -232,11 +271,13 @@ class WebTest extends TestUtil
         return [['g(-)'], ['rgb(-)'], ['hsl(-)'], ['cmyk(-)']];
     }
 
-
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     #[DataProvider('getBadColor')]
     public function testGetColorObjBad(string $bad): void
     {
-        $this->bcExpectException('\\' . \Com\Tecnick\Color\Exception::class);
+        $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
         $web = $this->getTestObject();
         $web->getColorObj($bad);
     }

@@ -14,7 +14,7 @@ URL:       https://github.com/%{gh_owner}/%{gh_project}
 
 BuildArch: noarch
 
-Requires:  php(language) >= 8.1.0
+Requires:  php(language) >= 8.2.0
 Requires:  php-pcre
 
 Provides:  php-composer(%{c_vendor}/%{gh_project}) = %{version}

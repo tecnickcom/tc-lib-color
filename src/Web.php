@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Web.php
  *
@@ -35,6 +37,8 @@ class Web extends \Com\Tecnick\Color\Css
 {
     /**
      * Maps WEB safe color names with theur hexadecimal representation (#RRGGBBAA).
+     *
+     * @var array<string, string>
      */
     public const WEBHEX = [
         'aliceblue' => 'f0f8ffff',
@@ -202,14 +206,15 @@ class Web extends \Com\Tecnick\Color\Css
         $name = \strtolower($name);
         if (($dotpos = \strpos($name, '.')) !== false) {
             // remove parent name (i.e.: color.green)
-            $name = \substr($name, ($dotpos + 1));
+            $name = \substr($name, $dotpos + 1);
         }
 
-        if (empty(self::WEBHEX[$name])) {
+        $hex = self::WEBHEX[$name] ?? null;
+        if (!\is_string($hex)) {
             throw new ColorException('unable to find the color hex for the name: ' . $name);
         }
 
-        return self::WEBHEX[$name];
+        return $hex;
     }
 
     /**
@@ -224,7 +229,7 @@ class Web extends \Com\Tecnick\Color\Css
     public function getNameFromHex(string $hex): string
     {
         $name = \array_search($this->extractHexCode($hex), self::WEBHEX, true);
-        if ($name === false) {
+        if (!\is_string($name)) {
             throw new ColorException('unable to find the color name for the hex code: ' . $hex);
         }
 
@@ -242,23 +247,38 @@ class Web extends \Com\Tecnick\Color\Css
      */
     public function extractHexCode(string $hex): string
     {
+        $match = [];
         if (\preg_match('/^[#]?([0-9a-f]{3,8})$/', \strtolower($hex), $match) !== 1) {
             throw new ColorException('unable to extract the color hash: ' . $hex);
         }
 
-        $hex = $match[1];
-        switch (\strlen($hex)) {
-            case 3:
-                return $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2] . 'ff';
-            case 4:
-                return $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2] . $hex[3] . $hex[3];
-            case 6:
-                return $hex . 'ff';
-            case 8:
-                return $hex;
+        $hash = $match[1] ?? '';
+        if (\strlen($hash) === 3 || \strlen($hash) === 4) {
+            $hash = $this->expandHexHash($hash);
         }
 
-        throw new ColorException('unable to extract the color hash: ' . $hex);
+        if (\strlen($hash) === 6) {
+            return $hash . 'ff';
+        }
+
+        if (\strlen($hash) === 8) {
+            return $hash;
+        }
+
+        throw new ColorException('unable to extract the color hash: ' . $hash);
+    }
+
+    /**
+     * Expand shorthand hex digits (RGB/RGBA) to full-length form.
+     */
+    private function expandHexHash(string $hash): string
+    {
+        $expanded = '';
+        foreach (\str_split($hash) as $digit) {
+            $expanded .= $digit . $digit;
+        }
+
+        return $expanded;
     }
 
     /**
@@ -270,11 +290,7 @@ class Web extends \Com\Tecnick\Color\Css
      */
     public function getRgbObjFromHex(string $hex): \Com\Tecnick\Color\Model\Rgb
     {
-        return new \Com\Tecnick\Color\Model\Rgb(
-            $this->getHexArray(
-                $this->extractHexCode($hex)
-            )
-        );
+        return new \Com\Tecnick\Color\Model\Rgb($this->getHexArray($this->extractHexCode($hex)));
     }
 
     /**
@@ -288,11 +304,7 @@ class Web extends \Com\Tecnick\Color\Css
      */
     public function getRgbObjFromName(string $name): \Com\Tecnick\Color\Model\Rgb
     {
-        return new \Com\Tecnick\Color\Model\Rgb(
-            $this->getHexArray(
-                $this->getHexFromName($name)
-            )
-        );
+        return new \Com\Tecnick\Color\Model\Rgb($this->getHexArray($this->getHexFromName($name)));
     }
 
     /**
@@ -305,28 +317,41 @@ class Web extends \Com\Tecnick\Color\Css
     private function getHexArray(string $hex): array
     {
         return [
-            'red' => (\hexdec(\substr($hex, 0, 2)) / 255),
-            'green' => (\hexdec(\substr($hex, 2, 2)) / 255),
-            'blue' => (\hexdec(\substr($hex, 4, 2)) / 255),
-            'alpha' => (\hexdec(\substr($hex, 6, 2)) / 255),
+            'red' => \hexdec(\substr($hex, 0, 2)) / 255,
+            'green' => \hexdec(\substr($hex, 2, 2)) / 255,
+            'blue' => \hexdec(\substr($hex, 4, 2)) / 255,
+            'alpha' => \hexdec(\substr($hex, 6, 2)) / 255,
         ];
     }
 
     /**
      * Get the normalized integer value from [0..$max] to [0..1]
      *
-     * @param int|float|string $value Value to convert
+     * @param mixed $value Value to convert
      * @param int    $max   Max input value
      *
      * @return float value [0..1]
      */
     public function normalizeValue(mixed $value, int $max): float
     {
-        if (\is_string($value) && (\strpos($value, '%') !== false)) {
-            return \max(0, \min(1, ((float) $value / 100)));
+        if (\is_string($value) && str_contains($value, '%')) {
+            $percent = \str_replace('%', '', $value);
+            if (!\is_numeric($percent)) {
+                return 0.0;
+            }
+
+            return \max(0, \min(1, (float) $percent / 100));
         }
 
-        return \max(0, \min(1, ((float) $value / $max)));
+        if (\is_int($value) || \is_float($value)) {
+            return \max(0, \min(1, (float) $value / $max));
+        }
+
+        if (\is_string($value) && \is_numeric($value)) {
+            return \max(0, \min(1, (float) $value / $max));
+        }
+
+        return 0.0;
     }
 
     /**
@@ -338,8 +363,9 @@ class Web extends \Com\Tecnick\Color\Css
      */
     public function getColorObj(string $color): ?\Com\Tecnick\Color\Model
     {
+        $col = [];
         $color = \preg_replace('/\s+/', '', \strtolower($color));
-        if (empty($color) || (\strpos($color, 'transparent') !== false)) {
+        if (!\is_string($color) || $color === '' || str_contains($color, 'transparent')) {
             return null;
         }
 
@@ -353,7 +379,7 @@ class Web extends \Com\Tecnick\Color\Css
 
         $rex = '/^(t|g|rgba|rgb|hsla|hsl|cmyka|cmyk)[\(]/';
         if (\preg_match($rex, $color, $col) === 1) {
-            return $this->getColorObjFromCss($col[1], $color);
+            return $this->getColorObjFromCss($col[1] ?? '', $color);
         }
 
         return $this->getRgbObjFromName($color);
@@ -367,9 +393,11 @@ class Web extends \Com\Tecnick\Color\Css
      */
     public function getRgbSquareDistance(array $cola, array $colb): float
     {
-        return ($cola['red'] - $colb['red']) ** 2
-            + ($cola['green'] - $colb['green']) ** 2
-            + ($cola['blue'] - $colb['blue']) ** 2;
+        return (
+            (($cola['red'] ?? 0.0) - ($colb['red'] ?? 0.0)) ** 2
+            + (($cola['green'] ?? 0.0) - ($colb['green'] ?? 0.0)) ** 2
+            + (($cola['blue'] ?? 0.0) - ($colb['blue'] ?? 0.0)) ** 2
+        );
     }
 
     /**

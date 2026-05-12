@@ -33,14 +33,12 @@ class HslTest extends TestUtil
 {
     protected function getTestObject(): \Com\Tecnick\Color\Model\Hsl
     {
-        return new \Com\Tecnick\Color\Model\Hsl(
-            [
-                'hue' => 0.583,
-                'saturation' => 0.5,
-                'lightness' => 0.5,
-                'alpha' => 0.85,
-            ]
-        );
+        return new \Com\Tecnick\Color\Model\Hsl([
+            'hue' => 0.583,
+            'saturation' => 0.5,
+            'lightness' => 0.5,
+            'alpha' => 0.85,
+        ]);
     }
 
     public function testGetType(): void
@@ -91,7 +89,7 @@ class HslTest extends TestUtil
                 'L' => 0.5,
                 'A' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 
@@ -105,7 +103,7 @@ class HslTest extends TestUtil
                 0.50,
                 0.75,
             ],
-            $res
+            $res,
         );
     }
 
@@ -120,7 +118,7 @@ class HslTest extends TestUtil
                 'L' => 0.5,
                 'A' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 
@@ -137,14 +135,12 @@ class HslTest extends TestUtil
         $res = $testObj->getJsPdfColor();
         $this->assertEquals('["RGB",0.250000,0.501000,0.750000]', $res);
 
-        $hsl = new \Com\Tecnick\Color\Model\Hsl(
-            [
-                'hue' => 0.583,
-                'saturation' => 0.5,
-                'lightness' => 0.5,
-                'alpha' => 0,
-            ]
-        );
+        $hsl = new \Com\Tecnick\Color\Model\Hsl([
+            'hue' => 0.583,
+            'saturation' => 0.5,
+            'lightness' => 0.5,
+            'alpha' => 0,
+        ]);
         $res = $hsl->getJsPdfColor();
         $this->assertEquals('["T"]', $res);
     }
@@ -173,135 +169,103 @@ class HslTest extends TestUtil
     {
         $hsl = $this->getTestObject();
         $res = $hsl->toGrayArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'gray' => 0.46561520,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'gray' => 0.46561520,
+            'alpha' => 0.85,
+        ], $res);
     }
 
     public function testToRgbArray(): void
     {
         $testObj = $this->getTestObject();
         $res = $testObj->toRgbArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'red' => 0.25,
-                'green' => 0.50,
-                'blue' => 0.75,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'red' => 0.25,
+            'green' => 0.50,
+            'blue' => 0.75,
+            'alpha' => 0.85,
+        ], $res);
 
-        $col = new \Com\Tecnick\Color\Model\Hsl(
-            [
-                'hue' => 0.583,
-                'saturation' => 0.5,
-                'lightness' => 0.4,
-                'alpha' => 1,
-            ]
-        );
+        $col = new \Com\Tecnick\Color\Model\Hsl([
+            'hue' => 0.583,
+            'saturation' => 0.5,
+            'lightness' => 0.4,
+            'alpha' => 1,
+        ]);
         $res = $col->toRgbArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'red' => 0.199,
-                'green' => 0.400,
-                'blue' => 0.600,
-                'alpha' => 1,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'red' => 0.199,
+            'green' => 0.400,
+            'blue' => 0.600,
+            'alpha' => 1,
+        ], $res);
 
-        $col = new \Com\Tecnick\Color\Model\Hsl(
-            [
-                'hue' => 0.583,
-                'saturation' => 0,
-                'lightness' => 0.4,
-                'alpha' => 1,
-            ]
-        );
+        $col = new \Com\Tecnick\Color\Model\Hsl([
+            'hue' => 0.583,
+            'saturation' => 0,
+            'lightness' => 0.4,
+            'alpha' => 1,
+        ]);
         $res = $col->toRgbArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'red' => 0.400,
-                'green' => 0.400,
-                'blue' => 0.400,
-                'alpha' => 1,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'red' => 0.400,
+            'green' => 0.400,
+            'blue' => 0.400,
+            'alpha' => 1,
+        ], $res);
 
-        $col = new \Com\Tecnick\Color\Model\Hsl(
-            [
-                'hue' => 0.01,
-                'saturation' => 1,
-                'lightness' => 0.4,
-                'alpha' => 1,
-            ]
-        );
+        $col = new \Com\Tecnick\Color\Model\Hsl([
+            'hue' => 0.01,
+            'saturation' => 1,
+            'lightness' => 0.4,
+            'alpha' => 1,
+        ]);
         $res = $col->toRgbArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'red' => 0.8,
-                'green' => 0.048,
-                'blue' => 0,
-                'alpha' => 1,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'red' => 0.8,
+            'green' => 0.048,
+            'blue' => 0,
+            'alpha' => 1,
+        ], $res);
 
-        $col = new \Com\Tecnick\Color\Model\Hsl(
-            [
-                'hue' => 1,
-                'saturation' => 1,
-                'lightness' => 0.4,
-                'alpha' => 1,
-            ]
-        );
+        $col = new \Com\Tecnick\Color\Model\Hsl([
+            'hue' => 1,
+            'saturation' => 1,
+            'lightness' => 0.4,
+            'alpha' => 1,
+        ]);
         $res = $col->toRgbArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'red' => 0.8,
-                'green' => 0,
-                'blue' => 0,
-                'alpha' => 1,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'red' => 0.8,
+            'green' => 0,
+            'blue' => 0,
+            'alpha' => 1,
+        ], $res);
     }
 
     public function testToHslArray(): void
     {
         $hsl = $this->getTestObject();
         $res = $hsl->toHslArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'hue' => 0.583,
-                'saturation' => 0.5,
-                'lightness' => 0.5,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'hue' => 0.583,
+            'saturation' => 0.5,
+            'lightness' => 0.5,
+            'alpha' => 0.85,
+        ], $res);
     }
 
     public function testToCmykArray(): void
     {
         $hsl = $this->getTestObject();
         $res = $hsl->toCmykArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'cyan' => 0.666,
-                'magenta' => 0.333,
-                'yellow' => 0,
-                'key' => 0.25,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'cyan' => 0.666,
+            'magenta' => 0.333,
+            'yellow' => 0,
+            'key' => 0.25,
+            'alpha' => 0.85,
+        ], $res);
     }
 
     public function testToLabArray(): void
@@ -316,7 +280,7 @@ class HslTest extends TestUtil
                 'alpha' => 0.85,
             ],
             $res,
-            1.5
+            1.5,
         );
     }
 
@@ -326,14 +290,11 @@ class HslTest extends TestUtil
         $hsl->invertColor();
 
         $res = $hsl->toHslArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'hue' => 0.083,
-                'saturation' => 0.5,
-                'lightness' => 0.5,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'hue' => 0.083,
+            'saturation' => 0.5,
+            'lightness' => 0.5,
+            'alpha' => 0.85,
+        ], $res);
     }
 }

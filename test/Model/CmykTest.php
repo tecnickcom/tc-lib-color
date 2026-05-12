@@ -33,15 +33,13 @@ class CmykTest extends TestUtil
 {
     protected function getTestObject(): \Com\Tecnick\Color\Model\Cmyk
     {
-        return new \Com\Tecnick\Color\Model\Cmyk(
-            [
-                'cyan' => 0.666,
-                'magenta' => 0.333,
-                'yellow' => 0,
-                'key' => 0.25,
-                'alpha' => 0.85,
-            ]
-        );
+        return new \Com\Tecnick\Color\Model\Cmyk([
+            'cyan' => 0.666,
+            'magenta' => 0.333,
+            'yellow' => 0,
+            'key' => 0.25,
+            'alpha' => 0.85,
+        ]);
     }
 
     public function testGetType(): void
@@ -91,7 +89,7 @@ class CmykTest extends TestUtil
                 'K' => 0.25,
                 'A' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 
@@ -106,7 +104,7 @@ class CmykTest extends TestUtil
                 0,
                 0.25,
             ],
-            $res
+            $res,
         );
     }
 
@@ -122,7 +120,7 @@ class CmykTest extends TestUtil
                 'K' => 25,
                 'A' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 
@@ -139,15 +137,13 @@ class CmykTest extends TestUtil
         $res = $testObj->getJsPdfColor();
         $this->assertEquals('["CMYK",0.666000,0.333000,0.000000,0.250000]', $res);
 
-        $cmyk = new \Com\Tecnick\Color\Model\Cmyk(
-            [
-                'cyan' => 0.666,
-                'magenta' => 0.333,
-                'yellow' => 0,
-                'key' => 0.25,
-                'alpha' => 0,
-            ]
-        );
+        $cmyk = new \Com\Tecnick\Color\Model\Cmyk([
+            'cyan' => 0.666,
+            'magenta' => 0.333,
+            'yellow' => 0,
+            'key' => 0.25,
+            'alpha' => 0,
+        ]);
         $res = $cmyk->getJsPdfColor();
         $this->assertEquals('["T"]', $res);
     }
@@ -176,59 +172,47 @@ class CmykTest extends TestUtil
     {
         $cmyk = $this->getTestObject();
         $res = $cmyk->toGrayArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'gray' => 0.46518510,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'gray' => 0.46518510,
+            'alpha' => 0.85,
+        ], $res);
     }
 
     public function testToRgbArray(): void
     {
         $cmyk = $this->getTestObject();
         $res = $cmyk->toRgbArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'red' => 0.25,
-                'green' => 0.50,
-                'blue' => 0.75,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'red' => 0.25,
+            'green' => 0.50,
+            'blue' => 0.75,
+            'alpha' => 0.85,
+        ], $res);
     }
 
     public function testToHslArray(): void
     {
         $cmyk = $this->getTestObject();
         $res = $cmyk->toHslArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'hue' => 0.583,
-                'saturation' => 0.5,
-                'lightness' => 0.5,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'hue' => 0.583,
+            'saturation' => 0.5,
+            'lightness' => 0.5,
+            'alpha' => 0.85,
+        ], $res);
     }
 
     public function testToCmykArray(): void
     {
         $cmyk = $this->getTestObject();
         $res = $cmyk->toCmykArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'cyan' => 0.666,
-                'magenta' => 0.333,
-                'yellow' => 0,
-                'key' => 0.25,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'cyan' => 0.666,
+            'magenta' => 0.333,
+            'yellow' => 0,
+            'key' => 0.25,
+            'alpha' => 0.85,
+        ], $res);
     }
 
     public function testToLabArray(): void
@@ -243,7 +227,7 @@ class CmykTest extends TestUtil
                 'alpha' => 0.85,
             ],
             $res,
-            1.5
+            1.5,
         );
     }
 
@@ -253,15 +237,12 @@ class CmykTest extends TestUtil
         $cmyk->invertColor();
 
         $res = $cmyk->toCmykArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'cyan' => 0.333,
-                'magenta' => 0.666,
-                'yellow' => 1,
-                'key' => 0.75,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'cyan' => 0.333,
+            'magenta' => 0.666,
+            'yellow' => 1,
+            'key' => 0.75,
+            'alpha' => 0.85,
+        ], $res);
     }
 }

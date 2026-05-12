@@ -16,8 +16,6 @@
 
 namespace Test;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * Web Color class test
  *
@@ -29,13 +27,13 @@ use PHPUnit\Framework\TestCase;
  * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link      https://github.com/tecnickcom/tc-lib-color
  */
-class TestUtil extends TestCase
+class TestUtil extends \PHPUnit\Framework\TestCase
 {
     public function bcAssertEqualsWithDelta(
         mixed $expected,
         mixed $actual,
         float $delta = 0.01,
-        string $message = ''
+        string $message = '',
     ): void {
         parent::assertEqualsWithDelta($expected, $actual, $delta, $message);
     }
@@ -43,7 +41,7 @@ class TestUtil extends TestCase
     /**
      * @param class-string<\Throwable> $exception
      */
-    public function bcExpectException($exception): void
+    public function bcExpectException(string $exception): void
     {
         parent::expectException($exception);
     }

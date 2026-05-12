@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Lab.php
  *
@@ -43,21 +45,21 @@ class Lab extends \Com\Tecnick\Color\Model
      *
      * @var float
      */
-    protected $cmp_lstar = 0.0;
+    protected float $cmp_lstar = 0.0;
 
     /**
      * Value of the Lab a* component [-128..127]
      *
      * @var float
      */
-    protected $cmp_astar = 0.0;
+    protected float $cmp_astar = 0.0;
 
     /**
      * Value of the Lab b* component [-128..127]
      *
      * @var float
      */
-    protected $cmp_bstar = 0.0;
+    protected float $cmp_bstar = 0.0;
 
     /**
      * Initialize a new Lab color object.
@@ -97,9 +99,9 @@ class Lab extends \Com\Tecnick\Color\Model
     {
         $rgb = $this->toRgbArray();
         return [
-            $rgb['red'],
-            $rgb['green'],
-            $rgb['blue'],
+            $rgb['red'] ?? 0.0,
+            $rgb['green'] ?? 0.0,
+            $rgb['blue'] ?? 0.0,
         ];
     }
 
@@ -127,12 +129,17 @@ class Lab extends \Com\Tecnick\Color\Model
     public function getCssColor(): string
     {
         $rgb = $this->toRgbArray();
-        return 'rgba('
-            . $this->getNormalizedValue($rgb['red'], 100) . '%, '
-            . $this->getNormalizedValue($rgb['green'], 100) . '%, '
-            . $this->getNormalizedValue($rgb['blue'], 100) . '%, '
-            . $rgb['alpha']
-            . ')';
+        return (
+            'rgba('
+            . $this->getNormalizedValue($rgb['red'] ?? 0.0, 100)
+            . '%, '
+            . $this->getNormalizedValue($rgb['green'] ?? 0.0, 100)
+            . '%, '
+            . $this->getNormalizedValue($rgb['blue'] ?? 0.0, 100)
+            . '%, '
+            . ($rgb['alpha'] ?? 1.0)
+            . ')'
+        );
     }
 
     /**
@@ -141,12 +148,12 @@ class Lab extends \Com\Tecnick\Color\Model
      */
     public function getJsPdfColor(): string
     {
-        if ($this->cmp_alpha == 0) {
+        if ($this->cmp_alpha === 0.0) {
             return '["T"]'; // transparent color
         }
 
         $rgb = $this->toRgbArray();
-        return \sprintf('["RGB",%F,%F,%F]', $rgb['red'], $rgb['green'], $rgb['blue']);
+        return \sprintf('["RGB",%F,%F,%F]', $rgb['red'] ?? 0.0, $rgb['green'] ?? 0.0, $rgb['blue'] ?? 0.0);
     }
 
     /**
@@ -192,18 +199,18 @@ class Lab extends \Com\Tecnick\Color\Model
         $fzn = $fyn - ($this->cmp_bstar / 200.0);
 
         $xRel = $this->pivotLabToXyz($fxn);
-        $yRel = ($this->cmp_lstar > 8.0)
-            ? \pow(($this->cmp_lstar + 16.0) / 116.0, 3.0)
-            : ($this->cmp_lstar / 903.3);
+        $yRel = (float) (
+            $this->cmp_lstar > 8.0 ? \pow(($this->cmp_lstar + 16.0) / 116.0, 3.0) : $this->cmp_lstar / 903.3
+        );
         $zRel = $this->pivotLabToXyz($fzn);
 
         $xTri = ($xRel * 95.047) / 100.0;
         $yTri = ($yRel * 100.000) / 100.0;
         $zTri = ($zRel * 108.883) / 100.0;
 
-        $red = (3.2404542 * $xTri) + (-1.5371385 * $yTri) + (-0.4985314 * $zTri);
-        $green = (-0.9692660 * $xTri) + (1.8760108 * $yTri) + (0.0415560 * $zTri);
-        $blue = (0.0556434 * $xTri) + (-0.2040259 * $yTri) + (1.0572252 * $zTri);
+        $red = (3.240_454_2 * $xTri) + (-1.537_138_5 * $yTri) + (-0.498_531_4 * $zTri);
+        $green = (-0.969_266_0 * $xTri) + (1.876_010_8 * $yTri) + (0.041_556_0 * $zTri);
+        $blue = (0.055_643_4 * $xTri) + (-0.204_025_9 * $yTri) + (1.057_225_2 * $zTri);
 
         return [
             'red' => \max(0.0, \min(1.0, $this->linearToSrgb($red))),
@@ -269,12 +276,12 @@ class Lab extends \Com\Tecnick\Color\Model
      */
     private function pivotLabToXyz(float $value): float
     {
-        $cubed = \pow($value, 3.0);
-        if ($cubed > 0.008856451679035631) {
+        $cubed = (float) \pow($value, 3.0);
+        if ($cubed > 0.008_856_451_679_035_631) {
             return $cubed;
         }
 
-        return ($value - (16.0 / 116.0)) / 7.787037037037037;
+        return ($value - (16.0 / 116.0)) / 7.787_037_037_037_037;
     }
 
     /**
@@ -282,10 +289,10 @@ class Lab extends \Com\Tecnick\Color\Model
      */
     private function linearToSrgb(float $component): float
     {
-        if ($component <= 0.0031308) {
+        if ($component <= 0.003_130_8) {
             return 12.92 * $component;
         }
 
-        return (1.055 * \pow($component, 1.0 / 2.4)) - 0.055;
+        return (1.055 * (float) \pow($component, 1.0 / 2.4)) - 0.055;
     }
 }

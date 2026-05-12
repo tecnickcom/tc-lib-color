@@ -51,6 +51,9 @@ class SpotTest extends TestUtil
         $this->assertEquals('abcfg12345', $res);
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetSpotColor(): void
     {
         $spot = $this->getTestObject();
@@ -62,6 +65,9 @@ class SpotTest extends TestUtil
         $this->assertEquals('0.000000 1.000000 1.000000 0.000000 K' . "\n", $res['color']->getPdfColor(true));
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetSpotColorNotFound(): void
     {
         $spot = $this->getTestObject();
@@ -69,6 +75,9 @@ class SpotTest extends TestUtil
         $spot->getSpotColor('missing-color');
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetSpotColorObj(): void
     {
         $spot = $this->getTestObject();
@@ -83,42 +92,47 @@ class SpotTest extends TestUtil
     public function testAddSpotColor(): void
     {
         $spot = $this->getTestObject();
-        $cmyk = new \Com\Tecnick\Color\Model\Cmyk(
-            [
-                'cyan' => 0.666,
-                'magenta' => 0.333,
-                'yellow' => 0,
-                'key' => 0.25,
-                'alpha' => 0.85,
-            ]
-        );
+        $cmyk = new \Com\Tecnick\Color\Model\Cmyk([
+            'cyan' => 0.666,
+            'magenta' => 0.333,
+            'yellow' => 0,
+            'key' => 0.25,
+            'alpha' => 0.85,
+        ]);
         $spot->addSpotColor('test', $cmyk);
         $res = $spot->getSpotColors();
         $this->assertArrayHasKey('test', $res);
-        $this->assertEquals(1, $res['test']['i']);
-        $this->assertEquals('test', $res['test']['name']);
-        $this->assertEquals('0.666000 0.333000 0.000000 0.250000 k' . "\n", $res['test']['color']->getPdfColor());
+        $testColor = $res['test'] ?? null;
+        $this->assertNotNull($testColor);
+
+        $this->assertEquals(1, $testColor['i']);
+        $this->assertEquals('test', $testColor['name']);
+        $this->assertEquals('0.666000 0.333000 0.000000 0.250000 k' . "\n", $testColor['color']->getPdfColor());
 
         // test overwrite
-        $cmyk = new \Com\Tecnick\Color\Model\Cmyk(
-            [
-                'cyan' => 0.25,
-                'magenta' => 0.35,
-                'yellow' => 0.45,
-                'key' => 0.55,
-                'alpha' => 0.65,
-            ]
-        );
+        $cmyk = new \Com\Tecnick\Color\Model\Cmyk([
+            'cyan' => 0.25,
+            'magenta' => 0.35,
+            'yellow' => 0.45,
+            'key' => 0.55,
+            'alpha' => 0.65,
+        ]);
         $key = $spot->addSpotColor('test', $cmyk);
         $this->assertEquals('test', $key);
 
         $res = $spot->getSpotColors();
         $this->assertArrayHasKey('test', $res);
-        $this->assertEquals(1, $res['test']['i']);
-        $this->assertEquals('test', $res['test']['name']);
-        $this->assertEquals('0.250000 0.350000 0.450000 0.550000 k' . "\n", $res['test']['color']->getPdfColor());
+        $testColor = $res['test'] ?? null;
+        $this->assertNotNull($testColor);
+
+        $this->assertEquals(1, $testColor['i']);
+        $this->assertEquals('test', $testColor['name']);
+        $this->assertEquals('0.250000 0.350000 0.450000 0.550000 k' . "\n", $testColor['color']->getPdfColor());
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testAddSpotLabColor(): void
     {
         $spot = $this->getTestObject();
@@ -134,17 +148,17 @@ class SpotTest extends TestUtil
         $this->assertEquals([0.9505, 1.0, 1.089], $res['lab']['whitepoint']);
         $this->assertEquals([100.0, 0.0, 0.0], $res['lab']['c0']);
         $this->assertInstanceOf(\Com\Tecnick\Color\Model\Lab::class, $res['lab']['model']);
-        $this->bcAssertEqualsWithDelta(
-            [
-                'lstar' => 64.25,
-                'astar' => 58.5,
-                'bstar' => 71.2,
-                'alpha' => 1,
-            ],
-            $res['lab']['model']->toLabArray()
-        );
+        $this->bcAssertEqualsWithDelta([
+            'lstar' => 64.25,
+            'astar' => 58.5,
+            'bstar' => 71.2,
+            'alpha' => 1,
+        ], $res['lab']['model']->toLabArray());
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetSpotLabColorObj(): void
     {
         $spot = $this->getTestObject();
@@ -152,17 +166,17 @@ class SpotTest extends TestUtil
 
         $res = $spot->getSpotLabColorObj('Brand Orange');
         $this->assertInstanceOf(\Com\Tecnick\Color\Model\Lab::class, $res);
-        $this->bcAssertEqualsWithDelta(
-            [
-                'lstar' => 64.25,
-                'astar' => 58.5,
-                'bstar' => 71.2,
-                'alpha' => 1,
-            ],
-            $res->toLabArray()
-        );
+        $this->bcAssertEqualsWithDelta([
+            'lstar' => 64.25,
+            'astar' => 58.5,
+            'bstar' => 71.2,
+            'alpha' => 1,
+        ], $res->toLabArray());
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetSpotColorObjFromLab(): void
     {
         $spot = $this->getTestObject();
@@ -173,6 +187,9 @@ class SpotTest extends TestUtil
         $this->assertEquals('0.000000 0.596375 0.949051 0.000000 k' . "\n", $cmyk->getPdfColor());
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetSpotLabColorObjFromCmyk(): void
     {
         $spot = $this->getTestObject();
@@ -198,18 +215,19 @@ class SpotTest extends TestUtil
         $this->assertEquals('', $pdfSpotResources);
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetPdfSpotObjects(): void
     {
         $spot = $this->getTestObject();
-        $cmyk = new \Com\Tecnick\Color\Model\Cmyk(
-            [
-                'cyan' => 0.666,
-                'magenta' => 0.333,
-                'yellow' => 0,
-                'key' => 0.25,
-                'alpha' => 0.85,
-            ]
-        );
+        $cmyk = new \Com\Tecnick\Color\Model\Cmyk([
+            'cyan' => 0.666,
+            'magenta' => 0.333,
+            'yellow' => 0,
+            'key' => 0.25,
+            'alpha' => 0.85,
+        ]);
         $spot->addSpotColor('test', $cmyk);
         $spot->getSpotColor('cyan');
         $spot->getSpotColor('magenta');
@@ -220,33 +238,48 @@ class SpotTest extends TestUtil
         $res = $spot->getPdfSpotObjects($obj);
         $this->assertEquals(6, $obj);
         $this->assertEquals(
-            '2 0 obj' . "\n"
+            '2 0 obj'
+            . "\n"
             . '[/Separation /test /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
-            . ' /C1 [0.666000 0.333000 0.000000 0.250000] /FunctionType 2 /Domain [0 1] /N 1>>]' . "\n"
-            . 'endobj' . "\n"
-            . '3 0 obj' . "\n"
+            . ' /C1 [0.666000 0.333000 0.000000 0.250000] /FunctionType 2 /Domain [0 1] /N 1>>]'
+            . "\n"
+            . 'endobj'
+            . "\n"
+            . '3 0 obj'
+            . "\n"
             . '[/Separation /cyan /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
-            . ' /C1 [1.000000 0.000000 0.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]' . "\n"
-            . 'endobj' . "\n"
-            . '4 0 obj' . "\n"
+            . ' /C1 [1.000000 0.000000 0.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'
+            . "\n"
+            . 'endobj'
+            . "\n"
+            . '4 0 obj'
+            . "\n"
             . '[/Separation /magenta /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
-            . ' /C1 [0.000000 1.000000 0.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]' . "\n"
-            . 'endobj' . "\n"
-            . '5 0 obj' . "\n"
+            . ' /C1 [0.000000 1.000000 0.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'
+            . "\n"
+            . 'endobj'
+            . "\n"
+            . '5 0 obj'
+            . "\n"
             . '[/Separation /yellow /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
-            . ' /C1 [0.000000 0.000000 1.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]' . "\n"
-            . 'endobj' . "\n"
-            . '6 0 obj' . "\n"
+            . ' /C1 [0.000000 0.000000 1.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'
+            . "\n"
+            . 'endobj'
+            . "\n"
+            . '6 0 obj'
+            . "\n"
             . '[/Separation /key /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
-            . ' /C1 [0.000000 0.000000 0.000000 1.000000] /FunctionType 2 /Domain [0 1] /N 1>>]' . "\n"
-            . 'endobj' . "\n",
-            $res
+            . ' /C1 [0.000000 0.000000 0.000000 1.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'
+            . "\n"
+            . 'endobj'
+            . "\n",
+            $res,
         );
 
         $res = $spot->getPdfSpotResources();
         $this->assertEquals('/ColorSpace << /CS1 2 0 R /CS2 3 0 R /CS3 4 0 R /CS4 5 0 R /CS5 6 0 R >>' . "\n", $res);
 
-        $resk = $spot->getPdfSpotResourcesByKeys(['cyan','yellow']);
+        $resk = $spot->getPdfSpotResourcesByKeys(['cyan', 'yellow']);
         $this->assertEquals('/ColorSpace << /CS2 3 0 R /CS4 5 0 R >>' . "\n", $resk);
 
         $resk_empty = $spot->getPdfSpotResourcesByKeys([]);
@@ -266,13 +299,16 @@ class SpotTest extends TestUtil
         $res = $spot->getPdfSpotObjects($obj);
         $this->assertEquals(8, $obj);
         $this->assertEquals(
-            '8 0 obj' . "\n"
+            '8 0 obj'
+            . "\n"
             . '[/Separation /brandorange [/Lab << /WhitePoint [0.950500 1.000000 1.089000]'
             . ' /BlackPoint [0.000000 0.000000 0.000000] /Range [-128.000000 127.000000 -128.000000 127.000000]>>] <<'
             . ' /FunctionType 2 /Domain [0 1] /C0 [100.000000 0.000000 0.000000]'
-            . ' /C1 [64.250000 58.500000 71.200000] /N 1>>]' . "\n"
-            . 'endobj' . "\n",
-            $res
+            . ' /C1 [64.250000 58.500000 71.200000] /N 1>>]'
+            . "\n"
+            . 'endobj'
+            . "\n",
+            $res,
         );
 
         $pdfSpotResources = $spot->getPdfSpotResources();
@@ -284,20 +320,17 @@ class SpotTest extends TestUtil
         $spot = $this->getTestObject();
 
         $property = new ReflectionProperty($spot, 'spot_colors');
-        $property->setAccessible(true);
         $property->setValue($spot, [
             'invalid' => [
                 'i' => 1,
                 'n' => 0,
                 'name' => 'Invalid',
-                'color' => new Lab(
-                    [
-                        'lstar' => 50,
-                        'astar' => 0,
-                        'bstar' => 0,
-                        'alpha' => 1,
-                    ]
-                ),
+                'color' => new Lab([
+                    'lstar' => 50,
+                    'astar' => 0,
+                    'bstar' => 0,
+                    'alpha' => 1,
+                ]),
                 'space' => 'DeviceCMYK',
                 'lab' => null,
             ],

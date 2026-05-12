@@ -50,7 +50,7 @@ The library is designed to centralize color logic so applications avoid ad-hoc c
 
 ## Requirements
 
-- PHP 8.1 or later
+- PHP 8.2 or later
 - Extension: `pcre`
 - Composer
 

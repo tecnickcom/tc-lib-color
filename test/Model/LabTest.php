@@ -33,14 +33,12 @@ class LabTest extends TestUtil
 {
     protected function getTestObject(): \Com\Tecnick\Color\Model\Lab
     {
-        return new \Com\Tecnick\Color\Model\Lab(
-            [
-                'lstar' => 52,
-                'astar' => 0,
-                'bstar' => -39,
-                'alpha' => 0.85,
-            ]
-        );
+        return new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 52,
+            'astar' => 0,
+            'bstar' => -39,
+            'alpha' => 0.85,
+        ]);
     }
 
     public function testGetType(): void
@@ -59,7 +57,7 @@ class LabTest extends TestUtil
                 'b' => -39,
                 'A' => 0.85,
             ],
-            $lab->getArray()
+            $lab->getArray(),
         );
     }
 
@@ -73,20 +71,18 @@ class LabTest extends TestUtil
                 0.75,
             ],
             $lab->getPDFacArray(),
-            0.03
+            0.03,
         );
     }
 
     public function testGetNormalizedArray(): void
     {
-        $lab = new \Com\Tecnick\Color\Model\Lab(
-            [
-                'lstar' => 51.6,
-                'astar' => 0.4,
-                'bstar' => -38.7,
-                'alpha' => 0.85,
-            ]
-        );
+        $lab = new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 51.6,
+            'astar' => 0.4,
+            'bstar' => -38.7,
+            'alpha' => 0.85,
+        ]);
 
         $this->assertEquals(
             [
@@ -95,7 +91,7 @@ class LabTest extends TestUtil
                 'b' => -39.0,
                 'A' => 0.85,
             ],
-            $lab->getNormalizedArray(255)
+            $lab->getNormalizedArray(255),
         );
     }
 
@@ -113,14 +109,12 @@ class LabTest extends TestUtil
 
     public function testGetJsPdfTransparentColor(): void
     {
-        $transparent = new \Com\Tecnick\Color\Model\Lab(
-            [
-                'lstar' => 52,
-                'astar' => 0,
-                'bstar' => -39,
-                'alpha' => 0,
-            ]
-        );
+        $transparent = new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 52,
+            'astar' => 0,
+            'bstar' => -39,
+            'alpha' => 0,
+        ]);
 
         $this->assertSame('["T"]', $transparent->getJsPdfColor());
     }
@@ -147,7 +141,7 @@ class LabTest extends TestUtil
                 'alpha' => 0.85,
             ],
             $lab->toGrayArray(),
-            0.02
+            0.02,
         );
     }
 
@@ -162,7 +156,7 @@ class LabTest extends TestUtil
                 'alpha' => 0.85,
             ],
             $lab->toRgbArray(),
-            0.03
+            0.03,
         );
     }
 
@@ -177,7 +171,7 @@ class LabTest extends TestUtil
                 'alpha' => 0.85,
             ],
             $lab->toLabArray(),
-            0.01
+            0.01,
         );
     }
 
@@ -193,7 +187,7 @@ class LabTest extends TestUtil
                 'alpha' => 0.85,
             ],
             $lab->toCmykArray(),
-            0.05
+            0.05,
         );
     }
 
@@ -208,27 +202,25 @@ class LabTest extends TestUtil
                 'alpha' => 0.85,
             ],
             $lab->toHslArray(),
-            0.05
+            0.05,
         );
     }
 
     public function testToRgbArrayLowLightnessBranch(): void
     {
-        $lab = new \Com\Tecnick\Color\Model\Lab(
-            [
-                'lstar' => 2,
-                'astar' => 0,
-                'bstar' => 0,
-                'alpha' => 1,
-            ]
-        );
+        $lab = new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 2,
+            'astar' => 0,
+            'bstar' => 0,
+            'alpha' => 1,
+        ]);
 
         $rgb = $lab->toRgbArray();
-        $this->assertGreaterThan(0.0, $rgb['red']);
-        $this->assertLessThan(0.03, $rgb['red']);
-        $this->assertEqualsWithDelta($rgb['red'], $rgb['green'], 0.0001);
-        $this->assertEqualsWithDelta($rgb['green'], $rgb['blue'], 0.0001);
-        $this->assertSame(1.0, $rgb['alpha']);
+        $this->assertGreaterThan(0.0, $rgb['red'] ?? 0.0);
+        $this->assertLessThan(0.03, $rgb['red'] ?? 0.0);
+        $this->assertEqualsWithDelta($rgb['red'] ?? 0.0, $rgb['green'] ?? 0.0, 0.0001);
+        $this->assertEqualsWithDelta($rgb['green'] ?? 0.0, $rgb['blue'] ?? 0.0, 0.0001);
+        $this->assertSame(1.0, $rgb['alpha'] ?? 0.0);
     }
 
     public function testInvertColor(): void
@@ -243,7 +235,7 @@ class LabTest extends TestUtil
                 'alpha' => 0.85,
             ],
             $lab->toRgbArray(),
-            0.05
+            0.05,
         );
     }
 }

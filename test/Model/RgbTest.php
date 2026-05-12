@@ -33,14 +33,12 @@ class RgbTest extends TestUtil
 {
     protected function getTestObject(): \Com\Tecnick\Color\Model\Rgb
     {
-        return new \Com\Tecnick\Color\Model\Rgb(
-            [
-                'red' => 0.25,
-                'green' => 0.50,
-                'blue' => 0.75,
-                'alpha' => 0.85,
-            ]
-        );
+        return new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 0.25,
+            'green' => 0.50,
+            'blue' => 0.75,
+            'alpha' => 0.85,
+        ]);
     }
 
     public function testGetType(): void
@@ -89,7 +87,7 @@ class RgbTest extends TestUtil
                 'B' => 0.75,
                 'A' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 
@@ -103,7 +101,7 @@ class RgbTest extends TestUtil
                 0.50,
                 0.75,
             ],
-            $res
+            $res,
         );
     }
 
@@ -118,7 +116,7 @@ class RgbTest extends TestUtil
                 'B' => 191,
                 'A' => 0.85,
             ],
-            $res
+            $res,
         );
     }
 
@@ -135,14 +133,12 @@ class RgbTest extends TestUtil
         $res = $testObj->getJsPdfColor();
         $this->assertEquals('["RGB",0.250000,0.500000,0.750000]', $res);
 
-        $rgb = new \Com\Tecnick\Color\Model\Rgb(
-            [
-                'red' => 0.25,
-                'green' => 0.50,
-                'blue' => 0.75,
-                'alpha' => 0,
-            ]
-        );
+        $rgb = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 0.25,
+            'green' => 0.50,
+            'blue' => 0.75,
+            'alpha' => 0,
+        ]);
         $res = $rgb->getJsPdfColor();
         $this->assertEquals('["T"]', $res);
     }
@@ -171,155 +167,118 @@ class RgbTest extends TestUtil
     {
         $rgb = $this->getTestObject();
         $res = $rgb->toGrayArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'gray' => 0.465,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'gray' => 0.465,
+            'alpha' => 0.85,
+        ], $res);
     }
 
     public function testToRgbArray(): void
     {
         $rgb = $this->getTestObject();
         $res = $rgb->toRgbArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'red' => 0.25,
-                'green' => 0.50,
-                'blue' => 0.75,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'red' => 0.25,
+            'green' => 0.50,
+            'blue' => 0.75,
+            'alpha' => 0.85,
+        ], $res);
     }
 
     public function testToHslArray(): void
     {
         $testObj = $this->getTestObject();
         $res = $testObj->toHslArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'hue' => 0.583,
-                'saturation' => 0.5,
-                'lightness' => 0.5,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'hue' => 0.583,
+            'saturation' => 0.5,
+            'lightness' => 0.5,
+            'alpha' => 0.85,
+        ], $res);
 
-        $col = new \Com\Tecnick\Color\Model\Rgb(
-            [
-                'red' => 0,
-                'green' => 0,
-                'blue' => 0,
-                'alpha' => 1,
-            ]
-        );
+        $col = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 0,
+            'green' => 0,
+            'blue' => 0,
+            'alpha' => 1,
+        ]);
         $res = $col->toHslArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'hue' => 0,
-                'saturation' => 0,
-                'lightness' => 0,
-                'alpha' => 1,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'hue' => 0,
+            'saturation' => 0,
+            'lightness' => 0,
+            'alpha' => 1,
+        ], $res);
 
-        $col = new \Com\Tecnick\Color\Model\Rgb(
-            [
-                'red' => 0.1,
-                'green' => 0.3,
-                'blue' => 0.2,
-                'alpha' => 1,
-            ]
-        );
+        $col = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 0.1,
+            'green' => 0.3,
+            'blue' => 0.2,
+            'alpha' => 1,
+        ]);
         $res = $col->toHslArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'hue' => 0.416,
-                'saturation' => 0.500,
-                'lightness' => 0.200,
-                'alpha' => 1,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'hue' => 0.416,
+            'saturation' => 0.500,
+            'lightness' => 0.200,
+            'alpha' => 1,
+        ], $res);
 
-        $col = new \Com\Tecnick\Color\Model\Rgb(
-            [
-                'red' => 0.3,
-                'green' => 0.2,
-                'blue' => 0.1,
-                'alpha' => 1,
-            ]
-        );
+        $col = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 0.3,
+            'green' => 0.2,
+            'blue' => 0.1,
+            'alpha' => 1,
+        ]);
         $res = $col->toHslArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'hue' => 0.0833,
-                'saturation' => 0.500,
-                'lightness' => 0.200,
-                'alpha' => 1,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'hue' => 0.0833,
+            'saturation' => 0.500,
+            'lightness' => 0.200,
+            'alpha' => 1,
+        ], $res);
 
-        $col = new \Com\Tecnick\Color\Model\Rgb(
-            [
-                'red' => 1,
-                'green' => 0.1,
-                'blue' => 0.9,
-                'alpha' => 1,
-            ]
-        );
+        $col = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 1,
+            'green' => 0.1,
+            'blue' => 0.9,
+            'alpha' => 1,
+        ]);
         $res = $col->toHslArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'hue' => 0.852,
-                'saturation' => 1,
-                'lightness' => 0.55,
-                'alpha' => 1,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'hue' => 0.852,
+            'saturation' => 1,
+            'lightness' => 0.55,
+            'alpha' => 1,
+        ], $res);
     }
 
     public function testToCmykArray(): void
     {
         $testObj = $this->getTestObject();
         $res = $testObj->toCmykArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'cyan' => 0.666,
-                'magenta' => 0.333,
-                'yellow' => 0,
-                'key' => 0.25,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'cyan' => 0.666,
+            'magenta' => 0.333,
+            'yellow' => 0,
+            'key' => 0.25,
+            'alpha' => 0.85,
+        ], $res);
 
-        $rgb = new \Com\Tecnick\Color\Model\Rgb(
-            [
-                'red' => 0,
-                'green' => 0,
-                'blue' => 0,
-                'alpha' => 1,
-            ]
-        );
+        $rgb = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 0,
+            'green' => 0,
+            'blue' => 0,
+            'alpha' => 1,
+        ]);
         $res = $rgb->toCmykArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'cyan' => 0,
-                'magenta' => 0,
-                'yellow' => 0,
-                'key' => 1,
-                'alpha' => 1,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'cyan' => 0,
+            'magenta' => 0,
+            'yellow' => 0,
+            'key' => 1,
+            'alpha' => 1,
+        ], $res);
     }
 
     public function testToLabArray(): void
@@ -334,26 +293,24 @@ class RgbTest extends TestUtil
                 'alpha' => 0.85,
             ],
             $res,
-            1.5
+            1.5,
         );
     }
 
     public function testToLabArrayLowValueBranch(): void
     {
-        $rgb = new \Com\Tecnick\Color\Model\Rgb(
-            [
-                'red' => 0,
-                'green' => 0,
-                'blue' => 0,
-                'alpha' => 1,
-            ]
-        );
+        $rgb = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 0,
+            'green' => 0,
+            'blue' => 0,
+            'alpha' => 1,
+        ]);
 
         $lab = $rgb->toLabArray();
-        $this->assertSame(0.0, $lab['lstar']);
-        $this->assertEqualsWithDelta(0.0, $lab['astar'], 0.05);
-        $this->assertEqualsWithDelta(0.0, $lab['bstar'], 0.05);
-        $this->assertEquals(1.0, $lab['alpha']);
+        $this->assertSame(0.0, $lab['lstar'] ?? 0.0);
+        $this->assertEqualsWithDelta(0.0, $lab['astar'] ?? 0.0, 0.05);
+        $this->assertEqualsWithDelta(0.0, $lab['bstar'] ?? 0.0, 0.05);
+        $this->assertEquals(1.0, $lab['alpha'] ?? 0.0);
     }
 
     public function testInvertColor(): void
@@ -362,14 +319,11 @@ class RgbTest extends TestUtil
         $rgb->invertColor();
 
         $res = $rgb->toRgbArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'red' => 0.75,
-                'green' => 0.50,
-                'blue' => 0.25,
-                'alpha' => 0.85,
-            ],
-            $res
-        );
+        $this->bcAssertEqualsWithDelta([
+            'red' => 0.75,
+            'green' => 0.50,
+            'blue' => 0.25,
+            'alpha' => 0.85,
+        ], $res);
     }
 }

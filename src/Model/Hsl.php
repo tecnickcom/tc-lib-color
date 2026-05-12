@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Hsl.php
  *
@@ -43,21 +45,21 @@ class Hsl extends \Com\Tecnick\Color\Model
      *
      * @var float
      */
-    protected $cmp_hue = 0.0;
+    protected float $cmp_hue = 0.0;
 
     /**
      * Value of the Saturation color component [0..1]
      *
      * @var float
      */
-    protected $cmp_saturation = 0.0;
+    protected float $cmp_saturation = 0.0;
 
     /**
      * Value of the Lightness color component [0..1]
      *
      * @var float
      */
-    protected $cmp_lightness = 0.0;
+    protected float $cmp_lightness = 0.0;
 
     /**
      * Get an array with all color components.
@@ -89,9 +91,9 @@ class Hsl extends \Com\Tecnick\Color\Model
     {
         $rgb = $this->toRgbArray();
         return [
-            $rgb['red'],
-            $rgb['green'],
-            $rgb['blue'],
+            $rgb['red'] ?? 0.0,
+            $rgb['green'] ?? 0.0,
+            $rgb['blue'] ?? 0.0,
         ];
     }
 
@@ -120,12 +122,17 @@ class Hsl extends \Com\Tecnick\Color\Model
      */
     public function getCssColor(): string
     {
-        return 'hsla('
-            . $this->getNormalizedValue($this->cmp_hue, 360) . ','
-            . $this->getNormalizedValue($this->cmp_saturation, 100) . '%,'
-            . $this->getNormalizedValue($this->cmp_lightness, 100) . '%,'
+        return (
+            'hsla('
+            . $this->getNormalizedValue($this->cmp_hue, 360)
+            . ','
+            . $this->getNormalizedValue($this->cmp_saturation, 100)
+            . '%,'
+            . $this->getNormalizedValue($this->cmp_lightness, 100)
+            . '%,'
             . $this->cmp_alpha
-            . ')';
+            . ')'
+        );
     }
 
     /**
@@ -135,11 +142,11 @@ class Hsl extends \Com\Tecnick\Color\Model
     public function getJsPdfColor(): string
     {
         $rgb = $this->toRgbArray();
-        if ($this->cmp_alpha == 0) {
+        if ($this->cmp_alpha === 0.0) {
             return '["T"]'; // transparent color
         }
 
-        return \sprintf('["RGB",%F,%F,%F]', $rgb['red'], $rgb['green'], $rgb['blue']);
+        return \sprintf('["RGB",%F,%F,%F]', $rgb['red'] ?? 0.0, $rgb['green'] ?? 0.0, $rgb['blue'] ?? 0.0);
     }
 
     /**
@@ -148,7 +155,7 @@ class Hsl extends \Com\Tecnick\Color\Model
     public function getComponentsString(): string
     {
         $rgb = $this->toRgbArray();
-        return \sprintf('%F %F %F', $rgb['red'], $rgb['green'], $rgb['blue']);
+        return \sprintf('%F %F %F', $rgb['red'] ?? 0.0, $rgb['green'] ?? 0.0, $rgb['blue'] ?? 0.0);
     }
 
     /**
@@ -185,7 +192,7 @@ class Hsl extends \Com\Tecnick\Color\Model
      */
     public function toRgbArray(): array
     {
-        if ($this->cmp_saturation == 0) {
+        if ($this->cmp_saturation === 0.0) {
             return [
                 'red' => $this->cmp_lightness,
                 'green' => $this->cmp_lightness,
@@ -194,17 +201,16 @@ class Hsl extends \Com\Tecnick\Color\Model
             ];
         }
 
-        if ($this->cmp_lightness < 0.5) {
-            $valb = ($this->cmp_lightness * (1 + $this->cmp_saturation));
-        } else {
-            $valb = (($this->cmp_lightness + $this->cmp_saturation) - ($this->cmp_lightness * $this->cmp_saturation));
+        $valb = $this->cmp_lightness * (1 + $this->cmp_saturation);
+        if ($this->cmp_lightness >= 0.5) {
+            $valb = $this->cmp_lightness + $this->cmp_saturation - ($this->cmp_lightness * $this->cmp_saturation);
         }
 
-        $vala = ((2 * $this->cmp_lightness) - $valb);
+        $vala = (2 * $this->cmp_lightness) - $valb;
         return [
-            'red' => $this->convertHuetoRgb($vala, $valb, ($this->cmp_hue + (1 / 3))),
+            'red' => $this->convertHuetoRgb($vala, $valb, $this->cmp_hue + (1 / 3)),
             'green' => $this->convertHuetoRgb($vala, $valb, $this->cmp_hue),
-            'blue' => $this->convertHuetoRgb($vala, $valb, ($this->cmp_hue - (1 / 3))),
+            'blue' => $this->convertHuetoRgb($vala, $valb, $this->cmp_hue - (1 / 3)),
             'alpha' => $this->cmp_alpha,
         ];
     }
@@ -227,7 +233,7 @@ class Hsl extends \Com\Tecnick\Color\Model
         }
 
         if ((6 * $hue) < 1) {
-            return \max(0, \min(1, ($vala + (($valb - $vala) * 6 * $hue))));
+            return \max(0, \min(1, $vala + (($valb - $vala) * 6 * $hue)));
         }
 
         if ((2 * $hue) < 1) {
@@ -235,7 +241,7 @@ class Hsl extends \Com\Tecnick\Color\Model
         }
 
         if ((3 * $hue) < 2) {
-            return \max(0, \min(1, ($vala + (($valb - $vala) * ((2 / 3) - $hue) * 6))));
+            return \max(0, \min(1, $vala + (($valb - $vala) * ((2 / 3) - $hue) * 6)));
         }
 
         return \max(0, \min(1, $vala));
@@ -283,7 +289,7 @@ class Hsl extends \Com\Tecnick\Color\Model
      */
     public function invertColor(): self
     {
-        $this->cmp_hue = ($this->cmp_hue >= 0.5) ? ($this->cmp_hue - 0.5) : ($this->cmp_hue + 0.5);
+        $this->cmp_hue = $this->cmp_hue >= 0.5 ? $this->cmp_hue - 0.5 : $this->cmp_hue + 0.5;
         return $this;
     }
 }

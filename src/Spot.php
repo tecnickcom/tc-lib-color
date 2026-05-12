@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Spot.php
  *
@@ -185,7 +187,7 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @var array<string, TSpotColor>
      */
-    protected $spot_colors = [];
+    protected array $spot_colors = [];
 
     /**
      * Returns the array of spot colors.
@@ -220,16 +222,22 @@ class Spot extends \Com\Tecnick\Color\Web
     public function getSpotColor(string $name): array
     {
         $key = $this->normalizeSpotColorName($name);
-        if (empty($this->spot_colors[$key])) {
+        if (!\array_key_exists($key, $this->spot_colors)) {
             // search on default spot colors
-            if (empty(self::DEFAULT_SPOT_COLORS[$key])) {
+            $defaultSpotColor = self::DEFAULT_SPOT_COLORS[$key] ?? null;
+            if ($defaultSpotColor === null) {
                 throw new ColorException('unable to find the spot color: ' . $key);
             }
 
-            $this->addSpotColor($key, new Cmyk(self::DEFAULT_SPOT_COLORS[$key]['color']));
+            $this->addSpotColor($key, new Cmyk($defaultSpotColor['color']));
         }
 
-        return $this->spot_colors[$key];
+        $spotColor = $this->spot_colors[$key] ?? null;
+        if (!\is_array($spotColor)) {
+            throw new ColorException('unable to find the spot color: ' . $key);
+        }
+
+        return $spotColor;
     }
 
     /**
@@ -272,7 +280,7 @@ class Spot extends \Com\Tecnick\Color\Web
     public function addSpotColor(string $name, Cmyk $cmyk): string
     {
         $key = $this->normalizeSpotColorName($name);
-        $num = isset($this->spot_colors[$key]) ? $this->spot_colors[$key]['i'] : (\count($this->spot_colors) + 1);
+        $num = $this->spot_colors[$key]['i'] ?? (\count($this->spot_colors) + 1);
 
         $this->spot_colors[$key] = [
             'i' => $num, // color index
@@ -289,14 +297,12 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Add a new Lab-based spot color or overwrite an existing one with the same name.
      *
-     * @param string       $name       Full name of the spot color.
-     * @param float        $lstar      Lab L* component in [0..100].
-     * @param float        $astar      Lab a* component.
-     * @param float        $bstar      Lab b* component.
-     * @param TLabTriplet  $whitepoint CIE XYZ whitepoint.
-     * @param TLabTriplet  $blackpoint CIE XYZ blackpoint.
-     * @param TLabRange    $range      Lab a-star and b-star range [a_min, a_max, b_min, b_max].
-     * @param TLabTriplet  $col0       Tint=0 Lab output.
+     * @param string                               $name       Full name of the spot color.
+     * @param float                                $lstar      Lab L* component in [0..100].
+     * @param float                                $astar      Lab a* component.
+     * @param float                                $bstar      Lab b* component.
+     * @param array<array-key, TLabTriplet|TLabRange> $labOptions Optional Lab settings in order:
+     *                                                       [whitepoint, blackpoint, range, col0].
      *
      * @return string Spot color key.
      */
@@ -305,29 +311,16 @@ class Spot extends \Com\Tecnick\Color\Web
         float $lstar,
         float $astar,
         float $bstar,
-        array $whitepoint = [0.9505, 1.0000, 1.0890],
-        array $blackpoint = [0.0, 0.0, 0.0],
-        array $range = [-128.0, 127.0, -128.0, 127.0],
-        array $col0 = [100.0, 0.0, 0.0]
+        array ...$labOptions,
     ): string {
+        $whitepoint = $this->resolveTripletOption($labOptions, 0, [0.9505, 1.0000, 1.0890]);
+        $blackpoint = $this->resolveTripletOption($labOptions, 1, [0.0, 0.0, 0.0]);
+        $range = $this->resolveRangeOption($labOptions, 2, [-128.0, 127.0, -128.0, 127.0]);
+        $col0 = $this->resolveTripletOption($labOptions, 3, [100.0, 0.0, 0.0]);
+
         $key = $this->normalizeSpotColorName($name);
-        $num = isset($this->spot_colors[$key]) ? $this->spot_colors[$key]['i'] : (\count($this->spot_colors) + 1);
-
-        $labRange = [
-            (float) $range[0],
-            (float) $range[1],
-            (float) $range[2],
-            (float) $range[3],
-        ];
-
-        $labModel = new Lab(
-            [
-                'lstar' => \max(0.0, \min(100.0, $lstar)),
-                'astar' => \max($labRange[0], \min($labRange[1], $astar)),
-                'bstar' => \max($labRange[2], \min($labRange[3], $bstar)),
-                'alpha' => 1.0,
-            ]
-        );
+        $num = $this->spot_colors[$key]['i'] ?? (\count($this->spot_colors) + 1);
+        $labModel = $this->buildLabModel($lstar, $astar, $bstar, $range);
 
         $this->spot_colors[$key] = [
             'i' => $num, // color index
@@ -335,20 +328,90 @@ class Spot extends \Com\Tecnick\Color\Web
             'name' => $name, // color name (key)
             'color' => new Cmyk($labModel->toCmykArray()), // CMYK equivalent
             'space' => 'Lab', // alternate color space in PDF Separation
-            'lab' => [
-                'whitepoint' => [(float) $whitepoint[0], (float) $whitepoint[1], (float) $whitepoint[2]],
-                'blackpoint' => [(float) $blackpoint[0], (float) $blackpoint[1], (float) $blackpoint[2]],
-                'range' => $labRange,
-                'c0' => [
-                    \max(0.0, \min(100.0, (float) $col0[0])),
-                    \max($labRange[0], \min($labRange[1], (float) $col0[1])),
-                    \max($labRange[2], \min($labRange[3], (float) $col0[2])),
-                ],
-                'model' => $labModel,
-            ],
+            'lab' => $this->buildLabMetadata($whitepoint, $blackpoint, $range, $col0, $labModel),
         ];
 
         return $key;
+    }
+
+    /**
+     * @param array<array-key, TLabTriplet|TLabRange> $labOptions
+     * @param TLabTriplet                       $default
+     *
+     * @return TLabTriplet
+     */
+    private function resolveTripletOption(array $labOptions, int $index, array $default): array
+    {
+        $option = $labOptions[$index] ?? $default;
+        return [
+            $option[0] ?? $default[0],
+            $option[1] ?? $default[1],
+            $option[2] ?? $default[2],
+        ];
+    }
+
+    /**
+     * @param array<array-key, TLabTriplet|TLabRange> $labOptions
+     * @param TLabRange                         $default
+     *
+     * @return TLabRange
+     */
+    private function resolveRangeOption(array $labOptions, int $index, array $default): array
+    {
+        $option = $labOptions[$index] ?? $default;
+        return [
+            $option[0] ?? $default[0],
+            $option[1] ?? $default[1],
+            $option[2] ?? $default[2],
+            $option[3] ?? $default[3],
+        ];
+    }
+
+    /**
+     * @param TLabRange $labRange
+     */
+    private function buildLabModel(float $lstar, float $astar, float $bstar, array $labRange): Lab
+    {
+        return new Lab([
+            'lstar' => \max(0.0, \min(100.0, $lstar)),
+            'astar' => \max($labRange[0], \min($labRange[1], $astar)),
+            'bstar' => \max($labRange[2], \min($labRange[3], $bstar)),
+            'alpha' => 1.0,
+        ]);
+    }
+
+    /**
+     * @param TLabTriplet $whitepoint
+     * @param TLabTriplet $blackpoint
+     * @param TLabRange   $range
+     * @param TLabTriplet $col0
+     *
+     * @return array{
+     *     whitepoint: TLabTriplet,
+     *     blackpoint: TLabTriplet,
+     *     range: TLabRange,
+     *     c0: TLabTriplet,
+     *     model: Lab
+     * }
+     */
+    private function buildLabMetadata(
+        array $whitepoint,
+        array $blackpoint,
+        array $range,
+        array $col0,
+        Lab $labModel,
+    ): array {
+        return [
+            'whitepoint' => $whitepoint,
+            'blackpoint' => $blackpoint,
+            'range' => $range,
+            'c0' => [
+                \max(0.0, \min(100.0, $col0[0])),
+                \max($range[0], \min($range[1], $col0[1])),
+                \max($range[2], \min($range[3], $col0[2])),
+            ],
+            'model' => $labModel,
+        ];
     }
 
     /**
@@ -377,60 +440,83 @@ class Spot extends \Com\Tecnick\Color\Web
     {
         $out = '';
         foreach ($this->spot_colors as $name => $color) {
-            $out .= (++$pon) . ' 0 obj' . "\n";
+            $out .= ++$pon . ' 0 obj' . "\n";
             $this->spot_colors[$name]['n'] = $pon;
 
             if ($color['space'] === 'Lab' && \is_array($color['lab'])) {
                 $lab = $color['lab']['model']->toLabArray();
-                $out .= '[/Separation /' . \str_replace(' ', '#20', $name)
+                $out .=
+                    '[/Separation /'
+                    . \str_replace(' ', '#20', $name)
                     . ' [/Lab <<'
-                    . ' /WhitePoint ' . $this->getPdfNumArray($color['lab']['whitepoint'])
-                    . ' /BlackPoint ' . $this->getPdfNumArray($color['lab']['blackpoint'])
-                    . ' /Range ' . $this->getPdfNumArray($color['lab']['range'])
+                    . ' /WhitePoint '
+                    . $this->getPdfNumArray($color['lab']['whitepoint'])
+                    . ' /BlackPoint '
+                    . $this->getPdfNumArray($color['lab']['blackpoint'])
+                    . ' /Range '
+                    . $this->getPdfNumArray($color['lab']['range'])
                     . '>>] <<'
                     . ' /FunctionType 2'
                     . ' /Domain [0 1]'
-                    . ' /C0 ' . $this->getPdfNumArray($color['lab']['c0'])
-                    . ' /C1 ' . $this->getPdfNumArray([
-                        $lab['lstar'],
-                        $lab['astar'],
-                        $lab['bstar'],
+                    . ' /C0 '
+                    . $this->getPdfNumArray($color['lab']['c0'])
+                    . ' /C1 '
+                    . $this->getPdfNumArray([
+                        $lab['lstar'] ?? 0.0,
+                        $lab['astar'] ?? 0.0,
+                        $lab['bstar'] ?? 0.0,
                     ])
                     . ' /N 1'
-                    . '>>]' . "\n"
-                    . 'endobj' . "\n";
+                    . '>>]'
+                    . "\n"
+                    . 'endobj'
+                    . "\n";
                 continue;
             }
 
-            if (! $color['color'] instanceof Cmyk) {
+            if (!$this->isCmykSpotColor($color['color'])) {
                 continue;
             }
 
-            $out .= '[/Separation /' . \str_replace(' ', '#20', $name)
+            $out .=
+                '[/Separation /'
+                . \str_replace(' ', '#20', $name)
                 . ' /DeviceCMYK <<'
                 . '/Range [0 1 0 1 0 1 0 1]'
                 . ' /C0 [0 0 0 0]'
-                . ' /C1 [' . $color['color']->getComponentsString() . ']'
+                . ' /C1 ['
+                . $color['color']->getComponentsString()
+                . ']'
                 . ' /FunctionType 2'
                 . ' /Domain [0 1]'
                 . ' /N 1'
-                . '>>]' . "\n"
-                . 'endobj' . "\n";
+                . '>>]'
+                . "\n"
+                . 'endobj'
+                . "\n";
         }
 
         return $out;
     }
 
     /**
+     * Check whether a value is a CMYK color model.
+     */
+    private function isCmykSpotColor(mixed $color): bool
+    {
+        return $color instanceof Cmyk;
+    }
+
+    /**
      * Returns the PDF command to output the provided Spot color resources.
      *
-     * @param array<string, array{'i': int, 'n': int}> $data Spot color array.
+     * @param array<string, array{'i': int, 'n': int}|TSpotColor> $data Spot color array.
      *
      * @return string PDF command
      */
     private function getOutPdfSpotResources(array $data): string
     {
-        if (empty($data)) {
+        if ($data === []) {
             return '';
         }
 
@@ -462,20 +548,22 @@ class Spot extends \Com\Tecnick\Color\Web
      */
     public function getPdfSpotResourcesByKeys(array $keys): string
     {
-        if (empty($keys)) {
+        if ($keys === []) {
             return '';
         }
 
         $data = [];
         foreach ($keys as $key) {
-            if (! isset($this->spot_colors[$key])) {
+            if (!\array_key_exists($key, $this->spot_colors)) {
                 continue;
             }
 
-            $data[$key] = [
-                'i' => $this->spot_colors[$key]['i'],
-                'n' => $this->spot_colors[$key]['n'],
-            ];
+            $spotColor = $this->spot_colors[$key] ?? null;
+            if (!\is_array($spotColor)) {
+                continue;
+            }
+
+            $data[$key] = $spotColor;
         }
 
         return $this->getOutPdfSpotResources($data);
