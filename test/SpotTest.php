@@ -340,4 +340,32 @@ class SpotTest extends TestUtil
         $this->assertSame('11 0 obj' . "\n", $spot->getPdfSpotObjects($obj));
         $this->assertSame(11, $obj);
     }
+
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
+    public function testGetSpotColorThrowsWhenStoredValueIsNotArray(): void
+    {
+        $spot = $this->getTestObject();
+
+        $property = new ReflectionProperty($spot, 'spot_colors');
+        $property->setValue($spot, [
+            'invalid' => 'not-an-array',
+        ]);
+
+        $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
+        $spot->getSpotColor('invalid');
+    }
+
+    public function testGetPdfSpotResourcesByKeysSkipsNonArrayEntry(): void
+    {
+        $spot = $this->getTestObject();
+
+        $property = new ReflectionProperty($spot, 'spot_colors');
+        $property->setValue($spot, [
+            'bad' => 'not-an-array',
+        ]);
+
+        $this->assertSame('', $spot->getPdfSpotResourcesByKeys(['bad']));
+    }
 }

@@ -87,7 +87,10 @@ See `example/index.php` for a complete conversion showcase.
 make deps
 make help
 make qa
+make server
 ```
+
+Run `make server` and open <http://127.0.0.1:8000/example/index.php> to check the example in a browser.
 
 ---
 
@@ -110,8 +113,3 @@ require_once '/usr/share/php/Com/Tecnick/Color/autoload.php';
 
 Contributions are welcome. Please review [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), and [SECURITY.md](SECURITY.md).
 
----
-
-## Contact
-
-Nicola Asuni - <info@tecnick.com>

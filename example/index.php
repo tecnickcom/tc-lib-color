@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * index.php
  *
@@ -30,37 +33,67 @@ foreach ($colmap as $name => $hex) {
     $hslcolor = new \Com\Tecnick\Color\Model\Hsl($rgbcolor->toHslArray());
     $comp = $rgbcolor->getNormalizedArray(255);
     // web colors
-    $tablerows .= '<tr><td style="background-color:' . $rgbcolor->getCssColor() . ';">&nbsp;</td>'
-        . '<td>' . $name . '</td>'
-        . '<td>' . $rgbcolor->getRgbHexColor() . '</td>'
-        . '<td style="text-align:right;">' . $comp['R'] . '</td>'
-        . '<td style="text-align:right;">' . $comp['G'] . '</td>'
-        . '<td style="text-align:right;">' . $comp['B'] . '</td>'
-        . '<td>' . $rgbcolor->getCssColor() . '</td>'
-        . '<td>' . $hslcolor->getCssColor() . '</td>'
-        . '<td>' . $rgbcolor->getJsPdfColor() . '</td>'
-        . '</tr>' . "\n";
+    $tablerows .=
+        '<tr><td style="background-color:'
+        . $rgbcolor->getCssColor()
+        . ';">&nbsp;</td>'
+        . '<td>'
+        . $name
+        . '</td>'
+        . '<td>'
+        . $rgbcolor->getRgbHexColor()
+        . '</td>'
+        . '<td style="text-align:right;">'
+        . $comp['R']
+        . '</td>'
+        . '<td style="text-align:right;">'
+        . $comp['G']
+        . '</td>'
+        . '<td style="text-align:right;">'
+        . $comp['B']
+        . '</td>'
+        . '<td>'
+        . $rgbcolor->getCssColor()
+        . '</td>'
+        . '<td>'
+        . $hslcolor->getCssColor()
+        . '</td>'
+        . '<td>'
+        . $rgbcolor->getJsPdfColor()
+        . '</td>'
+        . '</tr>'
+        . "\n";
     // normalised inverted web colors
     $invcolor = clone $rgbcolor;
     $invcolor->invertColor();
     $invcolname = $colobj->getClosestWebColor($invcolor->toRgbArray());
     $invrgbcolor = $colobj->getRgbObjFromName($invcolname);
-    $invtablerows .= '<tr><td style="text-align:right;">' . $name . '</td>'
-        . '<td style="background-color:' . $rgbcolor->getCssColor() . ';">&nbsp;</td>'
-        . '<td style="background-color:' . $invrgbcolor->getCssColor() . ';">&nbsp;</td>'
-        . '<td>' . $invcolname . '</td>'
-        . '</tr>' . "\n";
+    $invtablerows .=
+        '<tr><td style="text-align:right;">'
+        . $name
+        . '</td>'
+        . '<td style="background-color:'
+        . $rgbcolor->getCssColor()
+        . ';">&nbsp;</td>'
+        . '<td style="background-color:'
+        . $invrgbcolor->getCssColor()
+        . ';">&nbsp;</td>'
+        . '<td>'
+        . $invcolname
+        . '</td>'
+        . '</tr>'
+        . "\n";
 }
 
-echo "
+echo '
 <!DOCTYPE html>
 <html>
     <head>
         <title>Usage example of tc-lib-color library</title>
-        <meta charset=\"utf-8\">
+        <meta charset="utf-8">
         <style>
             body {font-family:Arial, Helvetica, sans-serif;}
-            table {border: 1px solid black;font-family: \"Courier New\", Courier, monospace}
+            table {border: 1px solid black;font-family: "Courier New", Courier, monospace}
             th {border: 1px solid black;padding:4px;background-color:cornsilk;}
             td {border: 1px solid black;padding:4px;}
         </style>
@@ -68,7 +101,7 @@ echo "
 
     <body>
         <h1>Usage example of tc-lib-color library</h1>
-        <p>This is an usage example of <a href=\"https://github.com/tecnickcom/tc-lib-color\" title=\"tc-lib-color: PHP library to manipulate various color representations\">tc-lib-color</a> library.</p>
+        <p>This is an usage example of <a href="https://github.com/tecnickcom/tc-lib-color" title="tc-lib-color: PHP library to manipulate various color representations">tc-lib-color</a> library.</p>
         <h2>Web Colors Table</h2>
         <table>
             <thead>
@@ -85,15 +118,15 @@ echo "
                 </tr>
             </thead>
             <tbody>
-" . $tablerows . "
+' . $tablerows . '
             </tbody>
         </table>
         <h2>Normalized Inverted Web Colors Table</h2>
         <table>
             <thead>
                 <tr>
-                    <th colspan=\"2\">A</th>
-                    <th colspan=\"2\">B</th>
+                    <th colspan="2">A</th>
+                    <th colspan="2">B</th>
                 </tr>
                 <tr>
                     <th>NAME</th>
@@ -103,9 +136,9 @@ echo "
                 </tr>
             </thead>
             <tbody>
-" . $invtablerows . "
+' . $invtablerows . '
             </tbody>
         </table>
     </body>
 </html>
-";
+';

@@ -185,6 +185,18 @@ class WebTest extends TestUtil
         $this->bcAssertEqualsWithDelta(0.5, $res);
     }
 
+    public function testNormalizeValueInvalidPercent(): void
+    {
+        $web = $this->getTestObject();
+        $this->assertSame(0.0, $web->normalizeValue('abc%', 255));
+    }
+
+    public function testNormalizeValueUnsupportedType(): void
+    {
+        $web = $this->getTestObject();
+        $this->assertSame(0.0, $web->normalizeValue([], 255));
+    }
+
     /**
      * @throws \Com\Tecnick\Color\Exception
      */

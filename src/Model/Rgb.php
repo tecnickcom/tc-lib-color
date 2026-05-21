@@ -64,7 +64,7 @@ class Rgb extends \Com\Tecnick\Color\Model
     /**
      * Get an array with all color components.
      *
-     * @return array<float> with keys ('R', 'G', 'B', 'A')
+     * @return array<string, float> with keys ('R', 'G', 'B', 'A')
      */
     public function getArray(): array
     {

@@ -238,4 +238,96 @@ class LabTest extends TestUtil
             0.05,
         );
     }
+
+    public function testSetComponentValueForLabSpecificComponents(): void
+    {
+        $model = new class(['lstar' => 0.425, 'astar' => -0.1225, 'bstar' => 0.3375, 'alpha' => 1]) extends
+            \Com\Tecnick\Color\Model {
+            protected $type = 'TEST';
+            protected float $cmp_lstar = 0.0;
+            protected float $cmp_astar = 0.0;
+            protected float $cmp_bstar = 0.0;
+
+            public function getArray(): array
+            {
+                return [];
+            }
+
+            public function getPDFacArray(): array
+            {
+                return [];
+            }
+
+            public function getNormalizedArray(int $max): array
+            {
+                return [];
+            }
+
+            public function getCssColor(): string
+            {
+                return '';
+            }
+
+            public function getJsPdfColor(): string
+            {
+                return '';
+            }
+
+            public function getComponentsString(): string
+            {
+                return '';
+            }
+
+            public function getPdfColor(bool $stroke = false): string
+            {
+                return '';
+            }
+
+            public function toGrayArray(): array
+            {
+                return [];
+            }
+
+            public function toRgbArray(): array
+            {
+                return [];
+            }
+
+            public function toHslArray(): array
+            {
+                return [];
+            }
+
+            public function toCmykArray(): array
+            {
+                return [];
+            }
+
+            public function toLabArray(): array
+            {
+                return [
+                    'lstar' => $this->cmp_lstar,
+                    'astar' => $this->cmp_astar,
+                    'bstar' => $this->cmp_bstar,
+                    'alpha' => $this->cmp_alpha,
+                ];
+            }
+
+            public function invertColor(): self
+            {
+                return $this;
+            }
+        };
+
+        $this->assertEqualsWithDelta(
+            [
+                'lstar' => 0.425,
+                'astar' => 0.0,
+                'bstar' => 0.3375,
+                'alpha' => 1.0,
+            ],
+            $model->toLabArray(),
+            0.0001,
+        );
+    }
 }
