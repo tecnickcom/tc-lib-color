@@ -133,6 +133,25 @@ class SpotTest extends TestUtil
     /**
      * @throws \Com\Tecnick\Color\Exception
      */
+    public function testAddSpotColorFromArray(): void
+    {
+        $spot = $this->getTestObject();
+        $key = $spot->addSpotColorFromArray('Brand Spot', [
+            'cyan' => 0.666,
+            'magenta' => 0.333,
+            'yellow' => 0,
+            'key' => 0.25,
+            'alpha' => 0.85,
+        ]);
+
+        $this->assertEquals('brandspot', $key);
+        $res = $spot->getSpotColor('Brand Spot');
+        $this->assertEquals('0.666000 0.333000 0.000000 0.250000 k' . "\n", $res['color']->getPdfColor());
+    }
+
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testAddSpotLabColor(): void
     {
         $spot = $this->getTestObject();

@@ -125,22 +125,29 @@ class Cmyk extends \Com\Tecnick\Color\Model
     }
 
     /**
-     * Get the CSS representation of the color: rgba(R, G, B, A)
-     * NOTE: Supported since CSS3 and above.
-     *       Use getHexadecimalColor() for CSS1 and CSS2
+     * Get the CSS representation of the color: cmyk(C, M, Y, K) or cmyka(C, M, Y, K, A)
      */
     public function getCssColor(): string
     {
-        $rgb = $this->toRgbArray();
+        $colorType = 'cmyk';
+        $alpha = '';
+        if ($this->cmp_alpha < 1.0) {
+            $colorType = 'cmyka';
+            $alpha = ',' . $this->cmp_alpha;
+        }
+
         return (
-            'rgba('
-            . $this->getNormalizedValue($rgb['red'] ?? 0.0, 100)
+            $colorType
+            . '('
+            . $this->getNormalizedValue($this->cmp_cyan, 100)
             . '%,'
-            . $this->getNormalizedValue($rgb['green'] ?? 0.0, 100)
+            . $this->getNormalizedValue($this->cmp_magenta, 100)
             . '%,'
-            . $this->getNormalizedValue($rgb['blue'] ?? 0.0, 100)
+            . $this->getNormalizedValue($this->cmp_yellow, 100)
             . '%,'
-            . ($rgb['alpha'] ?? 1.0)
+            . $this->getNormalizedValue($this->cmp_key, 100)
+            . '%'
+            . $alpha
             . ')'
         );
     }

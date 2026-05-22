@@ -98,7 +98,15 @@ class LabTest extends TestUtil
     public function testGetCssColor(): void
     {
         $lab = $this->getTestObject();
-        $this->assertSame('rgba(25%, 50%, 75%, 0.85)', $lab->getCssColor());
+        $this->assertSame('lab(52% 0 -39 / 0.85)', $lab->getCssColor());
+
+        $opaque = new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 52,
+            'astar' => 0,
+            'bstar' => -39,
+            'alpha' => 1,
+        ]);
+        $this->assertSame('lab(52% 0 -39)', $opaque->getCssColor());
     }
 
     public function testGetJsPdfColor(): void

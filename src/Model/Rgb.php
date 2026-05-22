@@ -115,21 +115,27 @@ class Rgb extends \Com\Tecnick\Color\Model
     }
 
     /**
-     * Get the CSS representation of the color: rgba(R, G, B, A)
-     * NOTE: Supported since CSS3 and above.
-     *       Use getHexadecimalColor() for CSS1 and CSS2
+     * Get the CSS representation of the color: rgb(R, G, B) or rgba(R, G, B, A)
      */
     public function getCssColor(): string
     {
+        $colorType = 'rgb';
+        $alpha = '';
+        if ($this->cmp_alpha < 1.0) {
+            $colorType = 'rgba';
+            $alpha = ',' . $this->cmp_alpha;
+        }
+
         return (
-            'rgba('
+            $colorType
+            . '('
             . $this->getNormalizedValue($this->cmp_red, 100)
             . '%,'
             . $this->getNormalizedValue($this->cmp_green, 100)
             . '%,'
             . $this->getNormalizedValue($this->cmp_blue, 100)
-            . '%,'
-            . $this->cmp_alpha
+            . '%'
+            . $alpha
             . ')'
         );
     }

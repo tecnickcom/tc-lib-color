@@ -364,8 +364,8 @@ class Web extends \Com\Tecnick\Color\Css
     public function getColorObj(string $color): ?\Com\Tecnick\Color\Model
     {
         $col = [];
-        $color = \preg_replace('/\s+/', '', \strtolower($color));
-        if (!\is_string($color) || $color === '' || str_contains($color, 'transparent')) {
+        $color = \strtolower(\trim($color));
+        if ($color === '' || str_contains($color, 'transparent')) {
             return null;
         }
 
@@ -377,12 +377,28 @@ class Web extends \Com\Tecnick\Color\Css
             return $this->getColorObjFromJs($color);
         }
 
-        $rex = '/^(t|g|rgba|rgb|hsla|hsl|cmyka|cmyk)[\(]/';
+        $rex = '/^(t|g|rgba|rgb|hsla|hsl|cmyka|cmyk|lab)\s*[\(]/';
         if (\preg_match($rex, $color, $col) === 1) {
             return $this->getColorObjFromCss($col[1] ?? '', $color);
         }
 
         return $this->getRgbObjFromName($color);
+    }
+
+    /**
+     * Parse the input color string and return the corresponding color object.
+     *
+     * @param string $color String containing web color definition
+     */
+    public function tryGetColorObj(string $color): ?\Com\Tecnick\Color\Model
+    {
+        try {
+            return $this->getColorObj($color);
+        } catch (ColorException $colorException) {
+            unset($colorException);
+        }
+
+        return null;
     }
 
     /**
@@ -418,5 +434,20 @@ class Web extends \Com\Tecnick\Color\Css
         }
 
         return $color;
+    }
+
+    /**
+     * Get the name of the closest web color from a color definition string.
+     *
+     * @param string $color String containing web color definition
+     */
+    public function getClosestWebColorFromString(string $color): string
+    {
+        $obj = $this->tryGetColorObj($color);
+        if (!$obj instanceof \Com\Tecnick\Color\Model) {
+            return '';
+        }
+
+        return $this->getClosestWebColor($obj->toRgbArray());
     }
 }

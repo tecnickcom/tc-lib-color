@@ -97,7 +97,7 @@ abstract class Css
     /**
      * Get the color object from a CSS color string
      *
-     * @param string $type  color type: t, g, rgb, rgba, hsl, hsla, cmyk
+     * @param string $type  color type: t, g, rgb, rgba, hsl, hsla, cmyk, cmyka, lab
      * @param string $color color specification (e.g.: rgb(255,128,64))
      *
      * @throws ColorException if the color is not found
@@ -116,6 +116,8 @@ abstract class Css
             case 'cmyk':
             case 'cmyka':
                 return $this->getColorObjFromCssCmyk($color);
+            case 'lab':
+                return $this->getColorObjFromCssLab($color);
         }
 
         // case 't'
@@ -132,7 +134,7 @@ abstract class Css
     private function getColorObjFromCssGray(string $color): \Com\Tecnick\Color\Model\Gray
     {
         $col = [];
-        $rex = '/[\(]([0-9\%]+)[\)]/';
+        $rex = '/[\(]\s*([0-9\%]+)\s*[\)]/';
         if (\preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
@@ -153,7 +155,7 @@ abstract class Css
     private function getColorObjFromCssRgb(string $color): \Com\Tecnick\Color\Model\Rgb
     {
         $col = [];
-        $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\ )]/';
+        $rex = '/[\(]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*(?:[\,]\s*([0-9\.]*)\s*)?[\)]/';
         if (\preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
@@ -178,7 +180,7 @@ abstract class Css
     private function getColorObjFromCssHsl(string $color): \Com\Tecnick\Color\Model\Hsl
     {
         $col = [];
-        $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\ )]/';
+        $rex = '/[\(]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*(?:[\,]\s*([0-9\.]*)\s*)?[\)]/';
         if (\preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
@@ -203,7 +205,7 @@ abstract class Css
     private function getColorObjFromCssCmyk(string $color): \Com\Tecnick\Color\Model\Cmyk
     {
         $col = [];
-        $rex = '/[\(]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]([0-9\%]+)[\,]?([0-9\.]*)[\ )]/';
+        $rex = '/[\(]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*(?:[\,]\s*([0-9\.]*)\s*)?[\)]/';
         if (\preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
@@ -215,6 +217,40 @@ abstract class Css
             'magenta' => $this->normalizeValue($col[2] ?? '0', 100),
             'yellow' => $this->normalizeValue($col[3] ?? '0', 100),
             'key' => $this->normalizeValue($col[4] ?? '0', 100),
+            'alpha' => $alpha !== '' ? $alpha : 1,
+        ]);
+    }
+
+    /**
+     * Get the color object from a CSS Lab color string.
+     *
+     * Supports forms such as: lab(52% 0 -39), lab(52% 0 -39 / 0.85), lab(52,0,-39,0.85)
+     *
+     * @throws ColorException if the color is not found
+     */
+    private function getColorObjFromCssLab(string $color): \Com\Tecnick\Color\Model\Lab
+    {
+        $col = [];
+        $rex = '/[\(]\s*([0-9\.]+%?)\s*(?:[\s,]+)\s*([\+\-]?[0-9\.]+)\s*(?:[\s,]+)\s*([\+\-]?[0-9\.]+)\s*(?:[\/,]\s*([0-9\.]+%?)\s*)?[\)]/';
+        if (\preg_match($rex, $color, $col) !== 1) {
+            throw new ColorException('invalid css color: ' . $color);
+        }
+
+        $lstarRaw = $col[1] ?? '0';
+        $alphaRaw = $col[4] ?? '';
+
+        $lstarVal = str_ends_with($lstarRaw, '%') ? \str_replace('%', '', $lstarRaw) : $lstarRaw;
+        $lstar = \is_numeric($lstarVal) ? (float) $lstarVal : 0.0;
+        $alpha = $alphaRaw;
+        if (str_ends_with($alphaRaw, '%')) {
+            $alphaVal = \str_replace('%', '', $alphaRaw);
+            $alpha = \is_numeric($alphaVal) ? (float) $alphaVal / 100 : 0.0;
+        }
+
+        return new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => $lstar,
+            'astar' => $col[2] ?? '0',
+            'bstar' => $col[3] ?? '0',
             'alpha' => $alpha !== '' ? $alpha : 1,
         ]);
     }

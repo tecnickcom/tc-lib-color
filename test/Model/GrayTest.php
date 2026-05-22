@@ -117,6 +117,12 @@ class GrayTest extends TestUtil
         $gray = $this->getTestObject();
         $cssColor = $gray->getCssColor();
         $this->assertEquals('rgba(75%,75%,75%,0.85)', $cssColor);
+
+        $opaque = new \Com\Tecnick\Color\Model\Gray([
+            'gray' => 0.75,
+            'alpha' => 1,
+        ]);
+        $this->assertEquals('g(75%)', $opaque->getCssColor());
     }
 
     public function testGetJsPdfColor(): void

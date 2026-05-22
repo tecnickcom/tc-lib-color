@@ -295,6 +295,19 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
+     * Add a new spot color from an array of CMYK components.
+     *
+     * @param string                         $name       Full name of the spot color.
+     * @param array<string, int|float|string> $components CMYK components.
+     *
+     * @return string Spot color key.
+     */
+    public function addSpotColorFromArray(string $name, array $components): string
+    {
+        return $this->addSpotColor($name, new Cmyk($components));
+    }
+
+    /**
      * Add a new Lab-based spot color or overwrite an existing one with the same name.
      *
      * @param string                               $name       Full name of the spot color.

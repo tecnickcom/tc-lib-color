@@ -116,21 +116,27 @@ class Hsl extends \Com\Tecnick\Color\Model
     }
 
     /**
-     * Get the CSS representation of the color: hsla(H, S, L, A)
-     * NOTE: Supported since CSS3 and above.
-     *       Use getHexadecimalColor() for CSS1 and CSS2
+     * Get the CSS representation of the color: hsl(H, S, L) or hsla(H, S, L, A)
      */
     public function getCssColor(): string
     {
+        $colorType = 'hsl';
+        $alpha = '';
+        if ($this->cmp_alpha < 1.0) {
+            $colorType = 'hsla';
+            $alpha = ',' . $this->cmp_alpha;
+        }
+
         return (
-            'hsla('
+            $colorType
+            . '('
             . $this->getNormalizedValue($this->cmp_hue, 360)
             . ','
             . $this->getNormalizedValue($this->cmp_saturation, 100)
             . '%,'
             . $this->getNormalizedValue($this->cmp_lightness, 100)
-            . '%,'
-            . $this->cmp_alpha
+            . '%'
+            . $alpha
             . ')'
         );
     }

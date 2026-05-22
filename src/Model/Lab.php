@@ -123,23 +123,16 @@ class Lab extends \Com\Tecnick\Color\Model
     }
 
     /**
-     * Get the CSS representation of the color: rgba(R, G, B, A)
-     * NOTE: Supported since CSS3 and above.
+     * Get the CSS representation of the color: lab(L a b) or lab(L a b / A)
      */
     public function getCssColor(): string
     {
-        $rgb = $this->toRgbArray();
-        return (
-            'rgba('
-            . $this->getNormalizedValue($rgb['red'] ?? 0.0, 100)
-            . '%, '
-            . $this->getNormalizedValue($rgb['green'] ?? 0.0, 100)
-            . '%, '
-            . $this->getNormalizedValue($rgb['blue'] ?? 0.0, 100)
-            . '%, '
-            . ($rgb['alpha'] ?? 1.0)
-            . ')'
-        );
+        $color = 'lab(' . $this->cmp_lstar . '% ' . $this->cmp_astar . ' ' . $this->cmp_bstar;
+        if ($this->cmp_alpha < 1.0) {
+            $color .= ' / ' . $this->cmp_alpha;
+        }
+
+        return $color . ')';
     }
 
     /**

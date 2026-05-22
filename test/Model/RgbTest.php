@@ -125,6 +125,14 @@ class RgbTest extends TestUtil
         $rgb = $this->getTestObject();
         $cssColor = $rgb->getCssColor();
         $this->assertEquals('rgba(25%,50%,75%,0.85)', $cssColor);
+
+        $opaque = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 0.25,
+            'green' => 0.50,
+            'blue' => 0.75,
+            'alpha' => 1,
+        ]);
+        $this->assertEquals('rgb(25%,50%,75%)', $opaque->getCssColor());
     }
 
     public function testGetJsPdfColor(): void

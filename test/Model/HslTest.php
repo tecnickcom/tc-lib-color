@@ -127,6 +127,14 @@ class HslTest extends TestUtil
         $hsl = $this->getTestObject();
         $cssColor = $hsl->getCssColor();
         $this->assertEquals('hsla(210,50%,50%,0.85)', $cssColor);
+
+        $opaque = new \Com\Tecnick\Color\Model\Hsl([
+            'hue' => 0.583,
+            'saturation' => 0.5,
+            'lightness' => 0.5,
+            'alpha' => 1,
+        ]);
+        $this->assertEquals('hsl(210,50%,50%)', $opaque->getCssColor());
     }
 
     public function testGetJsPdfColor(): void

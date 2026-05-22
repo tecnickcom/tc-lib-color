@@ -128,7 +128,16 @@ class CmykTest extends TestUtil
     {
         $cmyk = $this->getTestObject();
         $cssColor = $cmyk->getCssColor();
-        $this->assertEquals('rgba(25%,50%,75%,0.85)', $cssColor);
+        $this->assertEquals('cmyka(67%,33%,0%,25%,0.85)', $cssColor);
+
+        $opaque = new \Com\Tecnick\Color\Model\Cmyk([
+            'cyan' => 0.666,
+            'magenta' => 0.333,
+            'yellow' => 0,
+            'key' => 0.25,
+            'alpha' => 1,
+        ]);
+        $this->assertEquals('cmyk(67%,33%,0%,25%)', $opaque->getCssColor());
     }
 
     public function testGetJsPdfColor(): void

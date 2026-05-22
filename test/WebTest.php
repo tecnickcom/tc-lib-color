@@ -273,6 +273,15 @@ class WebTest extends TestUtil
         $res = $web->getColorObj('cmyka(67%,33%,0,25%,0.85)');
         $this->assertNotNull($res);
         $this->assertEquals('#3f80bfd9', $res->getRgbaHexColor());
+        $res = $web->getColorObj('lab(52% 0 -39)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#407fbfff', $res->getRgbaHexColor());
+        $res = $web->getColorObj('lab(52% 0 -39 / 0.85)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#407fbfd9', $res->getRgbaHexColor());
+        $res = $web->getColorObj('lab(52 0 -39 / 85%)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#407fbfd9', $res->getRgbaHexColor());
     }
 
     /**
@@ -280,7 +289,7 @@ class WebTest extends TestUtil
      */
     public static function getBadColor(): array
     {
-        return [['g(-)'], ['rgb(-)'], ['hsl(-)'], ['cmyk(-)']];
+        return [['g(-)'], ['rgb(-)'], ['hsl(-)'], ['cmyk(-)'], ['lab(-)']];
     }
 
     /**
@@ -292,6 +301,18 @@ class WebTest extends TestUtil
         $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
         $web = $this->getTestObject();
         $web->getColorObj($bad);
+    }
+
+    public function testTryGetColorObj(): void
+    {
+        $web = $this->getTestObject();
+
+        $ok = $web->tryGetColorObj('royalblue');
+        $this->assertNotNull($ok);
+        $this->assertEquals('#4169e1ff', $ok->getRgbaHexColor());
+
+        $bad = $web->tryGetColorObj('g(-)');
+        $this->assertNull($bad);
     }
 
     public function testGetRgbSquareDistance(): void
@@ -371,5 +392,19 @@ class WebTest extends TestUtil
         ];
         $color = $web->getClosestWebColor($col);
         $this->assertEquals('darkolivegreen', $color);
+    }
+
+    public function testGetClosestWebColorFromString(): void
+    {
+        $web = $this->getTestObject();
+
+        $color = $web->getClosestWebColorFromString('rgb(255,0,0)');
+        $this->assertEquals('red', $color);
+
+        $color = $web->getClosestWebColorFromString('#0000ff');
+        $this->assertEquals('blue', $color);
+
+        $color = $web->getClosestWebColorFromString('invalid-color-value');
+        $this->assertEquals('', $color);
     }
 }
