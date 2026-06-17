@@ -200,7 +200,7 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
-     * Return the normalized version of the spot color name
+     * Return the normalized case-insentitive version of the spot color name to be used as key.
      *
      * @param string $name Full name of the spot color.
      */
@@ -211,7 +211,38 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
-     * Return the requested spot color data array
+     * Encode a spot color name as a PDF name object.
+     *
+     * The original name is preserved as-is, including spaces and uppercase
+     * letters. Any byte that is not a regular PDF name character is escaped
+     * using the "#" followed by a 2-digit uppercase hexadecimal code, as
+     * required by the PDF name object syntax (ISO 32000-1:2008, 7.3.5).
+     * For example "SPOTTYPE 279 C" becomes "SPOTTYPE#20279#20C".
+     *
+     * @param string $name Full name of the spot color.
+     */
+    public function encodeSpotColorName(string $name): string
+    {
+        $out = '';
+        $len = \strlen($name);
+        for ($i = 0; $i < $len; ++$i) {
+            $char = $name[$i];
+            $ord = \ord($char);
+            // Regular characters are printable ASCII (0x21-0x7E),
+            // excluding the number sign and the PDF delimiters.
+            if ($ord < 0x21 || $ord > 0x7E || $char === '#' || \str_contains('()<>[]{}/%', $char)) {
+                $out .= \sprintf('#%02X', $ord);
+                continue;
+            }
+
+            $out .= $char;
+        }
+
+        return $out;
+    }
+
+    /**
+     * Return the requested spot color data array.
      *
      * @param string $name Full name of the spot color.
      *
@@ -229,7 +260,7 @@ class Spot extends \Com\Tecnick\Color\Web
                 throw new ColorException('unable to find the spot color: ' . $key);
             }
 
-            $this->addSpotColor($key, new Cmyk($defaultSpotColor['color']));
+            $this->addSpotColor($defaultSpotColor['name'], new Cmyk($defaultSpotColor['color']));
         }
 
         $spotColor = $this->spot_colors[$key] ?? null;
@@ -241,7 +272,7 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
-     * Return the requested spot color CMYK object
+     * Return the requested spot color CMYK object.
      *
      * @param string $name Full name of the spot color.
      *
@@ -452,15 +483,15 @@ class Spot extends \Com\Tecnick\Color\Web
     public function getPdfSpotObjects(int &$pon): string
     {
         $out = '';
-        foreach ($this->spot_colors as $name => $color) {
+        foreach ($this->spot_colors as $key => $color) {
             $out .= ++$pon . ' 0 obj' . "\n";
-            $this->spot_colors[$name]['n'] = $pon;
+            $this->spot_colors[$key]['n'] = $pon;
 
             if ($color['space'] === 'Lab' && \is_array($color['lab'])) {
                 $lab = $color['lab']['model']->toLabArray();
                 $out .=
                     '[/Separation /'
-                    . \str_replace(' ', '#20', $name)
+                    . $this->encodeSpotColorName($color['name'])
                     . ' [/Lab <<'
                     . ' /WhitePoint '
                     . $this->getPdfNumArray($color['lab']['whitepoint'])
@@ -493,7 +524,7 @@ class Spot extends \Com\Tecnick\Color\Web
 
             $out .=
                 '[/Separation /'
-                . \str_replace(' ', '#20', $name)
+                . $this->encodeSpotColorName($color['name'])
                 . ' /DeviceCMYK <<'
                 . '/Range [0 1 0 1 0 1 0 1]'
                 . ' /C0 [0 0 0 0]'

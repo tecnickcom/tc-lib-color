@@ -51,6 +51,41 @@ class SpotTest extends TestUtil
         $this->assertEquals('abcfg12345', $res);
     }
 
+    public function testEncodeSpotColorName(): void
+    {
+        $spot = $this->getTestObject();
+        // spaces and uppercase letters are preserved/encoded, not stripped
+        $this->assertEquals('SPOTTYPE#20279#20C', $spot->encodeSpotColorName('SPOTTYPE 279 C'));
+        // plain ASCII names are returned unchanged
+        $this->assertEquals('Reflex#20Blue', $spot->encodeSpotColorName('Reflex Blue'));
+        // the number sign and the PDF delimiters are escaped
+        $this->assertEquals('a#23b#28c#29#2Fd', $spot->encodeSpotColorName('a#b(c)/d'));
+        // tabs and other control/whitespace bytes are escaped
+        $this->assertEquals('x#09y', $spot->encodeSpotColorName("x\ty"));
+        // bytes outside printable ASCII (e.g. UTF-8 "é") are escaped per byte
+        $this->assertEquals('caf#C3#A9', $spot->encodeSpotColorName('café'));
+    }
+
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
+    public function testGetPdfSpotObjectsEncodesName(): void
+    {
+        $spot = $this->getTestObject();
+        $spot->addSpotColorFromArray('SPOTTYPE 279 C', [
+            'cyan' => 0.66,
+            'magenta' => 0.28,
+            'yellow' => 0,
+            'key' => 0,
+            'alpha' => 1,
+        ]);
+
+        $obj = 1;
+        $res = $spot->getPdfSpotObjects($obj);
+        $this->assertStringContainsString('[/Separation /SPOTTYPE#20279#20C /DeviceCMYK', $res);
+        $this->assertStringNotContainsString('SPOTTYPE279c', $res);
+    }
+
     /**
      * @throws \Com\Tecnick\Color\Exception
      */
@@ -266,28 +301,28 @@ class SpotTest extends TestUtil
             . "\n"
             . '3 0 obj'
             . "\n"
-            . '[/Separation /cyan /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
+            . '[/Separation /Cyan /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
             . ' /C1 [1.000000 0.000000 0.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'
             . "\n"
             . 'endobj'
             . "\n"
             . '4 0 obj'
             . "\n"
-            . '[/Separation /magenta /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
+            . '[/Separation /Magenta /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
             . ' /C1 [0.000000 1.000000 0.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'
             . "\n"
             . 'endobj'
             . "\n"
             . '5 0 obj'
             . "\n"
-            . '[/Separation /yellow /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
+            . '[/Separation /Yellow /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
             . ' /C1 [0.000000 0.000000 1.000000 0.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'
             . "\n"
             . 'endobj'
             . "\n"
             . '6 0 obj'
             . "\n"
-            . '[/Separation /key /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
+            . '[/Separation /Key /DeviceCMYK <</Range [0 1 0 1 0 1 0 1] /C0 [0 0 0 0]'
             . ' /C1 [0.000000 0.000000 0.000000 1.000000] /FunctionType 2 /Domain [0 1] /N 1>>]'
             . "\n"
             . 'endobj'
@@ -320,7 +355,7 @@ class SpotTest extends TestUtil
         $this->assertEquals(
             '8 0 obj'
             . "\n"
-            . '[/Separation /brandorange [/Lab << /WhitePoint [0.950500 1.000000 1.089000]'
+            . '[/Separation /Brand#20Orange [/Lab << /WhitePoint [0.950500 1.000000 1.089000]'
             . ' /BlackPoint [0.000000 0.000000 0.000000] /Range [-128.000000 127.000000 -128.000000 127.000000]>>] <<'
             . ' /FunctionType 2 /Domain [0 1] /C0 [100.000000 0.000000 0.000000]'
             . ' /C1 [64.250000 58.500000 71.200000] /N 1>>]'
