@@ -391,8 +391,10 @@ class SpotTest extends TestUtil
         ]);
 
         $obj = 10;
-        $this->assertSame('11 0 obj' . "\n", $spot->getPdfSpotObjects($obj));
-        $this->assertSame(11, $obj);
+        // An invalid (non-CMYK, non-Lab) entry is skipped entirely: no object is
+        // emitted and the PDF object counter is left unchanged.
+        $this->assertSame('', $spot->getPdfSpotObjects($obj));
+        $this->assertSame(10, $obj);
     }
 
     /**

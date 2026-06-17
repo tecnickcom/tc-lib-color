@@ -341,12 +341,21 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Add a new Lab-based spot color or overwrite an existing one with the same name.
      *
-     * @param string                               $name       Full name of the spot color.
-     * @param float                                $lstar      Lab L* component in [0..100].
-     * @param float                                $astar      Lab a* component.
-     * @param float                                $bstar      Lab b* component.
-     * @param array<array-key, TLabTriplet|TLabRange> $labOptions Optional Lab settings in order:
-     *                                                       [whitepoint, blackpoint, range, col0].
+     * The optional Lab settings are passed as separate trailing array arguments,
+     * in this order: whitepoint, blackpoint, range, col0. For example:
+     *   addSpotLabColor('My Color', 50.0, 10.0, -20.0, $whitepoint, $blackpoint, $range, $col0);
+     * Any omitted option falls back to its default (D65 whitepoint [0.9505, 1.0, 1.089],
+     * zero blackpoint, [-128, 127, -128, 127] range, [100, 0, 0] col0).
+     *
+     * NOTE: the stored CMYK equivalent is an approximation computed from the Lab
+     * values using the D65 whitepoint; the whitepoint option only affects the PDF
+     * Lab color space metadata emitted by getPdfSpotObjects(), not the CMYK fallback.
+     *
+     * @param string                $name          Full name of the spot color.
+     * @param float                 $lstar         Lab L* component in [0..100].
+     * @param float                 $astar         Lab a* component.
+     * @param float                 $bstar         Lab b* component.
+     * @param TLabTriplet|TLabRange ...$labOptions Optional Lab settings: whitepoint, blackpoint, range, col0.
      *
      * @return string Spot color key.
      */
@@ -484,10 +493,9 @@ class Spot extends \Com\Tecnick\Color\Web
     {
         $out = '';
         foreach ($this->spot_colors as $key => $color) {
-            $out .= ++$pon . ' 0 obj' . "\n";
-            $this->spot_colors[$key]['n'] = $pon;
-
             if ($color['space'] === 'Lab' && \is_array($color['lab'])) {
+                $out .= ++$pon . ' 0 obj' . "\n";
+                $this->spot_colors[$key]['n'] = $pon;
                 $lab = $color['lab']['model']->toLabArray();
                 $out .=
                     '[/Separation /'
@@ -519,9 +527,13 @@ class Spot extends \Com\Tecnick\Color\Web
             }
 
             if (!$this->isCmykSpotColor($color['color'])) {
+                // Skip entries that are neither valid Lab nor CMYK spot colors
+                // without consuming a PDF object number or emitting a partial object.
                 continue;
             }
 
+            $out .= ++$pon . ' 0 obj' . "\n";
+            $this->spot_colors[$key]['n'] = $pon;
             $out .=
                 '[/Separation /'
                 . $this->encodeSpotColorName($color['name'])
