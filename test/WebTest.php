@@ -258,6 +258,15 @@ class WebTest extends TestUtil
         $res = $web->getColorObj('hsl(210,50%,50%)');
         $this->assertNotNull($res);
         $this->assertEquals('#4080bfff', $res->getRgbaHexColor());
+        // saturation/lightness without "%" are treated as CSS percentages (÷100),
+        // so the bare form is equivalent to the "%" form.
+        $res = $web->getColorObj('hsl(210,50,50)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#4080bfff', $res->getRgbaHexColor());
+        // decimal percentages are accepted
+        $res = $web->getColorObj('hsl(210,50.0%,50.0%)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#4080bfff', $res->getRgbaHexColor());
         $res = $web->getColorObj('hsla(210,50%,50%,0.85)');
         $this->assertNotNull($res);
         $this->assertEquals('#4080bfd9', $res->getRgbaHexColor());
@@ -273,6 +282,10 @@ class WebTest extends TestUtil
         $res = $web->getColorObj('cmyka(67%,33%,0,25%,0.85)');
         $this->assertNotNull($res);
         $this->assertEquals('#3f80bfd9', $res->getRgbaHexColor());
+        // decimal percentages are accepted for CMYK components
+        $res = $web->getColorObj('cmyk(66.5%,33%,0,25%)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#4080bfff', $res->getRgbaHexColor());
         $res = $web->getColorObj('lab(52% 0 -39)');
         $this->assertNotNull($res);
         $this->assertEquals('#407fbfff', $res->getRgbaHexColor());

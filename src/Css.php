@@ -180,17 +180,19 @@ abstract class Css
     private function getColorObjFromCssHsl(string $color): \Com\Tecnick\Color\Model\Hsl
     {
         $col = [];
-        $rex = '/[\(]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*(?:[\,]\s*([0-9\.]*)\s*)?[\)]/';
+        $rex = '/[\(]\s*([0-9\.\%]+)\s*[\,]\s*([0-9\.\%]+)\s*[\,]\s*([0-9\.\%]+)\s*(?:[\,]\s*([0-9\.]*)\s*)?[\)]/';
         if (\preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
 
         $alpha = $col[4] ?? '';
 
+        // Saturation and lightness are CSS percentages: a bare number (e.g. "50")
+        // is treated the same as "50%", i.e. divided by 100, not by the max.
         return new \Com\Tecnick\Color\Model\Hsl([
             'hue' => $this->normalizeValue($col[1] ?? '0', 360),
-            'saturation' => $this->normalizeValue($col[2] ?? '0', 1),
-            'lightness' => $this->normalizeValue($col[3] ?? '0', 1),
+            'saturation' => $this->normalizeValue($col[2] ?? '0', 100),
+            'lightness' => $this->normalizeValue($col[3] ?? '0', 100),
             'alpha' => $alpha !== '' ? $alpha : 1,
         ]);
     }
@@ -205,7 +207,7 @@ abstract class Css
     private function getColorObjFromCssCmyk(string $color): \Com\Tecnick\Color\Model\Cmyk
     {
         $col = [];
-        $rex = '/[\(]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*(?:[\,]\s*([0-9\.]*)\s*)?[\)]/';
+        $rex = '/[\(]\s*([0-9\.\%]+)\s*[\,]\s*([0-9\.\%]+)\s*[\,]\s*([0-9\.\%]+)\s*[\,]\s*([0-9\.\%]+)\s*(?:[\,]\s*([0-9\.]*)\s*)?[\)]/';
         if (\preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
