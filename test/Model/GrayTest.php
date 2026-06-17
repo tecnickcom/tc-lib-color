@@ -211,7 +211,7 @@ class GrayTest extends TestUtil
                 'cyan' => 0,
                 'magenta' => 0,
                 'yellow' => 0,
-                'key' => 0.75,
+                'key' => 0.25,
                 'alpha' => 0.85,
             ],
             $res,

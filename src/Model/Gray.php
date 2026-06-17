@@ -203,13 +203,8 @@ class Gray extends \Com\Tecnick\Color\Model
      */
     public function toCmykArray(): array
     {
-        return [
-            'cyan' => 0,
-            'magenta' => 0,
-            'yellow' => 0,
-            'key' => $this->cmp_gray,
-            'alpha' => $this->cmp_alpha,
-        ];
+        $rgb = new \Com\Tecnick\Color\Model\Rgb($this->toRgbArray());
+        return $rgb->toCmykArray();
     }
 
     /**
