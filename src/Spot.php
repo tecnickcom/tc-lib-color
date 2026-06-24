@@ -242,7 +242,12 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
-     * Return the requested spot color data array.
+     * Return the requested spot color data array, registering it on first use.
+     *
+     * If the name matches a default spot color that is not yet registered, it is
+     * added to the internal registry so that it is emitted by
+     * getPdfSpotObjects()/getPdfSpotResources(). Use resolveSpotColorData() for a
+     * side-effect-free lookup.
      *
      * @param string $name Full name of the spot color.
      *
@@ -254,13 +259,8 @@ class Spot extends \Com\Tecnick\Color\Web
     {
         $key = $this->normalizeSpotColorName($name);
         if (!\array_key_exists($key, $this->spot_colors)) {
-            // search on default spot colors
-            $defaultSpotColor = self::DEFAULT_SPOT_COLORS[$key] ?? null;
-            if ($defaultSpotColor === null) {
-                throw new ColorException('unable to find the spot color: ' . $key);
-            }
-
-            $this->addSpotColor($defaultSpotColor['name'], new Cmyk($defaultSpotColor['color']));
+            // resolve a default spot color and register it on first use
+            $this->spot_colors[$key] = $this->resolveSpotColorData($name);
         }
 
         $spotColor = $this->spot_colors[$key] ?? null;
@@ -269,6 +269,44 @@ class Spot extends \Com\Tecnick\Color\Web
         }
 
         return $spotColor;
+    }
+
+    /**
+     * Resolve the requested spot color data array WITHOUT registering it.
+     *
+     * Returns the already-registered spot color if present, otherwise builds a
+     * transient entry from the default spot colors. Unlike getSpotColor(), this
+     * has no side effect on the internal registry and therefore does not alter
+     * the output of getPdfSpotObjects()/getPdfSpotResources(). It backs the
+     * read-only color accessors.
+     *
+     * @param string $name Full name of the spot color.
+     *
+     * @return TSpotColor
+     *
+     * @throws ColorException if the color is not found
+     */
+    protected function resolveSpotColorData(string $name): array
+    {
+        $key = $this->normalizeSpotColorName($name);
+        $spotColor = $this->spot_colors[$key] ?? null;
+        if (\is_array($spotColor)) {
+            return $spotColor;
+        }
+
+        $defaultSpotColor = self::DEFAULT_SPOT_COLORS[$key] ?? null;
+        if ($defaultSpotColor === null) {
+            throw new ColorException('unable to find the spot color: ' . $key);
+        }
+
+        return [
+            'i' => \count($this->spot_colors) + 1, // color index
+            'n' => 0, // PDF object number
+            'name' => $defaultSpotColor['name'], // color name
+            'color' => new Cmyk($defaultSpotColor['color']), // CMYK color object
+            'space' => 'DeviceCMYK', // alternate color space in PDF Separation
+            'lab' => null, // optional Lab metadata
+        ];
     }
 
     /**

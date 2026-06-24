@@ -424,10 +424,13 @@ class Web extends \Com\Tecnick\Color\Css
     public function getClosestWebColor(array $col): string
     {
         $color = '';
-        $mindist = 3; // = 1^2 + 1^2 + 1^2
+        // Seed above the maximum possible squared distance in the RGB unit cube
+        // (1^2 + 1^2 + 1^2 = 3) and use a strict "<" so the nearest match is
+        // always returned and ties resolve to the first (canonical) color name.
+        $mindist = \PHP_FLOAT_MAX;
         foreach (self::WEBHEX as $name => $hex) {
             $dist = $this->getRgbSquareDistance($col, $this->getHexArray($hex));
-            if ($dist <= $mindist) {
+            if ($dist < $mindist) {
                 $mindist = $dist;
                 $color = $name;
             }

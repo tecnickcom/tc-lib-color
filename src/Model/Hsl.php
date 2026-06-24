@@ -98,10 +98,13 @@ class Hsl extends \Com\Tecnick\Color\Model
     }
 
     /**
-     * Get an array with color components values normalized between 0 and $max.
-     * NOTE: the alpha and other fraction component values are kept in the [0..1] range.
+     * Get an array with color components values normalized.
      *
-     * @param int $max Maximum value to return (it is always set to 360)
+     * NOTE: the $max argument is intentionally not applied here. Hue is an angle
+     * and is always returned in degrees [0..360], while saturation, lightness and
+     * alpha are fraction components kept in the [0..1] range.
+     *
+     * @param int $max Unused; kept for interface compatibility.
      *
      * @return array<string, float> with keys ('H', 'S', 'L', 'A')
      */

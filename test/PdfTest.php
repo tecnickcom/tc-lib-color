@@ -335,4 +335,25 @@ class PdfTest extends TestUtil
         $res = $pdf->getPdfCmykComponents('cyan');
         $this->assertEquals('1.000000 0.000000 0.000000 0.000000', $res);
     }
+
+    public function testReadAccessorsDoNotRegisterSpotColors(): void
+    {
+        $pdf = $this->getTestObject();
+
+        // Querying components for a default spot-color name must NOT register a
+        // spot color (which would otherwise leak into the PDF spot resources).
+        $pdf->getColorObject('red');
+        $pdf->getPdfRgbComponents('green');
+        $pdf->getPdfCmykComponents('cyan');
+        $this->assertSame([], $pdf->getSpotColors());
+
+        $pon = 0;
+        $this->assertSame('', $pdf->getPdfSpotObjects($pon));
+        $this->assertSame(0, $pon);
+        $this->assertSame('', $pdf->getPdfSpotResources());
+
+        // getPdfColor() is the explicit "emit a separation" path and DOES register.
+        $pdf->getPdfColor('magenta');
+        $this->assertArrayHasKey('magenta', $pdf->getSpotColors());
+    }
 }

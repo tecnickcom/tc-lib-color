@@ -298,6 +298,43 @@ class WebTest extends TestUtil
     }
 
     /**
+     * Modern CSS syntax: space-separated components and percentage alpha.
+     *
+     * @throws \Com\Tecnick\Color\Exception
+     */
+    public function testGetColorObjModernSyntax(): void
+    {
+        $web = $this->getTestObject();
+
+        // space-separated components are equivalent to the comma-separated form
+        $res = $web->getColorObj('rgb(64 128 191)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#4080bfff', $res->getRgbaHexColor());
+
+        $res = $web->getColorObj('hsl(210 50% 50%)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#4080bfff', $res->getRgbaHexColor());
+
+        $res = $web->getColorObj('cmyk(67% 33% 0% 25%)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#3f80bfff', $res->getRgbaHexColor());
+
+        // percentage alpha is accepted (50% == 0.5)
+        $res = $web->getColorObj('rgba(64,128,191,50%)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#4080bf80', $res->getRgbaHexColor());
+
+        // modern space syntax with a "/" alpha separator
+        $res = $web->getColorObj('rgb(64 128 191 / 50%)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#4080bf80', $res->getRgbaHexColor());
+
+        $res = $web->getColorObj('hsla(210,50%,50%,50%)');
+        $this->assertNotNull($res);
+        $this->assertEquals('#4080bf80', $res->getRgbaHexColor());
+    }
+
+    /**
      * @return array<string[]>
      */
     public static function getBadColor(): array
@@ -405,6 +442,16 @@ class WebTest extends TestUtil
         ];
         $color = $web->getClosestWebColor($col);
         $this->assertEquals('darkolivegreen', $color);
+
+        // On an exact tie between duplicate hex codes (aqua/cyan both 00ffff),
+        // the first/canonical name is returned.
+        $col = [
+            'red' => 0,
+            'green' => 1,
+            'blue' => 1,
+        ];
+        $color = $web->getClosestWebColor($col);
+        $this->assertEquals('aqua', $color);
     }
 
     public function testGetClosestWebColorFromString(): void

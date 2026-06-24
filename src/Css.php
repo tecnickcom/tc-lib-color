@@ -134,7 +134,7 @@ abstract class Css
     private function getColorObjFromCssGray(string $color): \Com\Tecnick\Color\Model\Gray
     {
         $col = [];
-        $rex = '/[\(]\s*([0-9\%]+)\s*[\)]/';
+        $rex = '/[\(]\s*([0-9.]+%?)\s*[\)]/';
         if (\preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
@@ -155,18 +155,18 @@ abstract class Css
     private function getColorObjFromCssRgb(string $color): \Com\Tecnick\Color\Model\Rgb
     {
         $col = [];
-        $rex = '/[\(]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*[\,]\s*([0-9\%]+)\s*(?:[\,]\s*([0-9\.]*)\s*)?[\)]/';
+        $rex =
+            '/[\(]\s*([0-9.]+%?)\s*(?:[\s,]+)\s*([0-9.]+%?)\s*(?:[\s,]+)'
+            . '\s*([0-9.]+%?)\s*(?:[\/,]\s*([0-9.]+%?)\s*)?[\)]/';
         if (\preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
-
-        $alpha = $col[4] ?? '';
 
         return new \Com\Tecnick\Color\Model\Rgb([
             'red' => $this->normalizeValue($col[1] ?? '0', 255),
             'green' => $this->normalizeValue($col[2] ?? '0', 255),
             'blue' => $this->normalizeValue($col[3] ?? '0', 255),
-            'alpha' => $alpha !== '' ? $alpha : 1,
+            'alpha' => $this->normalizeAlpha($col[4] ?? ''),
         ]);
     }
 
@@ -180,12 +180,12 @@ abstract class Css
     private function getColorObjFromCssHsl(string $color): \Com\Tecnick\Color\Model\Hsl
     {
         $col = [];
-        $rex = '/[\(]\s*([0-9\.\%]+)\s*[\,]\s*([0-9\.\%]+)\s*[\,]\s*([0-9\.\%]+)\s*(?:[\,]\s*([0-9\.]*)\s*)?[\)]/';
+        $rex =
+            '/[\(]\s*([0-9.]+%?)\s*(?:[\s,]+)\s*([0-9.]+%?)\s*(?:[\s,]+)'
+            . '\s*([0-9.]+%?)\s*(?:[\/,]\s*([0-9.]+%?)\s*)?[\)]/';
         if (\preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
-
-        $alpha = $col[4] ?? '';
 
         // Saturation and lightness are CSS percentages: a bare number (e.g. "50")
         // is treated the same as "50%", i.e. divided by 100, not by the max.
@@ -193,7 +193,7 @@ abstract class Css
             'hue' => $this->normalizeValue($col[1] ?? '0', 360),
             'saturation' => $this->normalizeValue($col[2] ?? '0', 100),
             'lightness' => $this->normalizeValue($col[3] ?? '0', 100),
-            'alpha' => $alpha !== '' ? $alpha : 1,
+            'alpha' => $this->normalizeAlpha($col[4] ?? ''),
         ]);
     }
 
@@ -207,19 +207,19 @@ abstract class Css
     private function getColorObjFromCssCmyk(string $color): \Com\Tecnick\Color\Model\Cmyk
     {
         $col = [];
-        $rex = '/[\(]\s*([0-9\.\%]+)\s*[\,]\s*([0-9\.\%]+)\s*[\,]\s*([0-9\.\%]+)\s*[\,]\s*([0-9\.\%]+)\s*(?:[\,]\s*([0-9\.]*)\s*)?[\)]/';
+        $rex =
+            '/[\(]\s*([0-9.]+%?)\s*(?:[\s,]+)\s*([0-9.]+%?)\s*(?:[\s,]+)\s*([0-9.]+%?)'
+            . '\s*(?:[\s,]+)\s*([0-9.]+%?)\s*(?:[\/,]\s*([0-9.]+%?)\s*)?[\)]/';
         if (\preg_match($rex, $color, $col) !== 1) {
             throw new ColorException('invalid css color: ' . $color);
         }
-
-        $alpha = $col[5] ?? '';
 
         return new \Com\Tecnick\Color\Model\Cmyk([
             'cyan' => $this->normalizeValue($col[1] ?? '0', 100),
             'magenta' => $this->normalizeValue($col[2] ?? '0', 100),
             'yellow' => $this->normalizeValue($col[3] ?? '0', 100),
             'key' => $this->normalizeValue($col[4] ?? '0', 100),
-            'alpha' => $alpha !== '' ? $alpha : 1,
+            'alpha' => $this->normalizeAlpha($col[5] ?? ''),
         ]);
     }
 
@@ -239,21 +239,34 @@ abstract class Css
         }
 
         $lstarRaw = $col[1] ?? '0';
-        $alphaRaw = $col[4] ?? '';
-
         $lstarVal = str_ends_with($lstarRaw, '%') ? \str_replace('%', '', $lstarRaw) : $lstarRaw;
         $lstar = \is_numeric($lstarVal) ? (float) $lstarVal : 0.0;
-        $alpha = $alphaRaw;
-        if (str_ends_with($alphaRaw, '%')) {
-            $alphaVal = \str_replace('%', '', $alphaRaw);
-            $alpha = \is_numeric($alphaVal) ? (float) $alphaVal / 100 : 0.0;
-        }
 
         return new \Com\Tecnick\Color\Model\Lab([
             'lstar' => $lstar,
             'astar' => $col[2] ?? '0',
             'bstar' => $col[3] ?? '0',
-            'alpha' => $alpha !== '' ? $alpha : 1,
+            'alpha' => $this->normalizeAlpha($col[4] ?? ''),
         ]);
+    }
+
+    /**
+     * Normalize a CSS alpha value to a float in the [0..1] range.
+     *
+     * Accepts a fraction (e.g. "0.85") or a percentage (e.g. "85%"). An empty
+     * string yields 1.0 (fully opaque).
+     */
+    private function normalizeAlpha(string $alpha): float
+    {
+        if ($alpha === '') {
+            return 1.0;
+        }
+
+        if (str_ends_with($alpha, '%')) {
+            $value = \str_replace('%', '', $alpha);
+            return \is_numeric($value) ? \max(0.0, \min(1.0, (float) $value / 100.0)) : 1.0;
+        }
+
+        return \is_numeric($alpha) ? \max(0.0, \min(1.0, (float) $alpha)) : 1.0;
     }
 }

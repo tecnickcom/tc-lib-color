@@ -79,12 +79,17 @@ class Pdf extends \Com\Tecnick\Color\Spot
     /**
      * Returns a color object from an HTML, CSS or Spot color representation.
      *
+     * NOTE: this is a read-only lookup. A spot color referenced here is resolved
+     * but NOT registered, so it does not affect the output of
+     * getPdfSpotObjects()/getPdfSpotResources(). Use getPdfColor() (or
+     * addSpotColor()) to actually register a spot color for emission.
+     *
      * @param string $color HTML, CSS or Spot color to parse
      */
     public function getColorObject(string $color): ?\Com\Tecnick\Color\Model
     {
         try {
-            return $this->getSpotColorObj($color);
+            return $this->resolveSpotColorData($color)['color'];
         } catch (ColorException $colorException) {
             unset($colorException);
         }

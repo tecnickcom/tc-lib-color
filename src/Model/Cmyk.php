@@ -179,7 +179,7 @@ class Cmyk extends \Com\Tecnick\Color\Model
      *
      * @param bool $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
      */
-    public function getPdfColor($stroke = false): string
+    public function getPdfColor(bool $stroke = false): string
     {
         $mode = 'k';
         if ($stroke) {
