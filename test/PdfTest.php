@@ -356,4 +356,30 @@ class PdfTest extends TestUtil
         $pdf->getPdfColor('magenta');
         $this->assertArrayHasKey('magenta', $pdf->getSpotColors());
     }
+
+    public function testGetColorObjectResolvesRegisteredSpotColor(): void
+    {
+        $pdf = $this->getTestObject();
+
+        // A custom spot color is not part of the default spot color table, so the
+        // read-only accessor can only resolve it from the internal registry. This
+        // exercises the "already registered" early return of resolveSpotColorData().
+        $cmyk = new \Com\Tecnick\Color\Model\Cmyk([
+            'cyan' => 0.1,
+            'magenta' => 0.2,
+            'yellow' => 0.3,
+            'key' => 0.4,
+            'alpha' => 1.0,
+        ]);
+        $pdf->addSpotColor('My Custom Spot', $cmyk);
+
+        $res = $pdf->getColorObject('My Custom Spot');
+        $this->assertNotNull($res);
+        $this->assertSame($cmyk, $res);
+
+        // The read-only lookup must not have added or duplicated any registration.
+        $spotColors = $pdf->getSpotColors();
+        $this->assertCount(1, $spotColors);
+        $this->assertArrayHasKey('mycustomspot', $spotColors);
+    }
 }
