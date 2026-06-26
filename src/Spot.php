@@ -263,12 +263,7 @@ class Spot extends \Com\Tecnick\Color\Web
             $this->spot_colors[$key] = $this->resolveSpotColorData($name);
         }
 
-        $spotColor = $this->spot_colors[$key] ?? null;
-        if (!\is_array($spotColor)) {
-            throw new ColorException('unable to find the spot color: ' . $key);
-        }
-
-        return $spotColor;
+        return $this->spot_colors[$key];
     }
 
     /**
@@ -652,12 +647,7 @@ class Spot extends \Com\Tecnick\Color\Web
                 continue;
             }
 
-            $spotColor = $this->spot_colors[$key] ?? null;
-            if (!\is_array($spotColor)) {
-                continue;
-            }
-
-            $data[$key] = $spotColor;
+            $data[$key] = $this->spot_colors[$key];
         }
 
         return $this->getOutPdfSpotResources($data);
