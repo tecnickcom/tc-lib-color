@@ -32,8 +32,7 @@
     }
   ],
   "require": {
-    "php": ">=8.2",
-    "ext-pcre": "*"
+    "php": ">=8.2"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
