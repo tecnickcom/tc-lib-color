@@ -200,7 +200,7 @@ abstract class Css
     /**
      * Get the color object from a CSS CMYK color string
      *
-     * @param string $color color specification (e.g.: rgb(255,128,64))
+     * @param string $color color specification (e.g.: cmyk(100,0,50,0))
      *
      * @throws ColorException if the color is not found
      */

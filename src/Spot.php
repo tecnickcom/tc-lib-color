@@ -200,7 +200,7 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
-     * Return the normalized case-insentitive version of the spot color name to be used as key.
+     * Return the normalized case-insensitive version of the spot color name to be used as key.
      *
      * @param string $name Full name of the spot color.
      */

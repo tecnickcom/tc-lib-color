@@ -36,7 +36,7 @@ use Com\Tecnick\Color\Exception as ColorException;
 class Web extends \Com\Tecnick\Color\Css
 {
     /**
-     * Maps WEB safe color names with theur hexadecimal representation (#RRGGBBAA).
+     * Maps WEB safe color names with their hexadecimal representation (#RRGGBBAA).
      *
      * @var array<string, string>
      */
@@ -355,7 +355,7 @@ class Web extends \Com\Tecnick\Color\Css
     }
 
     /**
-     * Parse the input color string and return the correspondent color Object
+     * Parse the input color string and return the corresponding color object
      *
      * @param string $color String containing web color definition
      *

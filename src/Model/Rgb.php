@@ -85,7 +85,7 @@ class Rgb extends \Com\Tecnick\Color\Model
      * in which the colour shall be defined:
      * 3 = DeviceRGB
      *
-     * @return array<float> DeviceRGB color components('R', 'G', 'B')
+     * @return array<float> DeviceRGB color components ('R', 'G', 'B')
      */
     public function getPDFacArray(): array
     {
@@ -142,7 +142,7 @@ class Rgb extends \Com\Tecnick\Color\Model
 
     /**
      * Get the color format used in Acrobat JavaScript
-     * NOTE: the alpha channel is omitted from this representation unless is 0 = transparent
+     * NOTE: the alpha channel is omitted from this representation unless it is 0 = transparent
      */
     public function getJsPdfColor(): string
     {
@@ -180,11 +180,11 @@ class Rgb extends \Com\Tecnick\Color\Model
     /**
      * Get an array with Gray color components
      *
-     * @return array<string, float> with keys ('gray')
+     * @return array<string, float> with keys ('gray', 'alpha')
      */
     public function toGrayArray(): array
     {
-        // convert using the SMPTE 295M-1997 standard conversion constants
+        // convert using the ITU-R BT.709 (Rec. 709) luma coefficients
         return [
             'gray' => \max(0, \min(
                 1,

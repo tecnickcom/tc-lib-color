@@ -85,7 +85,7 @@ class Hsl extends \Com\Tecnick\Color\Model
      * in which the colour shall be defined:
      * 3 = DeviceRGB
      *
-     * @return array<float> DeviceRGB color components('R', 'G', 'B')
+     * @return array<float> DeviceRGB color components ('R', 'G', 'B')
      */
     public function getPDFacArray(): array
     {
@@ -146,7 +146,7 @@ class Hsl extends \Com\Tecnick\Color\Model
 
     /**
      * Get the color format used in Acrobat JavaScript
-     * NOTE: the alpha channel is omitted from this representation unless is 0 = transparent
+     * NOTE: the alpha channel is omitted from this representation unless it is 0 = transparent
      */
     public function getJsPdfColor(): string
     {
@@ -186,7 +186,7 @@ class Hsl extends \Com\Tecnick\Color\Model
     /**
      * Get an array with Gray color components
      *
-     * @return array<string, float> with keys ('gray')
+     * @return array<string, float> with keys ('gray', 'alpha')
      */
     public function toGrayArray(): array
     {
@@ -225,7 +225,7 @@ class Hsl extends \Com\Tecnick\Color\Model
     }
 
     /**
-     * Convet Hue to RGB
+     * Convert Hue to RGB
      *
      * @param float $vala Temporary value A
      * @param float $valb Temporary value B

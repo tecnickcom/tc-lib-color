@@ -73,7 +73,7 @@ interface Template
 
     /**
      * Get the color format used in Acrobat JavaScript.
-     * NOTE: the alpha channel is omitted from this representation unless is 0 = transparent
+     * NOTE: the alpha channel is omitted from this representation unless it is 0 = transparent
      */
     public function getJsPdfColor(): string;
 
@@ -93,7 +93,7 @@ interface Template
     /**
      * Get an array with Gray color components.
      *
-     * @return array<string, float> with keys ('gray').
+     * @return array<string, float> with keys ('gray', 'alpha').
      */
     public function toGrayArray(): array;
 
