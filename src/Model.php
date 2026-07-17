@@ -165,6 +165,17 @@ abstract class Model implements \Com\Tecnick\Color\Model\Template
     }
 
     /**
+     * Get the color model type as a backed enum case.
+     *
+     * Typed counterpart of getType(); the string returned by getType() is always
+     * one of the canonical ColorModelType backing values.
+     */
+    public function getTypeEnum(): ColorModelType
+    {
+        return ColorModelType::from($this->type);
+    }
+
+    /**
      * Get the normalized integer value of the specified float fraction
      *
      * @param float $value Fraction value to convert [0..1]
