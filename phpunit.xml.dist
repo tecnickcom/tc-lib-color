@@ -25,7 +25,7 @@
 			<directory suffix=".php">src</directory>
 		</include>
 	</source>
-	<coverage pathCoverage="true">
+	<coverage>
 		<report>
 			<clover outputFile="target/coverage/coverage.xml"/>
 			<html outputDirectory="target/coverage" lowUpperBound="50" highLowerBound="90"/>
