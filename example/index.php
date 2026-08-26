@@ -44,13 +44,13 @@ foreach ($colmap as $name => $hex) {
         . $rgbcolor->getRgbHexColor()
         . '</td>'
         . '<td style="text-align:right;">'
-        . $comp['R']
+        . ($comp['R'] ?? 0.0)
         . '</td>'
         . '<td style="text-align:right;">'
-        . $comp['G']
+        . ($comp['G'] ?? 0.0)
         . '</td>'
         . '<td style="text-align:right;">'
-        . $comp['B']
+        . ($comp['B'] ?? 0.0)
         . '</td>'
         . '<td>'
         . $rgbcolor->getCssColor()
@@ -112,8 +112,8 @@ echo '
                     <th>RED</th>
                     <th>GREEN</th>
                     <th>BLUE</th>
-                    <th>CSS-RGBA</th>
-                    <th>CSS-HSLA</th>
+                    <th>CSS-RGB</th>
+                    <th>CSS-HSL</th>
                     <th>PDF-JS</th>
                 </tr>
             </thead>

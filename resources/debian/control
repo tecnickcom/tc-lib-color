@@ -14,4 +14,5 @@ Architecture: all
 Depends: php (>= 8.2.0), ${misc:Depends}
 Description: PHP Color library
  This library includes PHP classes to parse and manipulate
- various colors representations GRAY, RGB, HSL, CMYK.
+ various colors representations GRAY, RGB, HSL, CMYK, LAB
+ and spot colors.

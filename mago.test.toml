@@ -32,12 +32,13 @@ no-boolean-flag-parameter = { enabled = false }
 no-else-clause = { enabled = false }
 no-empty = { enabled = false }
 no-empty-catch-clause = { enabled = false }
+no-ini-set = { enabled = false }
 no-isset = { enabled = false }
 readable-literal = { enabled = false }
 str-contains = { enabled = false }
-strict-assertions = { enabled = false }
+strict-assertions = { enabled = true }
 strict-behavior = { enabled = false }
-strict-types = { enabled = false }
+strict-types = { enabled = true }
 too-many-methods = { enabled = false }
 
 [analyzer]

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * LabTest.php
  *
@@ -44,17 +46,69 @@ class LabTest extends TestUtil
     public function testGetType(): void
     {
         $lab = $this->getTestObject();
-        $this->assertEquals('LAB', $lab->getType());
+        $this->assertSame('LAB', $lab->getType());
+    }
+
+    /**
+     * L* is clamped to [0..100], a* and b* to [-128..127].
+     */
+    public function testConstructorClampsComponents(): void
+    {
+        $over = new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 200,
+            'astar' => 999,
+            'bstar' => 999,
+            'alpha' => 5,
+        ]);
+        $this->assertSame(
+            [
+                'L' => 100.0,
+                'a' => 127.0,
+                'b' => 127.0,
+                'A' => 1.0,
+            ],
+            $over->getArray(),
+        );
+
+        $under = new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => -50,
+            'astar' => -999,
+            'bstar' => -999,
+            'alpha' => -1,
+        ]);
+        $this->assertSame(
+            [
+                'L' => 0.0,
+                'a' => -128.0,
+                'b' => -128.0,
+                'A' => 0.0,
+            ],
+            $under->getArray(),
+        );
+    }
+
+    public function testConstructorDefaults(): void
+    {
+        $lab = new \Com\Tecnick\Color\Model\Lab([]);
+        $this->assertSame(
+            [
+                'L' => 0.0,
+                'a' => 0.0,
+                'b' => 0.0,
+                'A' => 1.0,
+            ],
+            $lab->getArray(),
+        );
     }
 
     public function testGetArray(): void
     {
         $lab = $this->getTestObject();
-        $this->assertEquals(
+        $this->assertSame(
             [
-                'L' => 52,
-                'a' => 0,
-                'b' => -39,
+                'L' => 52.0,
+                'a' => 0.0,
+                'b' => -39.0,
                 'A' => 0.85,
             ],
             $lab->getArray(),
@@ -66,12 +120,11 @@ class LabTest extends TestUtil
         $lab = $this->getTestObject();
         $this->bcAssertEqualsWithDelta(
             [
-                0.25,
-                0.50,
-                0.75,
+                0.252784,
+                0.499848,
+                0.747328,
             ],
             $lab->getPDFacArray(),
-            0.03,
         );
     }
 
@@ -84,7 +137,7 @@ class LabTest extends TestUtil
             'alpha' => 0.85,
         ]);
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'L' => 52.0,
                 'a' => 0.0,
@@ -93,6 +146,9 @@ class LabTest extends TestUtil
             ],
             $lab->getNormalizedArray(255),
         );
+
+        // L*, a* and b* have ranges of their own, so $max is ignored
+        $this->assertSame($lab->getNormalizedArray(255), $lab->getNormalizedArray(100));
     }
 
     public function testGetCssColor(): void
@@ -109,10 +165,63 @@ class LabTest extends TestUtil
         $this->assertSame('lab(52% 0 -39)', $opaque->getCssColor());
     }
 
+    /**
+     * Components are emitted in fixed notation, never in scientific notation.
+     *
+     * @throws \Com\Tecnick\Color\Exception
+     */
+    public function testGetCssColorUsesFixedNotation(): void
+    {
+        $lab = new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 0.000_01,
+            'astar' => -0.000_01,
+            'bstar' => 0.000_01,
+            'alpha' => 0.000_01,
+        ]);
+        $this->assertSame('lab(0% 0 0 / 0)', $lab->getCssColor());
+
+        $rounded = new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 69.237_798_446_837,
+            'astar' => -12.345_678,
+            'bstar' => 4.898_723_715_562_9,
+        ]);
+        $this->assertSame('lab(69.2378% -12.3457 4.8987)', $rounded->getCssColor());
+
+        $web = new \Com\Tecnick\Color\Web();
+        $parsed = $web->getColorObj($rounded->getCssColor());
+        $this->assertNotNull($parsed);
+        $this->bcAssertEqualsWithDelta($rounded->toRgbArray(), $parsed->toRgbArray(), 1e-4);
+    }
+
+    /**
+     * A neutral color has no chroma: a* and b* are zero.
+     */
+    public function testNeutralColorsHaveNoChroma(): void
+    {
+        foreach ([0.0, 0.25, 0.5, 0.75, 1.0] as $level) {
+            $lab = (new \Com\Tecnick\Color\Model\Rgb([
+                'red' => $level,
+                'green' => $level,
+                'blue' => $level,
+            ]))->toLabArray();
+            $this->bcAssertEqualsWithDelta(0.0, $lab['astar'] ?? 1.0, 1e-12, 'a* at level ' . $level);
+            $this->bcAssertEqualsWithDelta(0.0, $lab['bstar'] ?? 1.0, 1e-12, 'b* at level ' . $level);
+        }
+
+        $white = (new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 1.0,
+            'green' => 1.0,
+            'blue' => 1.0,
+        ]))->toLabArray();
+        $this->assertSame(100.0, $white['lstar'] ?? 0.0);
+        $this->assertSame(0.0, $white['astar'] ?? 1.0);
+        $this->assertSame(0.0, $white['bstar'] ?? 1.0);
+    }
+
     public function testGetJsPdfColor(): void
     {
         $lab = $this->getTestObject();
-        $this->assertSame('["RGB",0.252784,0.499848,0.747328]', $lab->getJsPdfColor());
+        $this->bcAssertSameJsColor('["RGB",0.252784,0.499848,0.747328]', $lab->getJsPdfColor());
     }
 
     public function testGetJsPdfTransparentColor(): void
@@ -136,84 +245,115 @@ class LabTest extends TestUtil
     public function testGetPdfColor(): void
     {
         $lab = $this->getTestObject();
-        $this->assertSame('0.252784 0.499848 0.747328 rg' . "\n", $lab->getPdfColor());
-        $this->assertSame('0.252784 0.499848 0.747328 RG' . "\n", $lab->getPdfColor(true));
+        // Lab goes through pow(), whose last digits depend on the platform libm
+        $this->bcAssertSamePdfOperator('0.252784 0.499848 0.747328 rg' . "\n", $lab->getPdfColor(), 1e-5);
+        $this->bcAssertSamePdfOperator('0.252784 0.499848 0.747328 RG' . "\n", $lab->getPdfColor(true), 1e-5);
     }
 
     public function testToGrayArray(): void
     {
         $lab = $this->getTestObject();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'gray' => 0.465,
-                'alpha' => 0.85,
-            ],
-            $lab->toGrayArray(),
-            0.02,
-        );
+        $this->bcAssertEqualsWithDelta([
+            'gray' => 0.46519,
+            'alpha' => 0.85,
+        ], $lab->toGrayArray());
     }
 
     public function testToRgbArray(): void
     {
         $lab = $this->getTestObject();
-        $this->bcAssertEqualsWithDelta(
+        $this->bcAssertEqualsWithDelta([
+            'red' => 0.252784,
+            'green' => 0.499848,
+            'blue' => 0.747328,
+            'alpha' => 0.85,
+        ], $lab->toRgbArray());
+    }
+
+    /**
+     * The Lab gamut is wider than sRGB, so the corners of the a* and b* range
+     * drive every channel out of [0..1]. toRgbArray() and getPDFacArray() clamp
+     * them back.
+     */
+    public function testToRgbArrayClampsOutOfGamutColors(): void
+    {
+        $cyan = new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 100,
+            'astar' => -128,
+            'bstar' => -128,
+            'alpha' => 1,
+        ]);
+        $this->assertSame(
             [
-                'red' => 0.25,
-                'green' => 0.50,
-                'blue' => 0.75,
-                'alpha' => 0.85,
+                'red' => 0.0,
+                'green' => 1.0,
+                'blue' => 1.0,
+                'alpha' => 1.0,
             ],
-            $lab->toRgbArray(),
-            0.03,
+            $cyan->toRgbArray(),
         );
+        $this->assertSame([0.0, 1.0, 1.0], $cyan->getPDFacArray());
+
+        // only the extremes of each channel are pinned; the third channel of
+        // these two stays inside the gamut and is not clamped
+        $orange = (new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 100,
+            'astar' => 127,
+            'bstar' => 127,
+            'alpha' => 1,
+        ]))->toRgbArray();
+        $this->assertSame(1.0, $orange['red'] ?? -1.0);
+        $this->assertSame(0.0, $orange['blue'] ?? -1.0);
+        $this->bcAssertEqualsWithDelta(0.275190, $orange['green'] ?? -1.0);
+
+        $dark = (new \Com\Tecnick\Color\Model\Lab([
+            'lstar' => 0,
+            'astar' => -128,
+            'bstar' => 127,
+            'alpha' => 1,
+        ]))->toRgbArray();
+        $this->assertSame(0.0, $dark['red'] ?? -1.0);
+        $this->assertSame(0.0, $dark['blue'] ?? -1.0);
+        $this->bcAssertEqualsWithDelta(0.177772, $dark['green'] ?? -1.0);
     }
 
     public function testToLabArray(): void
     {
         $lab = $this->getTestObject();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'lstar' => 52,
-                'astar' => 0,
-                'bstar' => -39,
-                'alpha' => 0.85,
-            ],
-            $lab->toLabArray(),
-            0.01,
-        );
+        $this->bcAssertEqualsWithDelta([
+            'lstar' => 52,
+            'astar' => 0,
+            'bstar' => -39,
+            'alpha' => 0.85,
+        ], $lab->toLabArray());
     }
 
     public function testToCmykArray(): void
     {
         $lab = $this->getTestObject();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'cyan' => 0.666,
-                'magenta' => 0.333,
-                'yellow' => 0,
-                'key' => 0.25,
-                'alpha' => 0.85,
-            ],
-            $lab->toCmykArray(),
-            0.05,
-        );
+        $this->bcAssertEqualsWithDelta([
+            'cyan' => 0.661749,
+            'magenta' => 0.331153,
+            'yellow' => 0,
+            'key' => 0.252672,
+            'alpha' => 0.85,
+        ], $lab->toCmykArray());
     }
 
     public function testToHslArray(): void
     {
         $lab = $this->getTestObject();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'hue' => 0.583,
-                'saturation' => 0.5,
-                'lightness' => 0.5,
-                'alpha' => 0.85,
-            ],
-            $lab->toHslArray(),
-            0.05,
-        );
+        $this->bcAssertEqualsWithDelta([
+            'hue' => 0.583404,
+            'saturation' => 0.494599,
+            'lightness' => 0.500056,
+            'alpha' => 0.85,
+        ], $lab->toHslArray());
     }
 
+    /**
+     * Pins the constants of the inverse pivot and of the linear-to-sRGB segment.
+     */
     public function testToRgbArrayLowLightnessBranch(): void
     {
         $lab = new \Com\Tecnick\Color\Model\Lab([
@@ -224,118 +364,46 @@ class LabTest extends TestUtil
         ]);
 
         $rgb = $lab->toRgbArray();
-        $this->assertGreaterThan(0.0, $rgb['red'] ?? 0.0);
-        $this->assertLessThan(0.03, $rgb['red'] ?? 0.0);
-        $this->assertEqualsWithDelta($rgb['red'] ?? 0.0, $rgb['green'] ?? 0.0, 0.0001);
-        $this->assertEqualsWithDelta($rgb['green'] ?? 0.0, $rgb['blue'] ?? 0.0, 0.0001);
+        $this->bcAssertEqualsWithDelta(0.028606519, $rgb['red'] ?? 0.0, 1e-9);
+        // the channels agree to well under one 8-bit level, but are not bit-identical:
+        // the matrix rows are normalized on the white point, not on this gray
+        $this->bcAssertEqualsWithDelta($rgb['red'] ?? 0.0, $rgb['green'] ?? 0.0, 1e-6);
+        $this->bcAssertEqualsWithDelta($rgb['green'] ?? 0.0, $rgb['blue'] ?? 0.0, 1e-6);
         $this->assertSame(1.0, $rgb['alpha'] ?? 0.0);
+    }
+
+    /**
+     * L* = 8 is where the inverse conversion switches from the linear segment
+     * to the cubic. Values on either side pin the threshold.
+     */
+    public function testToRgbArrayStraddlesTheLightnessThreshold(): void
+    {
+        foreach ([
+            [7.9, 0.091443115],
+            [8.1, 0.092979405],
+            // straddles the linear-to-sRGB threshold of 0.0031308
+            [2.84, 0.040618145],
+            [2.70, 0.038618801],
+        ] as [$lstar, $red]) {
+            $lab = new \Com\Tecnick\Color\Model\Lab([
+                'lstar' => $lstar,
+                'astar' => 0,
+                'bstar' => 0,
+                'alpha' => 1,
+            ]);
+            $this->bcAssertEqualsWithDelta($red, $lab->toRgbArray()['red'] ?? 0.0, 1e-9);
+        }
     }
 
     public function testInvertColor(): void
     {
         $lab = $this->getTestObject();
         $lab->invertColor();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'red' => 0.75,
-                'green' => 0.50,
-                'blue' => 0.25,
-                'alpha' => 0.85,
-            ],
-            $lab->toRgbArray(),
-            0.05,
-        );
-    }
-
-    public function testSetComponentValueForLabSpecificComponents(): void
-    {
-        $model = new class(['lstar' => 0.425, 'astar' => -0.1225, 'bstar' => 0.3375, 'alpha' => 1]) extends
-            \Com\Tecnick\Color\Model {
-            protected $type = 'TEST';
-            protected float $cmp_lstar = 0.0;
-            protected float $cmp_astar = 0.0;
-            protected float $cmp_bstar = 0.0;
-
-            public function getArray(): array
-            {
-                return [];
-            }
-
-            public function getPDFacArray(): array
-            {
-                return [];
-            }
-
-            public function getNormalizedArray(int $max): array
-            {
-                return [];
-            }
-
-            public function getCssColor(): string
-            {
-                return '';
-            }
-
-            public function getJsPdfColor(): string
-            {
-                return '';
-            }
-
-            public function getComponentsString(): string
-            {
-                return '';
-            }
-
-            public function getPdfColor(bool $stroke = false): string
-            {
-                return '';
-            }
-
-            public function toGrayArray(): array
-            {
-                return [];
-            }
-
-            public function toRgbArray(): array
-            {
-                return [];
-            }
-
-            public function toHslArray(): array
-            {
-                return [];
-            }
-
-            public function toCmykArray(): array
-            {
-                return [];
-            }
-
-            public function toLabArray(): array
-            {
-                return [
-                    'lstar' => $this->cmp_lstar,
-                    'astar' => $this->cmp_astar,
-                    'bstar' => $this->cmp_bstar,
-                    'alpha' => $this->cmp_alpha,
-                ];
-            }
-
-            public function invertColor(): self
-            {
-                return $this;
-            }
-        };
-
-        $this->assertEqualsWithDelta(
-            [
-                'lstar' => 0.425,
-                'astar' => 0.0,
-                'bstar' => 0.3375,
-                'alpha' => 1.0,
-            ],
-            $model->toLabArray(),
-            0.0001,
-        );
+        $this->bcAssertEqualsWithDelta([
+            'red' => 0.747216,
+            'green' => 0.500152,
+            'blue' => 0.252672,
+            'alpha' => 0.85,
+        ], $lab->toRgbArray());
     }
 }

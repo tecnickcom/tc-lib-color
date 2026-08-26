@@ -117,7 +117,7 @@ x: buildall
 
 ## Full build and test sequence
 .PHONY: buildall
-buildall: deps format qa bz2 rpm deb
+buildall: deps qa report bz2 rpm deb
 
 ## Package the library in a compressed bz2 archive
 .PHONY: bz2
@@ -190,7 +190,8 @@ install: uninstall
 	cp -f ./README.md "$(PATHINSTDOC)"
 	cp -f ./VERSION "$(PATHINSTDOC)"
 	cp -f ./RELEASE "$(PATHINSTDOC)"
-	chmod -R 644 "$(PATHINSTDOC)"*
+	find "$(PATHINSTDOC)" -type d -exec chmod 755 {} \;
+	find "$(PATHINSTDOC)" -type f -exec chmod 644 {} \;
 ifneq ($(strip $(CONFIGPATH)),)
 	mkdir -p "$(PATHINSTCFG)"
 	touch -c "$(PATHINSTCFG)"*
@@ -202,26 +203,29 @@ endif
 ## Format the source code
 .PHONY: format
 format:
-	./vendor/bin/mago --config ./mago.src.toml fmt src
-	./vendor/bin/mago --config ./mago.test.toml fmt test
-	./vendor/bin/mago --config ./mago.src.toml fmt example
+	$(COMPOSER) run-script cs-fix
+
+## Check that the source code is formatted
+.PHONY: formatcheck
+formatcheck:
+	$(COMPOSER) run-script fmt-check
 
 ## Analyze and Lint the source code
 .PHONY: lint
 lint:
-	./vendor/bin/mago --config ./mago.src.toml analyze src
-	./vendor/bin/mago --config ./mago.test.toml analyze test
-	./vendor/bin/mago --config ./mago.src.toml lint src
-	./vendor/bin/mago --config ./mago.test.toml lint test
+	$(COMPOSER) run-script cs-check
+	$(COMPOSER) run-script analyse
 
-## Run all tests and reports
+## Run all tests
 .PHONY: qa
-qa: ensuretarget lint test report
+qa: ensuretarget formatcheck lint test
 
 ## Generate various reports
+# Not part of "qa": pdepend is a metrics tool, not a correctness gate, and its
+# 2.x line predates the newest PHP releases in the CI matrix.
 .PHONY: report
 report: ensuretarget
-	./vendor/bin/pdepend --jdepend-xml="$(TARGETDIR)/report/dependencies.xml" --summary-xml="$(TARGETDIR)/report/metrics.xml" --jdepend-chart="$(TARGETDIR)/report/dependecies.svg" --overview-pyramid="$(TARGETDIR)/report/overview-pyramid.svg" --ignore=vendor ./src
+	$(COMPOSER) run-script report
 
 ## Build the RPM package for RedHat-like Linux distributions
 .PHONY: rpm
@@ -258,11 +262,10 @@ tag:
 	git pull
 
 ## Run unit tests
+# PHPUnit resolves its own configuration: phpunit.xml when present, else phpunit.xml.dist.
 .PHONY: test
 test: ensuretarget
-	cp phpunit.xml.dist phpunit.xml
-	#./vendor/bin/phpunit --migrate-configuration || true
-	XDEBUG_MODE=coverage ./vendor/bin/phpunit --stderr test
+	$(COMPOSER) run-script test
 
 ## Remove all installed files
 .PHONY: uninstall

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * RgbTest.php
  *
@@ -45,42 +47,105 @@ class RgbTest extends TestUtil
     {
         $rgb = $this->getTestObject();
         $type = $rgb->getType();
-        $this->assertEquals('RGB', $type);
+        $this->assertSame('RGB', $type);
     }
 
-    public function testGetNormalizedValue(): void
+    /**
+     * Components are clamped into [0..1] on construction.
+     */
+    public function testConstructorClampsComponents(): void
     {
-        $rgb = $this->getTestObject();
-        $res = $rgb->getNormalizedValue(0.5, 255);
-        $this->assertEquals(128, $res);
+        $over = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => 2,
+            'green' => -1,
+            'blue' => 0.5,
+            'alpha' => 5,
+        ]);
+        $this->assertSame(
+            [
+                'R' => 1.0,
+                'G' => 0.0,
+                'B' => 0.5,
+                'A' => 1.0,
+            ],
+            $over->getArray(),
+        );
+
+        $under = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => -0.5,
+            'green' => 1.5,
+            'blue' => 1,
+            'alpha' => -2,
+        ]);
+        $this->assertSame(
+            [
+                'R' => 0.0,
+                'G' => 1.0,
+                'B' => 1.0,
+                'A' => 0.0,
+            ],
+            $under->getArray(),
+        );
     }
 
-    public function testGetHexValue(): void
+    /**
+     * Omitted components default to 0.0, except alpha which defaults to opaque.
+     */
+    public function testConstructorDefaults(): void
     {
-        $rgb = $this->getTestObject();
-        $res = $rgb->getHexValue(0.5, 255);
-        $this->assertEquals('80', $res);
+        $rgb = new \Com\Tecnick\Color\Model\Rgb([]);
+        $this->assertSame(
+            [
+                'R' => 0.0,
+                'G' => 0.0,
+                'B' => 0.0,
+                'A' => 1.0,
+            ],
+            $rgb->getArray(),
+        );
+    }
+
+    /**
+     * Numeric strings are accepted, as passed by the CSS parser.
+     */
+    public function testConstructorAcceptsNumericStrings(): void
+    {
+        $rgb = new \Com\Tecnick\Color\Model\Rgb([
+            'red' => '0.25',
+            'green' => '0.5',
+            'blue' => '0.75',
+            'alpha' => '1',
+        ]);
+        $this->assertSame(
+            [
+                'R' => 0.25,
+                'G' => 0.5,
+                'B' => 0.75,
+                'A' => 1.0,
+            ],
+            $rgb->getArray(),
+        );
     }
 
     public function testGetRgbaHexColor(): void
     {
         $rgb = $this->getTestObject();
         $rgbaHexColor = $rgb->getRgbaHexColor();
-        $this->assertEquals('#4080bfd9', $rgbaHexColor);
+        $this->assertSame('#4080bfd9', $rgbaHexColor);
     }
 
     public function testGetRgbHexColor(): void
     {
         $rgb = $this->getTestObject();
         $rgbHexColor = $rgb->getRgbHexColor();
-        $this->assertEquals('#4080bf', $rgbHexColor);
+        $this->assertSame('#4080bf', $rgbHexColor);
     }
 
     public function testGetArray(): void
     {
         $rgb = $this->getTestObject();
         $res = $rgb->getArray();
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'R' => 0.25,
                 'G' => 0.50,
@@ -95,7 +160,7 @@ class RgbTest extends TestUtil
     {
         $rgb = $this->getTestObject();
         $res = $rgb->getPDFacArray();
-        $this->assertEquals(
+        $this->assertSame(
             [
                 0.25,
                 0.50,
@@ -109,11 +174,11 @@ class RgbTest extends TestUtil
     {
         $rgb = $this->getTestObject();
         $res = $rgb->getNormalizedArray(255);
-        $this->assertEquals(
+        $this->assertSame(
             [
-                'R' => 64,
-                'G' => 128,
-                'B' => 191,
+                'R' => 64.0,
+                'G' => 128.0,
+                'B' => 191.0,
                 'A' => 0.85,
             ],
             $res,
@@ -124,7 +189,7 @@ class RgbTest extends TestUtil
     {
         $rgb = $this->getTestObject();
         $cssColor = $rgb->getCssColor();
-        $this->assertEquals('rgba(25%,50%,75%,0.85)', $cssColor);
+        $this->assertSame('rgba(64,128,191,0.85)', $cssColor);
 
         $opaque = new \Com\Tecnick\Color\Model\Rgb([
             'red' => 0.25,
@@ -132,14 +197,14 @@ class RgbTest extends TestUtil
             'blue' => 0.75,
             'alpha' => 1,
         ]);
-        $this->assertEquals('rgb(25%,50%,75%)', $opaque->getCssColor());
+        $this->assertSame('rgb(64,128,191)', $opaque->getCssColor());
     }
 
     public function testGetJsPdfColor(): void
     {
         $testObj = $this->getTestObject();
         $res = $testObj->getJsPdfColor();
-        $this->assertEquals('["RGB",0.250000,0.500000,0.750000]', $res);
+        $this->assertSame('["RGB",0.250000,0.500000,0.750000]', $res);
 
         $rgb = new \Com\Tecnick\Color\Model\Rgb([
             'red' => 0.25,
@@ -148,27 +213,27 @@ class RgbTest extends TestUtil
             'alpha' => 0,
         ]);
         $res = $rgb->getJsPdfColor();
-        $this->assertEquals('["T"]', $res);
+        $this->assertSame('["T"]', $res);
     }
 
     public function testGetComponentsString(): void
     {
         $rgb = $this->getTestObject();
         $componentsString = $rgb->getComponentsString();
-        $this->assertEquals('0.250000 0.500000 0.750000', $componentsString);
+        $this->assertSame('0.250000 0.500000 0.750000', $componentsString);
     }
 
     public function testGetPdfColor(): void
     {
         $rgb = $this->getTestObject();
         $res = $rgb->getPdfColor();
-        $this->assertEquals('0.250000 0.500000 0.750000 rg' . "\n", $res);
+        $this->assertSame('0.250000 0.500000 0.750000 rg' . "\n", $res);
 
         $res = $rgb->getPdfColor(false);
-        $this->assertEquals('0.250000 0.500000 0.750000 rg' . "\n", $res);
+        $this->assertSame('0.250000 0.500000 0.750000 rg' . "\n", $res);
 
         $res = $rgb->getPdfColor(true);
-        $this->assertEquals('0.250000 0.500000 0.750000 RG' . "\n", $res);
+        $this->assertSame('0.250000 0.500000 0.750000 RG' . "\n", $res);
     }
 
     public function testToGrayArray(): void
@@ -176,7 +241,7 @@ class RgbTest extends TestUtil
         $rgb = $this->getTestObject();
         $res = $rgb->toGrayArray();
         $this->bcAssertEqualsWithDelta([
-            'gray' => 0.465,
+            'gray' => 0.4649,
             'alpha' => 0.85,
         ], $res);
     }
@@ -198,7 +263,7 @@ class RgbTest extends TestUtil
         $testObj = $this->getTestObject();
         $res = $testObj->toHslArray();
         $this->bcAssertEqualsWithDelta([
-            'hue' => 0.583,
+            'hue' => 7 / 12,
             'saturation' => 0.5,
             'lightness' => 0.5,
             'alpha' => 0.85,
@@ -226,11 +291,23 @@ class RgbTest extends TestUtil
         ]);
         $res = $col->toHslArray();
         $this->bcAssertEqualsWithDelta([
-            'hue' => 0.416,
-            'saturation' => 0.500,
-            'lightness' => 0.200,
+            'hue' => 5 / 12,
+            'saturation' => 0.5,
+            'lightness' => 0.2,
             'alpha' => 1,
         ], $res);
+
+        // red is the maximum and green equals blue, so the hue sits at the start
+        // of the first sector and comes back as 0, the range being [0..1)
+        foreach ([[1.0, 0.2, 0.2], [1.0, 0.0, 0.0], [0.5, 0.0, 0.0]] as [$red, $green, $blue]) {
+            $col = new \Com\Tecnick\Color\Model\Rgb([
+                'red' => $red,
+                'green' => $green,
+                'blue' => $blue,
+                'alpha' => 1,
+            ]);
+            $this->assertSame(0.0, $col->toHslArray()['hue'] ?? -1.0);
+        }
 
         $col = new \Com\Tecnick\Color\Model\Rgb([
             'red' => 0.3,
@@ -240,9 +317,9 @@ class RgbTest extends TestUtil
         ]);
         $res = $col->toHslArray();
         $this->bcAssertEqualsWithDelta([
-            'hue' => 0.0833,
-            'saturation' => 0.500,
-            'lightness' => 0.200,
+            'hue' => 1 / 12,
+            'saturation' => 0.5,
+            'lightness' => 0.2,
             'alpha' => 1,
         ], $res);
 
@@ -254,7 +331,7 @@ class RgbTest extends TestUtil
         ]);
         $res = $col->toHslArray();
         $this->bcAssertEqualsWithDelta([
-            'hue' => 0.852,
+            'hue' => 23 / 27,
             'saturation' => 1,
             'lightness' => 0.55,
             'alpha' => 1,
@@ -266,8 +343,8 @@ class RgbTest extends TestUtil
         $testObj = $this->getTestObject();
         $res = $testObj->toCmykArray();
         $this->bcAssertEqualsWithDelta([
-            'cyan' => 0.666,
-            'magenta' => 0.333,
+            'cyan' => 2 / 3,
+            'magenta' => 1 / 3,
             'yellow' => 0,
             'key' => 0.25,
             'alpha' => 0.85,
@@ -293,16 +370,12 @@ class RgbTest extends TestUtil
     {
         $rgb = $this->getTestObject();
         $res = $rgb->toLabArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'lstar' => 52,
-                'astar' => 0,
-                'bstar' => -39,
-                'alpha' => 0.85,
-            ],
-            $res,
-            1.5,
-        );
+        $this->bcAssertEqualsWithDelta([
+            'lstar' => 52.018185,
+            'astar' => 0.093408,
+            'bstar' => -39.36307,
+            'alpha' => 0.85,
+        ], $res);
     }
 
     public function testToLabArrayLowValueBranch(): void
@@ -316,9 +389,53 @@ class RgbTest extends TestUtil
 
         $lab = $rgb->toLabArray();
         $this->assertSame(0.0, $lab['lstar'] ?? 0.0);
-        $this->assertEqualsWithDelta(0.0, $lab['astar'] ?? 0.0, 0.05);
-        $this->assertEqualsWithDelta(0.0, $lab['bstar'] ?? 0.0, 0.05);
-        $this->assertEquals(1.0, $lab['alpha'] ?? 0.0);
+        $this->assertSame(0.0, $lab['astar'] ?? 1.0);
+        $this->assertSame(0.0, $lab['bstar'] ?? 1.0);
+        $this->assertSame(1.0, $lab['alpha'] ?? 0.0);
+    }
+
+    /**
+     * These grays land inside the linear segment of the sRGB transfer function
+     * and pin its slope.
+     */
+    public function testToLabArrayLinearSegmentValues(): void
+    {
+        foreach ([
+            [1, 0.274174800],
+            [5, 1.370874000],
+            [10, 2.741748001],
+        ] as [$level, $lstar]) {
+            $gray = new \Com\Tecnick\Color\Model\Rgb([
+                'red' => $level / 255,
+                'green' => $level / 255,
+                'blue' => $level / 255,
+                'alpha' => 1,
+            ]);
+            $this->bcAssertEqualsWithDelta($lstar, $gray->toLabArray()['lstar'] ?? 0.0, 1e-9);
+        }
+    }
+
+    /**
+     * The sRGB transfer function switches from the linear segment to the power
+     * curve at 0.04045. Values on either side pin the threshold.
+     */
+    public function testToLabArrayStraddlesTheSrgbThreshold(): void
+    {
+        foreach ([
+            [0.0404, 2.824548790],
+            [0.0405, 2.831603355],
+            // straddles the CIE epsilon of the XYZ to Lab pivot (L* = 8)
+            [0.0925, 8.037518848],
+            [0.0900, 7.714495531],
+        ] as [$component, $lstar]) {
+            $gray = new \Com\Tecnick\Color\Model\Rgb([
+                'red' => $component,
+                'green' => $component,
+                'blue' => $component,
+                'alpha' => 1,
+            ]);
+            $this->bcAssertEqualsWithDelta($lstar, $gray->toLabArray()['lstar'] ?? 0.0, 1e-9);
+        }
     }
 
     public function testInvertColor(): void

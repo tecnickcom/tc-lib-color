@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ColorModelTypeTest.php
  *
@@ -33,11 +35,11 @@ class ColorModelTypeTest extends TestUtil
 {
     public function testCaseBackingValues(): void
     {
-        $this->assertEquals('GRAY', ColorModelType::Gray->value);
-        $this->assertEquals('RGB', ColorModelType::Rgb->value);
-        $this->assertEquals('HSL', ColorModelType::Hsl->value);
-        $this->assertEquals('CMYK', ColorModelType::Cmyk->value);
-        $this->assertEquals('LAB', ColorModelType::Lab->value);
+        $this->assertSame('GRAY', ColorModelType::Gray->value);
+        $this->assertSame('RGB', ColorModelType::Rgb->value);
+        $this->assertSame('HSL', ColorModelType::Hsl->value);
+        $this->assertSame('CMYK', ColorModelType::Cmyk->value);
+        $this->assertSame('LAB', ColorModelType::Lab->value);
     }
 
     /**
@@ -89,10 +91,30 @@ class ColorModelTypeTest extends TestUtil
      */
     public function testFromLooseUnknownThrows(): void
     {
-        $this->bcExpectException(\Com\Tecnick\Color\Exception::class);
-        ColorModelType::fromLoose('unknown');
+        $this->bcAssertThrows(
+            \Com\Tecnick\Color\Exception::class,
+            'unknown color model type: unknown',
+            /** @throws \Com\Tecnick\Color\Exception */
+            static fn() => ColorModelType::fromLoose('unknown'),
+        );
     }
 
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
+    public function testFromLooseEmptyStringThrows(): void
+    {
+        $this->bcAssertThrows(
+            \Com\Tecnick\Color\Exception::class,
+            'unknown color model type: ',
+            /** @throws \Com\Tecnick\Color\Exception */
+            static fn() => ColorModelType::fromLoose(''),
+        );
+    }
+
+    /**
+     * @throws \Com\Tecnick\Color\Exception
+     */
     public function testGetTypeEnum(): void
     {
         $gray = new \Com\Tecnick\Color\Model\Gray([]);
@@ -112,7 +134,9 @@ class ColorModelTypeTest extends TestUtil
     }
 
     /**
-     * The typed accessor stays consistent with the legacy string accessor.
+     * The typed accessor agrees with the string accessor.
+     *
+     * @throws \Com\Tecnick\Color\Exception
      */
     public function testGetTypeEnumMatchesGetType(): void
     {

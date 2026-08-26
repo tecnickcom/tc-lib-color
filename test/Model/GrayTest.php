@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * GrayTest.php
  *
@@ -43,42 +45,82 @@ class GrayTest extends TestUtil
     {
         $gray = $this->getTestObject();
         $type = $gray->getType();
-        $this->assertEquals('GRAY', $type);
+        $this->assertSame('GRAY', $type);
     }
 
-    public function testGetNormalizedValue(): void
+    /**
+     * Components are clamped into [0..1] on construction.
+     */
+    public function testConstructorClampsComponents(): void
     {
-        $gray = $this->getTestObject();
-        $res = $gray->getNormalizedValue(0.5, 255);
-        $this->assertEquals(128, $res);
+        $over = new \Com\Tecnick\Color\Model\Gray([
+            'gray' => 2,
+            'alpha' => 5,
+        ]);
+        $this->assertSame(
+            [
+                'G' => 1.0,
+                'A' => 1.0,
+            ],
+            $over->getArray(),
+        );
+
+        $under = new \Com\Tecnick\Color\Model\Gray([
+            'gray' => -0.5,
+            'alpha' => -2,
+        ]);
+        $this->assertSame(
+            [
+                'G' => 0.0,
+                'A' => 0.0,
+            ],
+            $under->getArray(),
+        );
     }
 
-    public function testGetHexValue(): void
+    /**
+     * Omitted components default to 0.0, except alpha which defaults to opaque.
+     */
+    public function testConstructorDefaults(): void
     {
-        $gray = $this->getTestObject();
-        $res = $gray->getHexValue(0.5, 255);
-        $this->assertEquals('80', $res);
+        $gray = new \Com\Tecnick\Color\Model\Gray([]);
+        $this->assertSame(
+            [
+                'G' => 0.0,
+                'A' => 1.0,
+            ],
+            $gray->getArray(),
+        );
+    }
+
+    public function testConstructorRejectsUnknownComponents(): void
+    {
+        $this->bcAssertThrows(
+            \Com\Tecnick\Color\UnknownComponentException::class,
+            'unknown color components: grey',
+            static fn() => new \Com\Tecnick\Color\Model\Gray(['grey' => 0.5]),
+        );
     }
 
     public function testGetRgbaHexColor(): void
     {
         $gray = $this->getTestObject();
         $rgbaHexColor = $gray->getRgbaHexColor();
-        $this->assertEquals('#bfbfbfd9', $rgbaHexColor);
+        $this->assertSame('#bfbfbfd9', $rgbaHexColor);
     }
 
     public function testGetRgbHexColor(): void
     {
         $gray = $this->getTestObject();
         $rgbHexColor = $gray->getRgbHexColor();
-        $this->assertEquals('#bfbfbf', $rgbHexColor);
+        $this->assertSame('#bfbfbf', $rgbHexColor);
     }
 
     public function testGetArray(): void
     {
         $gray = $this->getTestObject();
         $res = $gray->getArray();
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'G' => 0.75,
                 'A' => 0.85,
@@ -91,7 +133,7 @@ class GrayTest extends TestUtil
     {
         $gray = $this->getTestObject();
         $res = $gray->getPDFacArray();
-        $this->assertEquals(
+        $this->assertSame(
             [
                 0.75,
             ],
@@ -103,9 +145,9 @@ class GrayTest extends TestUtil
     {
         $gray = $this->getTestObject();
         $res = $gray->getNormalizedArray(255);
-        $this->assertEquals(
+        $this->assertSame(
             [
-                'G' => 191,
+                'G' => 191.0,
                 'A' => 0.85,
             ],
             $res,
@@ -116,54 +158,54 @@ class GrayTest extends TestUtil
     {
         $gray = $this->getTestObject();
         $cssColor = $gray->getCssColor();
-        $this->assertEquals('rgba(75%,75%,75%,0.85)', $cssColor);
+        $this->assertSame('rgba(191,191,191,0.85)', $cssColor);
 
         $opaque = new \Com\Tecnick\Color\Model\Gray([
             'gray' => 0.75,
             'alpha' => 1,
         ]);
-        $this->assertEquals('g(75%)', $opaque->getCssColor());
+        $this->assertSame('g(191)', $opaque->getCssColor());
     }
 
     public function testGetJsPdfColor(): void
     {
         $testObj = $this->getTestObject();
         $res = $testObj->getJsPdfColor();
-        $this->assertEquals('["G",0.750000]', $res);
+        $this->assertSame('["G",0.750000]', $res);
 
         $gray = new \Com\Tecnick\Color\Model\Gray([
             'gray' => 0.5,
             'alpha' => 0,
         ]);
         $res = $gray->getJsPdfColor();
-        $this->assertEquals('["T"]', $res);
+        $this->assertSame('["T"]', $res);
     }
 
     public function testGetComponentsString(): void
     {
         $gray = $this->getTestObject();
         $componentsString = $gray->getComponentsString();
-        $this->assertEquals('0.750000', $componentsString);
+        $this->assertSame('0.750000', $componentsString);
     }
 
     public function testGetPdfColor(): void
     {
         $gray = $this->getTestObject();
         $res = $gray->getPdfColor();
-        $this->assertEquals('0.750000 g' . "\n", $res);
+        $this->assertSame('0.750000 g' . "\n", $res);
 
         $res = $gray->getPdfColor(false);
-        $this->assertEquals('0.750000 g' . "\n", $res);
+        $this->assertSame('0.750000 g' . "\n", $res);
 
         $res = $gray->getPdfColor(true);
-        $this->assertEquals('0.750000 G' . "\n", $res);
+        $this->assertSame('0.750000 G' . "\n", $res);
     }
 
     public function testToGrayArray(): void
     {
         $gray = $this->getTestObject();
         $res = $gray->toGrayArray();
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'gray' => 0.75,
                 'alpha' => 0.85,
@@ -176,7 +218,7 @@ class GrayTest extends TestUtil
     {
         $gray = $this->getTestObject();
         $res = $gray->toRgbArray();
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'red' => 0.75,
                 'green' => 0.75,
@@ -191,10 +233,10 @@ class GrayTest extends TestUtil
     {
         $gray = $this->getTestObject();
         $res = $gray->toHslArray();
-        $this->assertEquals(
+        $this->assertSame(
             [
-                'hue' => 0,
-                'saturation' => 0,
+                'hue' => 0.0,
+                'saturation' => 0.0,
                 'lightness' => 0.75,
                 'alpha' => 0.85,
             ],
@@ -206,11 +248,11 @@ class GrayTest extends TestUtil
     {
         $gray = $this->getTestObject();
         $res = $gray->toCmykArray();
-        $this->assertEquals(
+        $this->assertSame(
             [
-                'cyan' => 0,
-                'magenta' => 0,
-                'yellow' => 0,
+                'cyan' => 0.0,
+                'magenta' => 0.0,
+                'yellow' => 0.0,
                 'key' => 0.25,
                 'alpha' => 0.85,
             ],
@@ -222,16 +264,15 @@ class GrayTest extends TestUtil
     {
         $gray = $this->getTestObject();
         $res = $gray->toLabArray();
-        $this->bcAssertEqualsWithDelta(
-            [
-                'lstar' => 77,
-                'astar' => 0,
-                'bstar' => 0,
-                'alpha' => 0.85,
-            ],
-            $res,
-            1.5,
-        );
+        $this->bcAssertEqualsWithDelta([
+            'lstar' => 77.431371890244847,
+            'astar' => 0.0,
+            'bstar' => 0.0,
+            'alpha' => 0.85,
+        ], $res);
+        // a neutral gray carries no chroma at all
+        $this->assertSame(0.0, $res['astar'] ?? 1.0);
+        $this->assertSame(0.0, $res['bstar'] ?? 1.0);
     }
 
     public function testInvertColor(): void
@@ -240,7 +281,7 @@ class GrayTest extends TestUtil
         $gray->invertColor();
 
         $res = $gray->toGrayArray();
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'gray' => 0.25,
                 'alpha' => 0.85,

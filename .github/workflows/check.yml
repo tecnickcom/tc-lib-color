@@ -20,43 +20,114 @@ on:
   workflow_dispatch:
 
 jobs:
-    test-php:
-        name: Test on php ${{ matrix.php-version }} and ${{ matrix.os }}
-        runs-on: ${{ matrix.os }}
-        continue-on-error: ${{ matrix.experimental }}
-        strategy:
-            fail-fast: false
-            matrix:
-                php-version: ["8.2", "8.3", "8.4", "8.5"]
-                experimental: [false]
-                os: [ubuntu-latest]
-                coverage-extension: [pcov]
-        steps:
-            - uses: actions/checkout@v7
-            - name: Use php ${{ matrix.php-version }}
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php-version }}
-                  coverage: ${{ matrix.coverage-extension }}
-                  extensions: bcmath, curl, date, gd, hash, imagick, intl, json, mbstring, openssl, pcre, zlib
-                  ini-values: display_errors=on, error_reporting=-1, zend.assertions=1
-            - name: List php modules
-              run: php -m
-            - name: List php modules using "no php ini" mode
-              run: php -m -n
-            - name: Cache module
-              uses: actions/cache@v6
-              with:
-                  path: ~/.composer/cache/
-                  key: composer-cache-${{ matrix.os }}
-            - name: Install dependencies
-              env:
-                GH_TOKEN: ${{ github.token }}
-              run: make deps
-            - name: Run all tests
-              run: make qa
-            - name: Send coverage
-              uses: codecov/codecov-action@v7
-              with:
-                flags: php-${{ matrix.php-version }}-${{ matrix.os }}
-                name: php-${{ matrix.php-version }}-${{ matrix.os }}
+  test-php:
+    name: Test on php ${{ matrix.php-version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ["8.2", "8.3", "8.4", "8.5"]
+        os: [ubuntu-latest]
+        coverage-extension: [pcov]
+        include:
+          # The suite asserts on floating-point values formatted to six
+          # decimals, which depend on the platform libm. Cover a non-glibc
+          # target so that drift is caught.
+          - php-version: "8.4"
+            os: macos-latest
+            coverage-extension: pcov
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use php ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: ${{ matrix.coverage-extension }}
+          extensions: pcre
+          ini-values: display_errors=on, error_reporting=-1, zend.assertions=1
+      - name: List php modules
+        run: php -m
+      - name: List php modules using "no php ini" mode
+        run: php -m -n
+      - name: Cache module
+        uses: actions/cache@v6
+        with:
+          path: ~/.composer/cache/
+          key: composer-cache-${{ matrix.os }}
+      - name: Install dependencies
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: make deps
+      - name: Validate composer.json
+        run: composer validate --strict --no-check-lock
+      - name: Run all tests
+        run: make qa
+      - name: Run the example
+        run: php example/index.php > /dev/null
+      - name: Send coverage
+        uses: codecov/codecov-action@v7
+        with:
+          flags: php-${{ matrix.php-version }}-${{ matrix.os }}
+          name: php-${{ matrix.php-version }}-${{ matrix.os }}
+
+  test-lowest:
+    name: Test lowest supported dependencies on php 8.2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use php 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: none
+          extensions: pcre
+          ini-values: display_errors=on, error_reporting=-1, zend.assertions=1
+      - name: Cache module
+        uses: actions/cache@v6
+        with:
+          path: ~/.composer/cache/
+          key: composer-cache-lowest
+      # composer.lock is not committed, so the default install always resolves
+      # to the top of every declared range. Pin the bottom of the ranges here.
+      - name: Install lowest supported dependencies
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: composer update --prefer-lowest --prefer-stable --no-interaction
+      - name: Run unit tests
+        run: ./vendor/bin/phpunit --stderr --no-coverage test
+
+  package:
+    name: Build the distribution packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use php 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          extensions: pcre
+      - name: Install packaging tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y rpm devscripts debhelper
+      - name: Install dependencies
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: make deps
+      # The packaging templates substitute the VERSION and RELEASE files and are
+      # otherwise never exercised, so a broken one is only found at release time.
+      - name: Build the source archive
+        run: make bz2
+      - name: Build the RPM package
+        run: make rpm
+      - name: Build the DEB package
+        run: make deb
+      - name: Check the packaged version matches VERSION
+        run: |
+          expected="$(cat VERSION)-$(cat RELEASE)"
+          rpm_version="$(rpm -qp --qf '%{VERSION}-%{RELEASE}' target/RPM/RPMS/noarch/*.rpm)"
+          deb_version="$(dpkg-deb -f target/DEB/*.deb Version)"
+          echo "expected=$expected rpm=$rpm_version deb=$deb_version"
+          test "$rpm_version" = "$expected"
+          test "$deb_version" = "$expected"

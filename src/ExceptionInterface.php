@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 /**
- * Exception.php
+ * ExceptionInterface.php
  *
- * @since     2015-02-21
+ * @since     2026-08-26
  * @category  Library
  * @package   Color
  * @author    Nicola Asuni <info@tecnick.com>
@@ -19,14 +19,12 @@ declare(strict_types=1);
 namespace Com\Tecnick\Color;
 
 /**
- * Com\Tecnick\Color\Exception
+ * Com\Tecnick\Color\ExceptionInterface
  *
- * Custom Exception class
+ * Implemented by every exception this library raises: Exception and
+ * UnknownComponentException.
  *
- * Raised for an invalid input condition: an unparsable color string, an unknown
- * color or spot color name, a PDF resource that cannot be referenced.
- *
- * @since     2015-02-21
+ * @since     2026-08-26
  * @category  Library
  * @package   Color
  * @author    Nicola Asuni <info@tecnick.com>
@@ -34,4 +32,4 @@ namespace Com\Tecnick\Color;
  * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-color
  */
-class Exception extends \Exception implements ExceptionInterface {}
+interface ExceptionInterface extends \Throwable {}

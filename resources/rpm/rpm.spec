@@ -21,7 +21,7 @@ Provides:  php-composer(%{c_vendor}/%{gh_project}) = %{version}
 Provides:  php-%{gh_project} = %{version}
 
 %description
-PHP library to manipulate various color representations (GRAY, RGB, HSL, CMYK) and parse Web colors.
+PHP library to manipulate various color representations (GRAY, RGB, HSL, CMYK, LAB and spot colors) and parse Web colors.
 
 %build
 #(cd %{_current_directory} && make build)
@@ -37,6 +37,10 @@ rm -rf "%{buildroot}"
 # Optional config files can be listed here when used by a project.
 
 %changelog
+# The package version is defined by the VERSION and RELEASE files: see the
+# Summary and Version fields above. This section lists the packaging changes.
+* Wed Aug 26 2026 Nicola Asuni <info@tecnick.com> 3.0.0-1
+- Align the changelog with the packaged version
 * Thu Jul 02 2026 Nicola Asuni <info@tecnick.com> 1.5.0-1
 - Changed package name, add provides section
 * Tue Feb 24 2026 Nicola Asuni <info@tecnick.com> 1.0.0-1
