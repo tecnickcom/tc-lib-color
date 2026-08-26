@@ -65,7 +65,8 @@ To verify everything is working after a change:
 make qa
 ```
 
-This checks the formatting and runs linting, static analysis and the full unit-test suite with coverage.
+This checks the formatting and runs linting, static analysis and the full unit-test suite.
+No coverage driver is needed; use `make test-coverage` when a report is wanted.
 
 ---
 
@@ -129,7 +130,8 @@ The `Makefile` exposes all common development tasks:
 | Command | Description |
 |---------|-------------|
 | `make qa` | Check the formatting, run linting, static analysis and tests |
-| `make test` | Run PHPUnit with code coverage |
+| `make test` | Run PHPUnit (no coverage driver needed) |
+| `make test-coverage` | Run PHPUnit and write the coverage report to `target/coverage/` |
 | `make lint` | Check coding standards |
 | `make format` | Auto-format the code |
 | `make buildall` | Install dependencies, run QA and the reports, and build packages |
@@ -155,7 +157,7 @@ Run `make help` to see the full list of available targets.
 Tests are written with [PHPUnit](https://phpunit.de/) and live in `test/`.
 
 ```bash
-# Run the full test suite with coverage
+# Run the full test suite
 make test
 
 # Run a specific test file
@@ -167,7 +169,7 @@ Requirements for contributions:
 - Every bug fix must be accompanied by a regression test that fails before the fix and passes after.
 - Every new feature must be accompanied by tests that cover both the happy path and edge cases.
 
-Coverage reports are generated in `target/coverage/`.
+Coverage reports are generated in `target/coverage/` by `make test-coverage`.
 
 ---
 

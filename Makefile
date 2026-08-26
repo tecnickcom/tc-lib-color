@@ -173,7 +173,7 @@ doc: ensuretarget
 ## Create missing target directories for test and build artifacts
 .PHONY: ensuretarget
 ensuretarget:
-	mkdir -p "$(TARGETDIR)/test"
+	mkdir -p "$(TARGETDIR)/logs"
 	mkdir -p "$(TARGETDIR)/report"
 	mkdir -p "$(TARGETDIR)/doc"
 
@@ -216,7 +216,7 @@ lint:
 	$(COMPOSER) run-script cs-check
 	$(COMPOSER) run-script analyse
 
-## Run all tests
+## Check formatting, lint, analyse and run all tests
 .PHONY: qa
 qa: ensuretarget formatcheck lint test
 
@@ -248,6 +248,7 @@ rpm:
 	--define "_version $(VERSION)" \
 	--define "_release $(RELEASE)" \
 	--define "_current_directory $(CURRENTDIR)" \
+	--define "_builddate $(shell LC_ALL=C date '+%a %b %d %Y')" \
 	--define "_libpath /$(LIBPATH)" \
 	--define "_docpath /$(DOCPATH)" \
 	-bb resources/rpm/rpm.spec

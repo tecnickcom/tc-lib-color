@@ -39,6 +39,8 @@ rm -rf "%{buildroot}"
 %changelog
 # The package version is defined by the VERSION and RELEASE files: see the
 # Summary and Version fields above. This section lists the packaging changes.
+* %{_builddate} Nicola Asuni <info@tecnick.com> %{version}-%{release}
+- Refer to the project git history for the contents of this release.
 * Wed Aug 26 2026 Nicola Asuni <info@tecnick.com> 3.0.0-1
 - Align the changelog with the packaged version
 * Thu Jul 02 2026 Nicola Asuni <info@tecnick.com> 1.5.0-1
