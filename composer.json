@@ -46,7 +46,7 @@
   "minimum-stability": "stable",
   "prefer-stable": true,
   "require-dev": {
-    "carthage-software/mago": "^1.47.3",
+    "carthage-software/mago": "^1.47.4",
     "pdepend/pdepend": "^2.16",
     "phpunit/phpunit": "^11.5 || ^12.5 || ^13.3"
   },
@@ -82,6 +82,7 @@
     "cs-fix:test": "vendor/bin/mago --config mago.test.toml fmt test",
     "cs-fix:example": "vendor/bin/mago --config mago.example.toml fmt example",
     "report": "mkdir -p target/report && vendor/bin/pdepend --jdepend-xml=target/report/dependencies.xml --summary-xml=target/report/metrics.xml --jdepend-chart=target/report/dependencies.svg --overview-pyramid=target/report/overview-pyramid.svg --ignore=vendor ./src",
-    "qa": ["@fmt-check", "@cs-check", "@analyse", "@test"]
+    "check-deps": ["@composer validate --strict --no-check-lock", "@composer audit"],
+    "qa": ["@check-deps", "@fmt-check", "@cs-check", "@analyse", "@test"]
   }
 }

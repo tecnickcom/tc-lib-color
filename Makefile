@@ -216,13 +216,20 @@ lint:
 	$(COMPOSER) run-script cs-check
 	$(COMPOSER) run-script analyse
 
-## Check formatting, lint, analyse and run all tests
+## Validate composer.json and check the dependencies for known advisories
+# Both are enforced by CI on every matrix job, so "qa" runs them too: otherwise a
+# packaging mistake or a new advisory is only reported after the PR is opened.
+.PHONY: check-deps
+check-deps:
+	$(COMPOSER) run-script check-deps
+
+## Check dependencies, formatting, lint, analyse and run all tests
 .PHONY: qa
-qa: ensuretarget formatcheck lint test
+qa: ensuretarget check-deps formatcheck lint test
 
 ## Run all checks and produce the coverage report
 .PHONY: qa-coverage
-qa-coverage: ensuretarget formatcheck lint test-coverage
+qa-coverage: ensuretarget check-deps formatcheck lint test-coverage
 
 ## Generate various reports
 # Not part of "qa": pdepend is a metrics tool, not a correctness gate, and its
