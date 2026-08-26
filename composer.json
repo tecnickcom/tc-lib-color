@@ -63,7 +63,8 @@
     "source": "https://github.com/tecnickcom/tc-lib-color"
   },
   "scripts": {
-    "test": "@php -d xdebug.mode=coverage vendor/bin/phpunit --stderr test",
+    "test": "@php vendor/bin/phpunit --stderr --no-coverage --display-skipped test",
+    "test:coverage": "@php -d xdebug.mode=coverage vendor/bin/phpunit --stderr --display-skipped test",
     "analyse": ["@analyse:src", "@analyse:test", "@analyse:example"],
     "analyse:src": "vendor/bin/mago --config mago.src.toml analyze -m warning src resources/autoload.php",
     "analyse:test": "vendor/bin/mago --config mago.test.toml analyze -m warning test",

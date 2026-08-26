@@ -123,7 +123,7 @@ buildall: deps qa report bz2 rpm deb
 .PHONY: bz2
 bz2:
 	rm -rf "$(PATHBZ2PKG)"
-	make install DESTDIR="$(PATHBZ2PKG)"
+	$(MAKE) install DESTDIR="$(PATHBZ2PKG)"
 	tar -jcvf "$(PATHBZ2PKG)/$(PKGNAME)-$(VERSION)-$(RELEASE).tbz2" -C "$(PATHBZ2PKG)" "$(DATADIR)"
 
 ## Delete the vendor and target directories
@@ -161,7 +161,7 @@ endif
 ## Clean all artifacts and download all dependencies
 .PHONY: deps
 deps: ensuretarget
-	rm -rf ./vendor/*
+	rm -rf ./vendor
 	($(COMPOSER) install -vvv --no-interaction)
 
 ## Generate source code documentation
@@ -220,6 +220,10 @@ lint:
 .PHONY: qa
 qa: ensuretarget formatcheck lint test
 
+## Run all checks and produce the coverage report
+.PHONY: qa-coverage
+qa-coverage: ensuretarget formatcheck lint test-coverage
+
 ## Generate various reports
 # Not part of "qa": pdepend is a metrics tool, not a correctness gate, and its
 # 2.x line predates the newest PHP releases in the CI matrix.
@@ -266,6 +270,11 @@ tag:
 .PHONY: test
 test: ensuretarget
 	$(COMPOSER) run-script test
+
+## Run unit tests and write the coverage report (requires Xdebug or pcov)
+.PHONY: test-coverage
+test-coverage: ensuretarget
+	$(COMPOSER) run-script test:coverage
 
 ## Remove all installed files
 .PHONY: uninstall

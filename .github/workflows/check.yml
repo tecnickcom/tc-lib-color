@@ -37,9 +37,11 @@ jobs:
             os: macos-latest
             coverage-extension: pcov
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Use php ${{ matrix.php-version }}
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: ${{ matrix.php-version }}
           coverage: ${{ matrix.coverage-extension }}
@@ -50,23 +52,28 @@ jobs:
       - name: List php modules using "no php ini" mode
         run: php -m -n
       - name: Cache module
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.composer/cache/
-          key: composer-cache-${{ matrix.os }}
+          key: composer-${{ matrix.os }}-${{ matrix.php-version }}-${{ hashFiles('composer.json') }}
+          restore-keys: composer-${{ matrix.os }}-${{ matrix.php-version }}-
       - name: Install dependencies
         env:
           GH_TOKEN: ${{ github.token }}
         run: make deps
       - name: Validate composer.json
         run: composer validate --strict --no-check-lock
+      - name: Audit dependencies for known advisories
+        run: composer audit
       - name: Run all tests
-        run: make qa
+        run: make qa-coverage
       - name: Run the example
         run: php example/index.php > /dev/null
       - name: Send coverage
-        uses: codecov/codecov-action@v7
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
           flags: php-${{ matrix.php-version }}-${{ matrix.os }}
           name: php-${{ matrix.php-version }}-${{ matrix.os }}
 
@@ -74,19 +81,22 @@ jobs:
     name: Test lowest supported dependencies on php 8.2
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Use php 8.2
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: "8.2"
           coverage: none
           extensions: pcre
           ini-values: display_errors=on, error_reporting=-1, zend.assertions=1
       - name: Cache module
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.composer/cache/
-          key: composer-cache-lowest
+          key: composer-lowest-${{ hashFiles('composer.json') }}
+          restore-keys: composer-lowest-
       # composer.lock is not committed, so the default install always resolves
       # to the top of every declared range. Pin the bottom of the ranges here.
       - name: Install lowest supported dependencies
@@ -94,15 +104,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: composer update --prefer-lowest --prefer-stable --no-interaction
       - name: Run unit tests
-        run: ./vendor/bin/phpunit --stderr --no-coverage test
+        run: composer run test
 
   package:
     name: Build the distribution packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Use php 8.4
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: "8.4"
           coverage: none
