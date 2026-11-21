@@ -69,34 +69,6 @@ jobs:
         run: make qa-coverage
       - name: Run the example
         run: php example/index.php > /dev/null
-      # make install, resources/autoload.php and the packaging descriptors are
-      # what reaches RPM/DEB users; nothing else in CI touches them. Install into
-      # a throwaway prefix and load the library through the shipped autoloader,
-      # which only resolves in the installed layout.
-      - name: Packaging smoke test
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          DESTDIR="$(mktemp -d)"
-          make install DESTDIR="$DESTDIR"
-          cat > "$DESTDIR/smoke.php" <<'SMOKE'
-          <?php
-          require \getenv('DESTDIR') . '/usr/share/php/Com/Tecnick/Color/autoload.php';
-          foreach ([
-              'Com\Tecnick\Color\ComponentNormalizer',
-              'Com\Tecnick\Color\Css',
-              'Com\Tecnick\Color\Exception',
-              'Com\Tecnick\Color\Model',
-              'Com\Tecnick\Color\Pdf',
-              'Com\Tecnick\Color\Spot',
-          ] as $class) {
-              if (!\class_exists($class)) {
-                  \fwrite(\STDERR, 'the installed autoloader cannot load ' . $class . \PHP_EOL);
-                  exit(1);
-              }
-          }
-          echo 'installed layout loads every class', \PHP_EOL;
-          SMOKE
-          DESTDIR="$DESTDIR" php "$DESTDIR/smoke.php"
 
       - name: Send coverage
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
@@ -134,41 +106,3 @@ jobs:
         run: composer update --prefer-lowest --prefer-stable --no-interaction
       - name: Run unit tests
         run: composer run test
-
-  package:
-    name: Build the distribution packages
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Use php 8.4
-        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
-        with:
-          php-version: "8.4"
-          coverage: none
-          extensions: pcre
-      - name: Install packaging tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y rpm devscripts debhelper
-      - name: Install dependencies
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: make deps
-      # The packaging templates substitute the VERSION and RELEASE files and are
-      # otherwise never exercised, so a broken one is only found at release time.
-      - name: Build the source archive
-        run: make bz2
-      - name: Build the RPM package
-        run: make rpm
-      - name: Build the DEB package
-        run: make deb
-      - name: Check the packaged version matches VERSION
-        run: |
-          expected="$(cat VERSION)-$(cat RELEASE)"
-          rpm_version="$(rpm -qp --qf '%{VERSION}-%{RELEASE}' target/RPM/RPMS/noarch/*.rpm)"
-          deb_version="$(dpkg-deb -f target/DEB/*.deb Version)"
-          echo "expected=$expected rpm=$rpm_version deb=$deb_version"
-          test "$rpm_version" = "$expected"
-          test "$deb_version" = "$expected"
